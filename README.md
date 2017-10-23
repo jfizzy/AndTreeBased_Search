@@ -1,2 +1,2 @@
-# KBS_Search
-Repo for CPSC 443 - Knowledge Based Systems - Search project
+# AT_Search
+Repo for CPSC 433 - Artificial Intelligence - And-Based Tree Search project
