@@ -1,5 +1,5 @@
 package Schedule;
 
-public class NonLecture {
+public interface NonLecture {
 
 }
