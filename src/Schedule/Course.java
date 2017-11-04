@@ -28,5 +28,6 @@ package Schedule;
  * @author
  */
 public class Course {
+
     
 }
