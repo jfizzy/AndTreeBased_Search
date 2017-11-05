@@ -59,9 +59,9 @@ public class Section {
         this.lecture = lecture;
     }
     
-    public Section(Course c) {
+    public Section(Course c, String sNum) {
         this.parentCourse = c;
-        this.sectionNum = null;
+        this.sectionNum = sNum;
         this.labs = new ArrayList<>();
         this.tuts = new ArrayList<>();
         this.lecture = new Lecture(this);

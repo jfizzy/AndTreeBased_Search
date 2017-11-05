@@ -16,8 +16,8 @@ package Input;
 import java.util.ArrayList;
 
 public class InputWrapper {
-    ArrayList<String> courseSlotLines;
-    ArrayList<String> labSlotLines;
+    ArrayList<String> lectureSlotLines;
+    ArrayList<String> nonlectureSlotLines;
     ArrayList<String> lectureLines;
     ArrayList<String> nonlectureLines;
     ArrayList<String> notCompatibleLines;
@@ -27,8 +27,8 @@ public class InputWrapper {
     ArrayList<String> partialAssignmentLines;
     
     public InputWrapper(){
-        courseSlotLines = new ArrayList<>();
-        labSlotLines = new ArrayList<>();
+        lectureSlotLines = new ArrayList<>();
+        nonlectureSlotLines = new ArrayList<>();
         lectureLines = new ArrayList<>();
         nonlectureLines = new ArrayList<>();
         notCompatibleLines = new ArrayList<>();

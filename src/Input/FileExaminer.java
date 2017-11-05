@@ -152,10 +152,10 @@ public class FileExaminer {
                 } else if (mslt.find() && inSec) { // slot
                     if(courseSlotSec){
                         System.out.println("lecture slot line");
-                        iw.courseSlotLines.add(line);
+                        iw.lectureSlotLines.add(line);
                     }else{
                         System.out.println("non lecture slot line");
-                        iw.labSlotLines.add(line);
+                        iw.nonlectureSlotLines.add(line);
                     }
                 } else if (mlec.find() && inSec) { // lecture
                     System.out.println("lecture line");

@@ -15,10 +15,15 @@ package Schedule;
 
 public class LectureSlot extends Slot {
 
-    public LectureSlot(String day, int h, int m){
+    private final int coursemax;
+    private final int coursemin;
+    
+    public LectureSlot(String day, int h, int m, int cmax, int cmin){
         this.day = day;
         this.hour = h;
         this.minute = m;
+        this.coursemax = cmax;
+        this.coursemin = cmin;
     }
     
 }

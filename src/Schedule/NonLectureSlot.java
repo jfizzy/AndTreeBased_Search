@@ -13,16 +13,17 @@
  */
 package Schedule;
 
-/**
- *
- * @author jmaci
- */
 public class NonLectureSlot extends Slot {
     
-    public NonLectureSlot(String day, int h, int m){
+    private final int labmax;
+    private final int labmin;
+    
+    public NonLectureSlot(String day, int h, int m, int lmax, int lmin){
         this.day = day;
         this.hour = h;
         this.minute = m;
+        this.labmax = lmax;
+        this.labmin = lmin;
     }
     
 }

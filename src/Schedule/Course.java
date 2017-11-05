@@ -56,4 +56,11 @@ public class Course {
         this.sections = new ArrayList<>();
     }
     
+    public Course(String dept, String num, String sNum){
+        this.department = dept;
+        this.number = num;
+        this.sections = new ArrayList<>();
+        this.sections.add(new Section(this,sNum));
+    }
+    
 }
