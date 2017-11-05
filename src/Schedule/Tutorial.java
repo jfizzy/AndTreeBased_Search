@@ -13,9 +13,9 @@
  */
 package Schedule;
 
-public class Lab extends NonLecture{
+public class Tutorial extends NonLecture{
     
-    public Lab(Section s, boolean evening){
+    public Tutorial(Section s, boolean evening){
         this.parentSection = s;
         this.evening = evening;
     }
