@@ -13,9 +13,13 @@
  */
 package Schedule;
 
-public class LectureSlot extends Slot {
-
-    public LectureSlot(String day, int h, int m){
+/**
+ *
+ * @author jmaci
+ */
+public class NonLectureSlot extends Slot {
+    
+    public NonLectureSlot(String day, int h, int m){
         this.day = day;
         this.hour = h;
         this.minute = m;
