@@ -19,19 +19,21 @@ package Input;
  */
 public class InputManager {
     
-    private FileExaminer fr;
-    //need a storage medium for the file contents
-    
+    private FileExaminer fe;
+    private InputWrapper iw;
     private String deptName;
     
+    
     public InputManager(){
-        fr = null;
+        fe = null;
+        iw = null;
     }
     
     public void run(String fp){
-        fr = new FileExaminer(fp);
-        fr.init();
-        fr.parse();
+        iw = new InputWrapper();
+        fe = new FileExaminer(fp, iw);
+        fe.init();
+        fe.parse();
     }
     
 }

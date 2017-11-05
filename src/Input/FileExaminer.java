@@ -25,6 +25,7 @@ public class FileExaminer {
     private final String fp;
     private File f;
     private BufferedReader br;
+    private InputWrapper iw;
 
     private final Pattern sectionPatt;
     private final Pattern breakPatt;
@@ -47,7 +48,7 @@ public class FileExaminer {
     private boolean pairSec;
     private boolean partialAssignmentSec;
 
-    public FileExaminer(String fp) {
+    public FileExaminer(String fp, InputWrapper iw) {
         this.notCompatiblePatt = Pattern.compile("^([A-Z][A-Z][A-Z][A-Z][ ]*[0-9][0-9][0-9][ ]*(LEC[ ]*[0-9][0-9][ ]*(TUT|LAB)[ ]*[0-9][0-9]|LEC[ ]*[0-9][0-9]|(TUT|LAB)[ ]*[0-9][0-9])[ ]*,[ ]*[A-Z][A-Z][A-Z][A-Z][ ]*[0-9][0-9][0-9][ ]*(LEC[ ]*[0-9][0-9][ ]*(TUT|LAB)[ ]*[0-9][0-9]|LEC[ ]*[0-9][0-9]|(TUT|LAB)[ ]*[0-9][0-9]))$");
         this.lecturePatt = Pattern.compile("^[A-Z][A-Z][A-Z][A-Z][ ]*[0-9][0-9][0-9][ ]*LEC[ ]*[0-9][0-9]$");
         this.nonlecturePatt = Pattern.compile("^[A-Z][A-Z][A-Z][A-Z][ ]*[0-9][0-9][0-9][ ]*(LEC[ ]*[0-9][0-9][ ]*(TUT|LAB)[ ]*[0-9][0-9]|(TUT|LAB)[ ]*[0-9][0-9])$");
@@ -60,6 +61,7 @@ public class FileExaminer {
         this.fp = fp;
         this.f = null;
         this.br = null;
+        this.iw = iw;
         
         this.inSec = false;
         this.courseSlotSec = false;
@@ -104,12 +106,14 @@ public class FileExaminer {
 
                 if (msec.find()) { // section
                     // check which section is being read next
-                    System.out.println("SEC LINE | " + line);
+                    System.out.println("section line");
                     this.inSec = true;
                     if(courseSlotSec | labSlotSec | lectureSec | nonlectureSec | notCompatibleSec | unwantedSec | preferencesSec | pairSec | partialAssignmentSec)
                             return false;
                     line = line.toLowerCase().split(":")[0]; // handle little spelling mistakes
                     switch (line) {
+                        case "name":
+                            break;
                         case "course slots":
                             courseSlotSec = true;
                             break;
@@ -138,28 +142,43 @@ public class FileExaminer {
                             partialAssignmentSec = true;
                             break;
                         default:
-                            break;
+                            System.err.println("unrecognized section line");
+                            System.err.println("forcing exit");
+                            br.close();
+                            return false; // had an unrecognized section
                     }
                 } else if (mdpt.find() && inSec) { // department
-                    System.out.println("DPT LINE | " + line);
+                    System.out.println("department line");
                 } else if (mslt.find() && inSec) { // slot
-                    System.out.println("SLT LINE | " + line);
+                    if(courseSlotSec){
+                        System.out.println("lecture slot line");
+                        iw.courseSlotLines.add(line);
+                    }else{
+                        System.out.println("non lecture slot line");
+                        iw.labSlotLines.add(line);
+                    }
                 } else if (mlec.find() && inSec) { // lecture
-                    System.out.println("LEC LINE | " + line);
+                    System.out.println("lecture line");
+                    iw.lectureLines.add(line);
                 } else if (mnle.find() && inSec) { // lecture
-                    System.out.println("NLE LINE | " + line);
+                    System.out.println("non lecture line");
+                    iw.nonlectureLines.add(line);
                 } else if (mncp.find() && inSec) { // 
-                    System.out.println("NCP LINE | " + line);
+                    System.out.println("not compatible line");
+                    iw.notCompatibleLines.add(line);
                 } else if (muwt.find() && inSec) {
                     if(unwantedSec){
-                        System.out.println("UWT LINE | " + line);
+                        System.out.println("unwanted line");
+                        iw.unwantedLines.add(line);
                     }else{
-                        System.out.println("PAS LINE | " + line);
+                        System.out.println("partial assignments line");
+                        iw.partialAssignmentLines.add(line);
                     }
                 } else if (mpre.find() && inSec) {
-                    System.out.println("PRE LINE | " + line);
+                    System.out.println("preferences line");
+                    iw.preferencesLines.add(line);
                 } else if (mbrk.find() && inSec) { // break
-                    System.out.println("BRK LINE | " + line);
+                    System.out.println("break line");
                     // skip and prepare for new section
                     if(courseSlotSec)
                         courseSlotSec = false;
@@ -180,9 +199,9 @@ public class FileExaminer {
                     else if(partialAssignmentSec)
                         partialAssignmentSec = false;
                 } else { //not one of our line formats
-                    System.out.println("BAD LINE | " + line);
-                    System.out.println("Poorly formatted input file");
-                    return false;
+                    System.err.println("unusable line");
+                    /*System.out.println("Poorly formatted input file");
+                    return false;*/
                 }
 
             }
