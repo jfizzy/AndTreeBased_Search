@@ -13,10 +13,6 @@
  */
 package Schedule;
 
-public class Lab extends NonLecture{
+public interface Meeting {
     
-    public Lab(Section s, boolean evening){
-        this.parentSection = s;
-        this.evening = evening;
-    }
 }
