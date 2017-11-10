@@ -35,25 +35,94 @@ public class SearchData {
     
 	private ArrayList<Pair<Meeting, Meeting>> noncompatible;
 	private ArrayList<Pair<Meeting, Slot>> unwanted;
-	private ArrayList<Pair<Slot, Meeting>> preferences;
-	private ArrayList<Pair<Meeting, Meeting>> pair;
+	private ArrayList<Pair<Meeting, Slot>> preferences;
+	private ArrayList<Pair<Meeting, Meeting>> pairs;
 	private ArrayList<Pair<Meeting, Slot>> partassign;
     
     public SearchData() {
-    	
+    	this.noncompatible = new ArrayList<Pair<Meeting, Meeting>>();
+    	this.unwanted = new ArrayList<Pair<Meeting, Slot>>();
+    	this.preferences = new ArrayList<Pair<Meeting, Slot>>();
+    	this.pairs = new ArrayList<Pair<Meeting, Meeting>>();
+    	this.partassign = new ArrayList<Pair<Meeting, Slot>>();
     }
     
     public void setLectureSlots(ArrayList<LectureSlot> lecslots) {
     	this.ls = lecslots;
     }
     
+    public ArrayList<LectureSlot> getLectureSlots() {
+    	return this.ls;
+    }
+    
     public void setLabSlots(ArrayList<NonLectureSlot> labslots) {
     	this.nls = labslots;
+    }
+    
+    public ArrayList<NonLectureSlot> getLabSlots() {
+    	return this.nls;
     }
     
     public void setTimetable(TimeTable timetable) {
     	this.tt = timetable;
     }
     
-    // TODO rest of the getter/setters
+    public TimeTable getTimetable() {
+    	return this.tt;
+    }
+    
+    public void addNoncompatible(Meeting a, Meeting b) {
+    	Pair<Meeting,Meeting> p = new Pair<Meeting,Meeting>();
+    	p.first = a;
+    	p.second = b;
+    	this.noncompatible.add(p);
+    }
+    
+    public ArrayList<Pair<Meeting, Meeting>> getNoncompatible() {
+    	return this.noncompatible;
+    }
+    
+    public void addUnwanted(Meeting a, Slot s) {
+    	Pair<Meeting,Slot> p = new Pair<Meeting,Slot>();
+    	p.first = a;
+    	p.second = s;
+    	this.unwanted.add(p);
+    }
+    
+    public ArrayList<Pair<Meeting, Slot>> getUnwanted() {
+    	return this.unwanted;
+    }
+    
+    public void addPreference(Meeting a, Slot s) {
+    	Pair<Meeting,Slot> p = new Pair<Meeting,Slot>();
+    	p.first = a;
+    	p.second = s;
+    	this.preferences.add(p);
+    }
+    
+    public ArrayList<Pair<Meeting, Slot>> getPreferences() {
+    	return this.preferences;
+    }
+    
+    public void addPair(Meeting a, Meeting b) {
+    	Pair<Meeting,Meeting> p = new Pair<Meeting,Meeting>();
+    	p.first = a;
+    	p.second = b;
+    	this.pairs.add(p);
+    }
+    
+    public ArrayList<Pair<Meeting, Meeting>> getPairs() {
+    	return this.pairs;
+    }
+    
+    public void addPartassign(Meeting a, Slot s) {
+    	Pair<Meeting,Slot> p = new Pair<Meeting,Slot>();
+    	p.first = a;
+    	p.second = s;
+    	this.partassign.add(p);
+    }
+    
+    public ArrayList<Pair<Meeting, Slot>> getPartassign() {
+    	return this.partassign;
+    }
 }
