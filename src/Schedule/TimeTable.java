@@ -35,13 +35,21 @@ public class TimeTable {
     
     // Evaluation function for the timetable
     public int eval() {
-    	int result = EvalCourseMin() + EvalLabsMin() + EvalNotPaired() + EvalPreference();
+    	double courseMinWeight = 1.0;	// TODO these should be global
+    	double labMinWeight = 1.0;
+    	double notPairedWeight = 1.0;
+    	double prefWeight = 1.0;
+    	
+    	int result = (int)(courseMinWeight * EvalCourseMin() // cast to int or have result as decimal?
+    					+ labMinWeight * EvalLabsMin() 
+    					+ notPairedWeight * EvalNotPaired() 
+    					+ prefWeight * EvalPreference());
     	return result;
     }
     
     // Coursemin eval component
     private int EvalCourseMin() {
-    	int pen_coursemin = 1;	// TODO this should be global or something
+    	int pen_coursemin = 1;	// TODO this should be global
     	int result = 0;
     	
     	// go through all assignments
@@ -49,6 +57,7 @@ public class TimeTable {
     		
     		// skip if not a lecture
     		if (a.getM().getClass() != Lecture.class) continue;
+    		if (a.getS().getClass() != LectureSlot.class) continue;
     		
     		// skip if unassigned
     		if (a.getS() == null) continue;
@@ -72,7 +81,7 @@ public class TimeTable {
     
     // Labmin eval component
     private int EvalLabsMin() {
-    	int pen_labmin = 1;		// TODO this should be global or something
+    	int pen_labmin = 1;		// TODO this should be global
     	int result = 0;
     	
     	// go through all assignments
@@ -80,6 +89,7 @@ public class TimeTable {
     		
     		// skip if lecture
     		if (a.getM().getClass() != NonLecture.class) continue;
+    		if (a.getS().getClass() != NonLectureSlot.class) continue;
     		
     		// skip if unassigned
     		if (a.getS() == null) continue;
@@ -103,7 +113,7 @@ public class TimeTable {
     
     // Notpaired eval component
     private int EvalNotPaired() {
-    	int pen_notpaired = 1;	// TODO this should be global or something
+    	int pen_notpaired = 1;	// TODO this should be global
     	int result = 0;
     	
     	for (Assignment a : this.assignments) {
