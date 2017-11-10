@@ -53,7 +53,7 @@ public class Eval {
 	public int getPref() {
 		return wPref*evalPref;
 	}
-	
+	 
 	public int getPair() {
 		return wPair*evalPair;
 	}
