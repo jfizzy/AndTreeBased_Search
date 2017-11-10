@@ -14,6 +14,7 @@
 package Manager;
 
 import Input.InputManager;
+import Search.SearchData;
 
 /**
  *
@@ -33,7 +34,7 @@ class Manager {
     
     private static void search(String fp){
         InputManager im = new InputManager();
-        im.run(fp);
+        SearchData sd = im.run(fp);
         // need to use resulting input data here
     }
     

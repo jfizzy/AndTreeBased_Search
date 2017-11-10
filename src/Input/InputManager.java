@@ -18,6 +18,8 @@ import Schedule.LectureSlot;
 import Schedule.NonLectureSlot;
 import Schedule.Section;
 import Schedule.TimeTable;
+import Search.SearchData;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -37,14 +39,17 @@ public class InputManager {
         iw = null;
     }
     
-    public void run(String fp){
+    public SearchData run(String fp){
+    	
         iw = new InputWrapper();
         fe = new FileExaminer(fp, iw);
         fe.init();
         fe.parse();
-        generateLectureSlots();
-        generateNonLectureSlots();
-        generateTimeTable();
+        SearchData sd = new SearchData();
+        sd.setLectureSlots(generateLectureSlots());
+        sd.setLabSlots(generateNonLectureSlots());
+        sd.setTimetable(generateTimeTable());
+		return sd;
     }
     
     private void generateTimeTableObjects(){
