@@ -26,4 +26,12 @@ public class LectureSlot extends Slot {
         this.coursemin = cmin;
     }
     
+    public int getCourseMin() {
+    	return this.coursemin;
+    }
+    
+    public int getCourseMax() {
+    	return this.coursemax;
+    }
+    
 }

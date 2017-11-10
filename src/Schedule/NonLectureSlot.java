@@ -26,4 +26,12 @@ public class NonLectureSlot extends Slot {
         this.labmin = lmin;
     }
     
+    public int getLabMin() {
+    	return this.labmin;
+    }
+    
+    public int getLabMax() {
+    	return this.labmax;
+    }
+    
 }
