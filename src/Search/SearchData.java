@@ -25,8 +25,14 @@ import Schedule.Meeting;
 public class SearchData {
 	
 	public class Pair<F, S> {
-	    private F first;
-	    private S second;
+	    public F first;
+	    public S second;
+	}
+	
+	public class Tri<F, S, T> {
+	    public F first;
+	    public S second;
+	    public T third;
 	}
 	
 	private ArrayList<LectureSlot> ls;
@@ -35,14 +41,14 @@ public class SearchData {
     
 	private ArrayList<Pair<Meeting, Meeting>> noncompatible;
 	private ArrayList<Pair<Meeting, Slot>> unwanted;
-	private ArrayList<Pair<Meeting, Slot>> preferences;
+	private ArrayList<Tri<Meeting, Slot, Integer>> preferences;
 	private ArrayList<Pair<Meeting, Meeting>> pairs;
 	private ArrayList<Pair<Meeting, Slot>> partassign;
     
     public SearchData() {
     	this.noncompatible = new ArrayList<Pair<Meeting, Meeting>>();
     	this.unwanted = new ArrayList<Pair<Meeting, Slot>>();
-    	this.preferences = new ArrayList<Pair<Meeting, Slot>>();
+    	this.preferences = new ArrayList<Tri<Meeting, Slot, Integer>>();
     	this.pairs = new ArrayList<Pair<Meeting, Meeting>>();
     	this.partassign = new ArrayList<Pair<Meeting, Slot>>();
     }
@@ -93,14 +99,15 @@ public class SearchData {
     	return this.unwanted;
     }
     
-    public void addPreference(Meeting a, Slot s) {
-    	Pair<Meeting,Slot> p = new Pair<Meeting,Slot>();
-    	p.first = a;
-    	p.second = s;
-    	this.preferences.add(p);
+    public void addPreference(Meeting a, Slot s, int value) {
+    	Tri<Meeting, Slot, Integer> t = new Tri<Meeting,Slot,Integer>();
+    	t.first = a;
+    	t.second = s;
+    	t.third = value;
+    	this.preferences.add(t);
     }
     
-    public ArrayList<Pair<Meeting, Slot>> getPreferences() {
+    public ArrayList<Tri<Meeting, Slot, Integer>> getPreferences() {
     	return this.preferences;
     }
     
