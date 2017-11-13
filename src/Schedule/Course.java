@@ -40,7 +40,7 @@ public class Course {
 
     /**
      *
-     * @return ArrayList<Section>()
+     * @return sections
      */
     public ArrayList<Section> getSections() {
         return sections;

@@ -13,7 +13,7 @@
  */
 package Schedule;
 
-public abstract class NonLecture implements Meeting {
+public abstract class NonLecture extends Meeting {
 
     protected Section parentSection;
     protected boolean evening;
@@ -30,6 +30,7 @@ public abstract class NonLecture implements Meeting {
      *          tutorials are evening as well
      */
     public NonLecture(){
+        super();
         this.parentSection = null;
         this.evening = false;
     }

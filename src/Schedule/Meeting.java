@@ -13,6 +13,20 @@
  */
 package Schedule;
 
-public interface Meeting {
+import java.util.ArrayList;
+
+public abstract class Meeting {
+    private ArrayList<Meeting> incompatibility;
     
+    public ArrayList<Meeting> getIncompatibility() {
+        return incompatibility;
+    }
+    
+    public void addIncompatibility(Meeting m){
+        this.incompatibility.add(m);
+    }
+    
+    public Meeting(){
+        incompatibility = new ArrayList<>();
+    }
 }

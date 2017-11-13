@@ -29,6 +29,12 @@ public class FileExaminer {
     private final Pattern sectionPatt,breakPatt,departmentPatt,slotPatt,lecturePatt,nonlecturePatt,notCompatiblePatt,unwantedPatt,preferencesPatt,courseSlotPatt,labSlotPatt;
     private boolean inSec,courseSlotSec,labSlotSec,lectureSec,nonlectureSec,notCompatibleSec,unwantedSec,preferencesSec,pairSec,partialAssignmentSec;
 
+    /**
+     * Constructor - compiles all of the regular expressions for the lifetime 
+     * of the class; initializes other variables and objects
+     * @param fp
+     * @param iw 
+     */
     public FileExaminer(String fp, InputWrapper iw) {
         this.notCompatiblePatt = Pattern.compile("^\\s*([A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]|(TUT|LAB)\\s*[0-9][0-9])\\s*,\\s*[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]|(TUT|LAB)\\s*[0-9][0-9]))$");
         this.lecturePatt = Pattern.compile("^\\s*[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*LEC\\s*[0-9][0-9]$");
@@ -69,6 +75,15 @@ public class FileExaminer {
         }
     }
 
+    /**
+     * parse - line by line, matches each line in the input file against a set 
+     * of regular expressions in order to filter out lines that should be 
+     * rejected and sort the well formed lines into their arraylists in the 
+     * inputwrapper object
+     * 
+     * @return true if successful
+     *         false if exception occurred
+     */
     public boolean parse() {
         try {
             if (!br.ready()) {
