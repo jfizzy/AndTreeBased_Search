@@ -34,4 +34,16 @@ public abstract class NonLecture implements Meeting {
         this.evening = false;
     }
     
+    public String getDept(){
+        return parentSection.getParentCourse().getDepartment();
+    }
+    
+    public String getCourseNum(){
+        return parentSection.getParentCourse().getNumber();
+    }
+    
+    public String getSectionNum(){
+        return parentSection.getSectionNum();
+    }
+    
 }
