@@ -15,7 +15,15 @@ package Schedule;
 
 public class Tutorial extends NonLecture{
     
-    public Tutorial(Section s, boolean evening){
+    private final String tutNum;
+
+    public String getTutNum() {
+        return tutNum;
+    }
+    
+    public Tutorial(String num, Section s, boolean evening){
+        super();
+        this.tutNum = num;
         this.parentSection = s;
         this.evening = evening;
     }

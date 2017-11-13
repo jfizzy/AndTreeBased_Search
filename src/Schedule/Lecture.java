@@ -13,7 +13,7 @@
  */
 package Schedule;
 
-public class Lecture implements Meeting{
+public class Lecture extends Meeting{
     
     private Section parentSection;
 
@@ -24,8 +24,9 @@ public class Lecture implements Meeting{
     public void setParentSection(Section parentSection) {
         this.parentSection = parentSection;
     }
-    
+
     public Lecture(Section s) {
+        super();
         this.parentSection = s;
     }
     

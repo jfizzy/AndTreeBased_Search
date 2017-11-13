@@ -15,7 +15,14 @@ package Schedule;
 
 public class Lab extends NonLecture{
     
-    public Lab(Section s, boolean evening){
+    private final String labNum;
+
+    public String getLabNum() {
+        return labNum;
+    }
+    
+    public Lab(String num, Section s, boolean evening){
+        this.labNum = num;
         this.parentSection = s;
         this.evening = evening;
     }
