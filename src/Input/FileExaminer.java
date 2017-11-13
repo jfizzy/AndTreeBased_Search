@@ -49,15 +49,15 @@ public class FileExaminer {
     private boolean partialAssignmentSec;
 
     public FileExaminer(String fp, InputWrapper iw) {
-        this.notCompatiblePatt = Pattern.compile("^([A-Z][A-Z][A-Z][A-Z][ ]*[0-9][0-9][0-9][ ]*(LEC[ ]*[0-9][0-9][ ]*(TUT|LAB)[ ]*[0-9][0-9]|LEC[ ]*[0-9][0-9]|(TUT|LAB)[ ]*[0-9][0-9])[ ]*,[ ]*[A-Z][A-Z][A-Z][A-Z][ ]*[0-9][0-9][0-9][ ]*(LEC[ ]*[0-9][0-9][ ]*(TUT|LAB)[ ]*[0-9][0-9]|LEC[ ]*[0-9][0-9]|(TUT|LAB)[ ]*[0-9][0-9]))$");
-        this.lecturePatt = Pattern.compile("^[A-Z][A-Z][A-Z][A-Z][ ]*[0-9][0-9][0-9][ ]*LEC[ ]*[0-9][0-9]$");
-        this.nonlecturePatt = Pattern.compile("^[A-Z][A-Z][A-Z][A-Z][ ]*[0-9][0-9][0-9][ ]*(LEC[ ]*[0-9][0-9][ ]*(TUT|LAB)[ ]*[0-9][0-9]|(TUT|LAB)[ ]*[0-9][0-9])$");
-        this.slotPatt = Pattern.compile("^(MO|TU|WE|TR|FR)[ ]*,[ ]*[1-2]?[0-9]:[0-5][0-9][ ]*,[ ]*[0-9]*[ ]*,[ ]*[0-9]*$");
+        this.notCompatiblePatt = Pattern.compile("^([A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]|(TUT|LAB)\\s*[0-9][0-9])\\s*,\\s*[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]|(TUT|LAB)\\s*[0-9][0-9]))$");
+        this.lecturePatt = Pattern.compile("^[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*LEC\\s*[0-9][0-9]$");
+        this.nonlecturePatt = Pattern.compile("^[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9]|(TUT|LAB)\\s*[0-9][0-9])$");
+        this.slotPatt = Pattern.compile("^(MO|TU|WE|TR|FR)\\s*,\\s*[1-2]?[0-9]:[0-5][0-9]\\s*,\\s*[0-9]*\\s*,\\s*[0-9]*$");
         this.departmentPatt = Pattern.compile("^[a-zA-Z0-9]+$");
         this.breakPatt = Pattern.compile("^\\s*$");
-        this.sectionPatt = Pattern.compile("^([A-Za-z]+([ ]*[A-Za-z]+)*:)$");
-        this.unwantedPatt = Pattern.compile("^([A-Z][A-Z][A-Z][A-Z][ ]*[0-9][0-9][0-9][ ]*(LEC[ ]*[0-9][0-9]|LEC[ ]*[0-9][0-9][ ]*(TUT|LAB)[ ]*[0-9][0-9])[ ]*,[ ]*(MO|TU|WE|TR|FR)[ ]*,[ ]*[ 12]?[0-9]:[0-9][0-9])$");
-        this.preferencesPatt = Pattern.compile("^(MO|TU|WE|TR|FR)[ ]*,[ ]*[1-2]?[0-9]:[0-5][0-9][ ]*,[ ]*[A-Z][A-Z][A-Z][A-Z][ ]*[0-9][0-9][0-9][ ]*(LEC[ ]*[0-9][0-9]|LEC[ ]*[0-9][0-9][ ]*(TUT|LAB)[ ]*[0-9][0-9])[ ]*,[ ]*[0-9]*[0-9]$");
+        this.sectionPatt = Pattern.compile("^([A-Za-z]+(\\s*[A-Za-z]+)*:)$");
+        this.unwantedPatt = Pattern.compile("^([A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9])\\s*,\\s*(MO|TU|WE|TR|FR)\\s*,\\s*[ 12]?[0-9]:[0-9][0-9])$");
+        this.preferencesPatt = Pattern.compile("^(MO|TU|WE|TR|FR)\\s*,\\s*[1-2]?[0-9]:[0-5][0-9]\\s*,\\s*[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9])\\s*,\\s*[0-9]*[0-9]$");
         this.fp = fp;
         this.f = null;
         this.br = null;
