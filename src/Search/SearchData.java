@@ -17,6 +17,7 @@ package Search;
 import java.util.ArrayList;
 
 import Schedule.Course;
+import Schedule.Lecture;
 import Schedule.LectureSlot;
 import Schedule.NonLectureSlot;
 import Schedule.Slot;
@@ -31,7 +32,6 @@ public class SearchData {
 	    public F first;
 	    public S second;
 	}
-	
 	public class Tri<F, S, T> {
 	    public F first;
 	    public S second;
@@ -42,8 +42,9 @@ public class SearchData {
 	private ArrayList<LectureSlot> lslots;
 	private ArrayList<NonLectureSlot> nlslots;
 	
-	// courses/labs/tuts
-	private ArrayList<Course> lectures;
+	// meetings
+	private ArrayList<Course> courses;
+	private ArrayList<Lecture> lectures;
 	private ArrayList<NonLecture> nonlectures;
 	
 	// the timetable
@@ -82,11 +83,19 @@ public class SearchData {
     	return this.nlslots;
     }
     
-    public void setLectures(ArrayList<Course> lecs) {
+    public void setCourses(ArrayList<Course> cs) {
+    	this.courses = cs;
+    }
+    
+    public ArrayList<Course> getCourses() {
+    	return this.courses;
+    }
+    
+    public void setLectures(ArrayList<Lecture> lecs) {
     	this.lectures = lecs;
     }
     
-    public ArrayList<Course> getLectures() {
+    public ArrayList<Lecture> getLectures() {
     	return this.lectures;
     }
     

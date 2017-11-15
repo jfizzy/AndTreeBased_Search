@@ -62,12 +62,13 @@ public class InputManager {
         SearchData sd = new SearchData();
         sd.setLectureSlots(generateLectureSlots());
         sd.setLabSlots(generateNonLectureSlots());
-        sd.setLectures(generateSections());
-        sd.setNonLectures(generateNonLectures(sd.getLectures()));
-        sd.setTimetable(generateTimeTable());
+        sd.setCourses(generateSections());
+        sd.setNonLectures(generateNonLectures(sd.getCourses()));
+        sd.setTimetable(new TimeTable());
         return sd;
     }
 
+    // this is never used
     private void generateTimeTableObjects() {
         ArrayList<LectureSlot> ls = generateLectureSlots();
         ArrayList<NonLectureSlot> nls = generateNonLectureSlots();
