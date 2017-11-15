@@ -16,14 +16,17 @@ package Search;
 
 import java.util.ArrayList;
 
+import Schedule.Course;
 import Schedule.LectureSlot;
 import Schedule.NonLectureSlot;
 import Schedule.Slot;
 import Schedule.TimeTable;
 import Schedule.Meeting;
+import Schedule.NonLecture;
 
 public class SearchData {
 	
+	// classes for tuples
 	public class Pair<F, S> {
 	    public F first;
 	    public S second;
@@ -35,16 +38,25 @@ public class SearchData {
 	    public T third;
 	}
 	
-	private ArrayList<LectureSlot> ls;
-	private ArrayList<NonLectureSlot> nls;
+	// slots
+	private ArrayList<LectureSlot> lslots;
+	private ArrayList<NonLectureSlot> nlslots;
+	
+	// courses/labs/tuts
+	private ArrayList<Course> lectures;
+	private ArrayList<NonLecture> nonlectures;
+	
+	// the timetable
 	private TimeTable tt;
     
+	// input lists
 	private ArrayList<Pair<Meeting, Meeting>> noncompatible;
 	private ArrayList<Pair<Meeting, Slot>> unwanted;
 	private ArrayList<Tri<Meeting, Slot, Integer>> preferences;
 	private ArrayList<Pair<Meeting, Meeting>> pairs;
 	private ArrayList<Pair<Meeting, Slot>> partassign;
     
+	// constructor
     public SearchData() {
     	this.noncompatible = new ArrayList<Pair<Meeting, Meeting>>();
     	this.unwanted = new ArrayList<Pair<Meeting, Slot>>();
@@ -53,20 +65,37 @@ public class SearchData {
     	this.partassign = new ArrayList<Pair<Meeting, Slot>>();
     }
     
+    // getters, setters, adders
     public void setLectureSlots(ArrayList<LectureSlot> lecslots) {
-    	this.ls = lecslots;
+    	this.lslots = lecslots;
     }
     
     public ArrayList<LectureSlot> getLectureSlots() {
-    	return this.ls;
+    	return this.lslots;
     }
     
     public void setLabSlots(ArrayList<NonLectureSlot> labslots) {
-    	this.nls = labslots;
+    	this.nlslots = labslots;
     }
     
     public ArrayList<NonLectureSlot> getLabSlots() {
-    	return this.nls;
+    	return this.nlslots;
+    }
+    
+    public void setLectures(ArrayList<Course> lecs) {
+    	this.lectures = lecs;
+    }
+    
+    public ArrayList<Course> getLectures() {
+    	return this.lectures;
+    }
+    
+    public void setNonLectures(ArrayList<NonLecture> nonlecs) {
+    	this.nonlectures = nonlecs;
+    }
+    
+    public ArrayList<NonLecture> getNonLectures() {
+    	return this.nonlectures;
     }
     
     public void setTimetable(TimeTable timetable) {
