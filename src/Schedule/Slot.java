@@ -49,4 +49,11 @@ public abstract class Slot {
         minute = -1;
     }
     
+    public boolean equals(Slot s) {
+    	if (this.day.equals(s.day) && this.hour == s.hour && this.minute == s.minute) {
+    		return true;
+    	}
+    	else return false;
+    }
+    
 }

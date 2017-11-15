@@ -14,6 +14,7 @@
 package Manager;
 
 import Input.InputManager;
+import Search.Eval;
 import Search.SearchData;
 import Search.SearchManager;
 
