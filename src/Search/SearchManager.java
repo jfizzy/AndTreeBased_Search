@@ -45,7 +45,11 @@ public class SearchManager {
 				int rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
 				Slot slot = data.getLectureSlots().get(rand);//new LectureSlot("MWF", 8, 0, 10, 1);//
 				Assignment a = new Assignment(l, slot);
-				data.getTimetable().addAssignment(a);
+				Constr constr = new Constr(a, data.getTimetable());
+				if (constr.check())
+					data.getTimetable().addAssignment(a);
+				else
+					System.out.println("Course violated Constr");
 			}
 		}
 		
@@ -54,7 +58,11 @@ public class SearchManager {
 			int rand = ThreadLocalRandom.current().nextInt(0, data.getLabSlots().size());
 			Slot slot = data.getLabSlots().get(rand);//new NonLectureSlot("M", 10, 0, 5, 0);//
 			Assignment a = new Assignment(nl, slot);
-			data.getTimetable().addAssignment(a);
+			Constr constr = new Constr(a, data.getTimetable());
+			if (constr.check())
+				data.getTimetable().addAssignment(a);
+			else
+				System.out.println("Lab violated Constr");
 		}
 	}
 }

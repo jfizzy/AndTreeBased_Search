@@ -34,6 +34,13 @@ public class TimeTable {
         });
     }
     
+    public TimeTable(Assignment a, TimeTable tt) {
+    	this.meetings = null;//(ArrayList<Meeting>) tt.meetings.clone();
+    	this.assignments = (ArrayList<Assignment>) tt.assignments.clone();
+    	if (a != null)
+    		this.assignments.add(a);
+    }
+    
     // print the timetable for debugging
     public void printAssignments() {
     	
