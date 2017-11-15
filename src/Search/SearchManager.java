@@ -8,6 +8,7 @@ import Schedule.NonLecture;
 import Schedule.NonLectureSlot;
 import Schedule.Section;
 import Schedule.Slot;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class SearchManager {
 	
@@ -41,7 +42,8 @@ public class SearchManager {
 			// for each section in the course
 			for (Section s : c.getSections()) {
 				Lecture l = s.getLecture();
-				Slot slot = new LectureSlot("MWF", 8, 0, 10, 1);//data.getLectureSlots().get(0);
+				int rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
+				Slot slot = data.getLectureSlots().get(rand);//new LectureSlot("MWF", 8, 0, 10, 1);//
 				Assignment a = new Assignment(l, slot);
 				data.getTimetable().addAssignment(a);
 			}
@@ -49,7 +51,8 @@ public class SearchManager {
 		
 		// for each nonlecture in data
 		for (NonLecture nl : data.getNonLectures()) {
-			Slot slot = new NonLectureSlot("M", 10, 0, 5, 0);//data.getLabSlots().get(0);
+			int rand = ThreadLocalRandom.current().nextInt(0, data.getLabSlots().size());
+			Slot slot = data.getLabSlots().get(rand);//new NonLectureSlot("M", 10, 0, 5, 0);//
 			Assignment a = new Assignment(nl, slot);
 			data.getTimetable().addAssignment(a);
 		}

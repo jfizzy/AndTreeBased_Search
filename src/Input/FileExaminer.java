@@ -151,10 +151,10 @@ public class FileExaminer {
                 } else if (mdpt.find() && inSec) { // department
                     System.out.println("department line");
                 } else if (mslt.find() && inSec && ((courseSlotSec && mcslt.find()) || (labSlotSec && mlslt.find()))) { // slot
-                    if(courseSlotSec && mcslt.find()){
+                    if(courseSlotSec){// && mcslt.find()){
                         System.out.println("lecture slot line");
                         iw.lectureSlotLines.add(line);
-                    }else if(labSlotSec && mlslt.find()){
+                    }else if(labSlotSec){// && mlslt.find()){
                         System.out.println("non lecture slot line");
                         iw.nonlectureSlotLines.add(line);
                     }

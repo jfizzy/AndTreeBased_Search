@@ -90,28 +90,30 @@ public class Eval {
 	public int getCourseMinEval() {
     	int result = 0;
     	
-    	// go through all assignments
-    	for (Assignment a : sdata.getTimetable().getAssignments()) {
+    	// go through all course slots
+    	for (LectureSlot ls : sdata.getLectureSlots()) {
     		
-    		// skip if not a lecture
-    		if (a.getM().getClass() != Lecture.class) continue;
-    		if (a.getS().getClass() != LectureSlot.class) continue;
-    		
-    		// skip if unassigned
-    		if (a.getS() == null) continue;
-    		
-    		// count how many have the same slot
-    		int count = 0;
-    		for (Assignment b : sdata.getTimetable().getAssignments()) {
-    			if (a.getS() == b.getS())
-    				count++;
-    		}
-    		
-    		// add penalty for each course less than coursemin
-    		LectureSlot ls = (LectureSlot) a.getS();
-    		if (count < ls.getCourseMin()) {
-    			result += (ls.getCourseMin() - count) * pen_coursemin;
-    		}
+        	// go through all assignments
+        	for (Assignment a : sdata.getTimetable().getAssignments()) {
+        		
+        		// skip if not a lecture
+        		if (a.getM().getClass() != Lecture.class) continue;
+        		if (a.getS().getClass() != LectureSlot.class) continue;
+        		if (a.getS() == null) continue;
+        		
+        		// count how many have the same slot
+        		int count = 0;
+        		for (Assignment b : sdata.getTimetable().getAssignments()) {
+        			if (a == b) continue; // skip if same
+        			if (a.getS().equals(b.getS()))
+        				count++;
+        		}
+        		
+        		// add penalty for each course less than coursemin
+        		if (count < ls.getCourseMin()) {
+        			result += (ls.getCourseMin() - count) * pen_coursemin;
+        		}
+        	}
     	}
     	
     	return wMin*result;		
@@ -121,28 +123,30 @@ public class Eval {
 	public int getLabMinEval() {
     	int result = 0;
     	
-    	// go through all assignments
-    	for (Assignment a : sdata.getTimetable().getAssignments()) {
+    	// go through all nonlecture slots
+    	for (NonLectureSlot nls : sdata.getLabSlots()) {
     		
-    		// skip if lecture
-    		if (a.getM().getClass() != NonLecture.class) continue;
-    		if (a.getS().getClass() != NonLectureSlot.class) continue;
-    		
-    		// skip if unassigned
-    		if (a.getS() == null) continue;
-    		
-    		// count how many have the same slot
-    		int count = 0;
-    		for (Assignment b : sdata.getTimetable().getAssignments()) {
-    			if (a.getS() == b.getS())
-    				count++;
-    		}
-    		
-    		// add penalty for each course less than coursemin
-    		NonLectureSlot ls = (NonLectureSlot) a.getS();
-    		if (count < ls.getLabMin()) {
-    			result += (ls.getLabMin() - count) * pen_labmin;
-    		}
+        	// go through all assignments
+        	for (Assignment a : sdata.getTimetable().getAssignments()) {
+        		
+        		// skip if not nonlecture
+        		if (a.getM().getClass() == Lecture.class) continue;
+        		if (a.getS().getClass() == LectureSlot.class) continue;
+        		if (a.getS() == null) continue;
+        		
+        		// count how many have the same slot
+        		int count = 0;
+        		for (Assignment b : sdata.getTimetable().getAssignments()) {
+        			if (a == b) continue; // skip if same
+        			if (a.getS().equals(b.getS()))
+        				count++;
+        		}
+        		
+        		// add penalty for each nonlecture less than labmin
+        		if (count < nls.getLabMin()) {
+        			result += (nls.getLabMin() - count) * pen_labmin;
+        		}
+        	}
     	}
     	
     	return wMin*result;
@@ -182,6 +186,7 @@ public class Eval {
     				
     				// go through all assignments again
     				for (Assignment b : sdata.getTimetable().getAssignments()) {
+    					if (a == b) continue; // skip if same
     					
     					// penalty if a course matches the second of the pair and has a different slot
     					if (b.getM() == p.second && !a.getS().equals(b.getS()))
@@ -212,7 +217,7 @@ public class Eval {
 				
 				// for each other section in the course
 				for (int j = 0; j < nsections; j++) {
-					//System.out.println("other");
+					
 					if (i == j) continue;	// skip if same section
 					Lecture l2 = c.getSections().get(j).getLecture();
 				
