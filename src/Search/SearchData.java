@@ -66,6 +66,22 @@ public class SearchData {
     	this.partassign = new ArrayList<Pair<Meeting, Slot>>();
     }
     
+    // constructor for constr
+    public SearchData(SearchData orig, TimeTable tt) {
+    	this.lslots = orig.getLectureSlots();
+    	this.nlslots = orig.getLabSlots();
+    	this.courses = orig.getCourses();
+    	this.lectures = orig.getLectures();
+    	this.nonlectures = orig.getNonLectures();
+    	this.tt = tt;
+    	
+    	this.noncompatible = new ArrayList<Pair<Meeting, Meeting>>();
+    	this.unwanted = new ArrayList<Pair<Meeting, Slot>>();
+    	this.preferences = new ArrayList<Tri<Meeting, Slot, Integer>>();
+    	this.pairs = new ArrayList<Pair<Meeting, Meeting>>();
+    	this.partassign = new ArrayList<Pair<Meeting, Slot>>();
+    }
+    
     // getters, setters, adders
     public void setLectureSlots(ArrayList<LectureSlot> lecslots) {
     	this.lslots = lecslots;

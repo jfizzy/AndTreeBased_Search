@@ -48,7 +48,7 @@ public class SearchManager {
 					int rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
 					Slot slot = data.getLectureSlots().get(rand);
 					Assignment a = new Assignment(l, slot);
-					Constr constr = new Constr(a, data.getTimetable());
+					Constr constr = new Constr(a, data);
 					if (constr.check()) {
 						data.getTimetable().addAssignment(a);
 						break;
@@ -66,7 +66,7 @@ public class SearchManager {
 				int rand = ThreadLocalRandom.current().nextInt(0, data.getLabSlots().size());
 				Slot slot = data.getLabSlots().get(rand);
 				Assignment a = new Assignment(nl, slot);
-				Constr constr = new Constr(a, data.getTimetable());
+				Constr constr = new Constr(a, data);
 				if (constr.check()) {
 					data.getTimetable().addAssignment(a);
 					break;

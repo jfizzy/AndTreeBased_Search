@@ -10,16 +10,16 @@ import Schedule.Section;
 
 public class Constr {
 	
-	private TimeTable tt;
+	private SearchData data;
 	
-	// constructor for checking if an assignment to a timetable is valid
-	public Constr(Assignment a, TimeTable tt) {
-		this(new TimeTable(a, tt));
+	// constructor for checking if adding an assignment to a search is valid
+	public Constr(Assignment a, SearchData sd) {
+		this(new SearchData(sd, new TimeTable(a, sd.getTimetable())));
 	}
 
-	// constructor for checking if a timetable is valid
-	public Constr(TimeTable tt) {
-		this.tt = tt;
+	// constructor for checking if a search is valid
+	public Constr(SearchData sd) {
+		this.data = sd;
 	}
 
 	// return true if all hard constraints are met
@@ -34,7 +34,7 @@ public class Constr {
 	private boolean courseMax() {
 		
 		// for each assignment
-		for (Assignment a : tt.getAssignments()) {
+		for (Assignment a : data.getTimetable().getAssignments()) {
 			
 			// skip if not a lecture
 			if (a.getM().getClass() != Lecture.class) continue;
@@ -42,8 +42,8 @@ public class Constr {
 			if (a.getS() == null) continue;
 			
 			// count how many others have the same slot
-			int count = 0;
-			for (Assignment b : tt.getAssignments()) {
+			int count = 1;
+			for (Assignment b : data.getTimetable().getAssignments()) {
 				
 				// skip if not a lecture or same
 				if (b.getM().getClass() != Lecture.class) continue;
@@ -65,7 +65,7 @@ public class Constr {
 	private boolean labMax() {
 		
 		// for each assignment
-		for (Assignment a : tt.getAssignments()) {
+		for (Assignment a : data.getTimetable().getAssignments()) {
 			
 			// skip if a lecture
 			if (a.getM().getClass() != NonLecture.class) continue;
@@ -73,8 +73,8 @@ public class Constr {
 			if (a.getS() == null) continue;
 			
 			// count how many others have the same slot
-			int count = 0;
-			for (Assignment b : tt.getAssignments()) {
+			int count = 1;
+			for (Assignment b : data.getTimetable().getAssignments()) {
 				
 				// skip if a lecture or same
 				if (b.getM().getClass() != NonLecture.class) continue;
@@ -96,7 +96,7 @@ public class Constr {
 	private boolean labsDifferent() {
 		
 		// for each assignment
-		for (Assignment a : tt.getAssignments()) {
+		for (Assignment a : data.getTimetable().getAssignments()) {
 			
 			// skip if not a lab
 			if (a.getM().getClass() != NonLecture.class) continue;
@@ -104,7 +104,7 @@ public class Constr {
 			if (a.getS() == null) continue;
 			
 			// for each other assignment
-			for (Assignment b : tt.getAssignments()) {
+			for (Assignment b : data.getTimetable().getAssignments()) {
 				
 				// skip if not a lecture or slot is different
 				if (b.getM().getClass() != Lecture.class) continue;
@@ -124,21 +124,24 @@ public class Constr {
 	}
 	
 	private boolean noncompatible() {
+		// assign a != assign b if non-compatible(a,b)
 		return true;
 	}
 	
 	private boolean partassign() {
+		// assign a = partassign a
 		return true;
 	}
 	
 	private boolean unwanted() {
+		// assign a != s if unwanted(a,s)
 		return true;
 	}
 	
 	private boolean eveningClasses() {
 		
 		// for each assignment
-		for (Assignment a : tt.getAssignments()) {
+		for (Assignment a : data.getTimetable().getAssignments()) {
 			
 			// get parent section
 			Section s = null;
@@ -166,7 +169,7 @@ public class Constr {
 	private boolean over500Classes() {
 		
 		// for each assignment
-		for (Assignment a : tt.getAssignments()) {
+		for (Assignment a : data.getTimetable().getAssignments()) {
 			
 			// skip if not a lecture
 			if (a.getM().getClass() != Lecture.class) continue;
@@ -179,7 +182,7 @@ public class Constr {
 			if (cnum1 < 500) continue;
 			
 			// for each other assignment
-			for (Assignment b : tt.getAssignments()) {
+			for (Assignment b : data.getTimetable().getAssignments()) {
 				
 				// skip if not a lecture or slot is different
 				if (b.getM().getClass() != NonLecture.class) continue;
@@ -193,7 +196,7 @@ public class Constr {
 				int cnum2 = Integer.parseInt(l2.getParentSection().getParentCourse().getNumber());
 				if (cnum2 < 500) continue;
 				
-				// if this is reached the classes > 500 have overlap
+				// if this is reached the classes >500 have overlap
 				return false;
 			}
 		}
@@ -204,7 +207,9 @@ public class Constr {
 	private boolean specificTimes() {
 		
 		// for each assignment
-		for (Assignment a : tt.getAssignments()) {
+		for (Assignment a : data.getTimetable().getAssignments()) {
+			
+			// return false if slot is Tuesday at 11:00
 			if (a.getS().getDay().equals("TU") && a.getS().getHour() == 11)
 				return false;
 		}
@@ -215,8 +220,25 @@ public class Constr {
 	private boolean specialClasses() {
 		
 		// for each assignment
-		for (Assignment a : tt.getAssignments()) {
+		for (Assignment a : data.getTimetable().getAssignments()) {
 			
+			// skip if not CPSC 813/913
+			if (a.getM().getClass() == Lecture.class) {
+				Lecture l = (Lecture) a.getM();
+				if (!l.getParentSection().getParentCourse().getDepartment().equals("CPSC"))
+					continue;
+				if (!l.getParentSection().getParentCourse().getNumber().equals("813")
+						&& !l.getParentSection().getParentCourse().getNumber().equals("913"))
+					continue;
+			}
+			else continue; // TODO: labs as well
+			
+			// return false if not scheduled TuTh 18:00
+			if (!a.getS().getDay().equals("TU") || a.getS().getHour() != 18 || a.getS().getMinute() != 0)
+				return false;
+			
+			// TODO: cpsc 813 not allowed to overlap any sections/tuts of 313 or other courses not allowed to overlap 313
+			// TODO: cpsc 913 not allowed to overlap any sections/tuts of 413 or other courses not allowed to overlap 413
 		}
 		
 		return true;
