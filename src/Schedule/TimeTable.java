@@ -51,31 +51,29 @@ public class TimeTable {
     		// if lecture
     		if (a.getM().getClass() == Lecture.class) {
     			Lecture l = (Lecture) a.getM();
-    			System.out.print(l.getParentSection().getParentCourse().getDepartment());
-    			System.out.print(" ");
-    			System.out.print(l.getParentSection().getParentCourse().getNumber());
-    			System.out.print(" LEC");
-    			System.out.print(l.getParentSection().getSectionNum());
+    			System.out.print(l.getParentSection().getParentCourse().getDepartment()
+    					+" "+l.getParentSection().getParentCourse().getNumber()
+    					+" LEC"+l.getParentSection().getSectionNum());
     		}
     		
-    		// if nonlecture
-    		else {//if (a.getM().getClass() == NonLecture.class) {
-    			NonLecture nl = (NonLecture) a.getM();
-    			System.out.print(nl.getDept());
-    			System.out.print(" ");
-    			System.out.print(nl.getCourseNum());
-    			System.out.print(" LAB");
-    			System.out.print(nl.getSectionNum());
+    		// if lab
+    		else if (a.getM().getClass() == Lab.class) {
+    			Lab lab = (Lab) a.getM();
+    			System.out.print(lab.getDept()+" "+lab.getCourseNum()
+    					+" LAB"+lab.getLabNum());
+    		}
+    		
+    		// if tutorial
+    		else if (a.getM().getClass() == Tutorial.class) {
+    			Tutorial tut = (Tutorial) a.getM();
+    			System.out.print(tut.getDept()+" "+tut.getCourseNum()
+    					+" TUT"+tut.getTutNum());
     		}
     		
     		// slot
     		if (a.getS() != null) {
-    			System.out.print(" --> ");
-    			System.out.print(a.getS().getDay());
-    			System.out.print(" ");
-    			System.out.print(a.getS().getHour());
-    			System.out.print(":");
-    			System.out.print(a.getS().getMinute());
+    			System.out.print(" --> "+a.getS().getDay()+" "
+    					+a.getS().getHour()+":"+a.getS().getMinute());
     		}
     		System.out.print("\n");
     	}
