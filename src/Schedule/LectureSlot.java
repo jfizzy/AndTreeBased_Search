@@ -18,10 +18,12 @@ public class LectureSlot extends Slot {
     private final int coursemax;
     private final int coursemin;
     
-    public LectureSlot(String day, int h, int m, int cmax, int cmin){
+    public LectureSlot(String day, int h, int m, int eh, int em, int cmax, int cmin){
         this.day = day;
         this.hour = h;
         this.minute = m;
+        this.endhour = eh;
+        this.endminute = em;
         this.coursemax = cmax;
         this.coursemin = cmin;
     }

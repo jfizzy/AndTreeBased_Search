@@ -15,9 +15,11 @@ package Schedule;
 
 public abstract class Slot {
 
-    String day;
-    int hour;
-    int minute;
+    protected String day;
+    protected int hour;
+    protected int minute;
+    protected int endhour;
+    protected int endminute;
 
     public String getDay() {
         return day;
@@ -43,17 +45,61 @@ public abstract class Slot {
         this.minute = minute;
     }
     
+    public int getEndHour() {
+        return endhour;
+    }
+
+    public void setEndHour(int hour) {
+        this.endhour = hour;
+    }
+
+    public int getEndMinute() {
+        return endminute;
+    }
+
+    public void setEndMinute(int minute) {
+        this.endminute = minute;
+    }
+    
     public Slot() {
         day = null;
         hour = -1;
         minute = -1;
+        endhour = -1;
+        endminute = -1;
     }
     
+    // temporary equals function for when slots are not actually the same object instance
     public boolean equals(Slot s) {
-    	if (this.day.equals(s.day) && this.hour == s.hour && this.minute == s.minute) {
+    	if (day == s.getDay() && hour == s.getHour() && minute == s.getMinute())
     		return true;
-    	}
-    	else return false;
+    	else
+    		return false;
+    }
+    
+    // check if slots overlap in time
+    public boolean overlaps(Slot s) {
+    	
+    	// return false if days don't match
+    	// TODO: this is going to have problems
+    	// like checking if a Fr lab overlaps a Mo(WeFr) lecture
+    	if (!day.equals(s.getDay()))
+    		return false;
+    	
+    	// combine hours and minutes
+    	int begin = 60 * hour + minute;
+    	int end = 60 * endhour - endminute;
+    	int sbegin = 60 * s.getHour() + s.getMinute();
+    	int send = 60 * s.getEndHour() + s.getEndMinute();
+    	
+    	// check for overlap
+    	if ((begin < sbegin && end > sbegin) 
+    			|| (begin < send && end > send)
+    			|| (begin == sbegin && end == send))
+    		return true;
+    	
+    	// if we got here no overlap
+    	return false;
     }
     
 }

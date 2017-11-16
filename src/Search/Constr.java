@@ -62,7 +62,7 @@ public class Constr {
 						|| b.getS() == null)
 					continue;
 				
-				if (a.getS().equals(b.getS()))
+				if (a.getS().overlaps(b.getS()))
 					count++;
 			}
 			
@@ -99,7 +99,7 @@ public class Constr {
 						|| b.getS() == null) 
 					continue;
 				
-				if (a.getS().equals(b.getS()))
+				if (a.getS().overlaps(b.getS()))
 					count++;
 			}
 			
@@ -133,7 +133,7 @@ public class Constr {
 				if (b.getM().getClass() != Lecture.class
 						|| b.getS().getClass() != LectureSlot.class
 						|| b.getS() == null
-						|| !a.getS().equals(b.getS())) 
+						|| !a.getS().overlaps(b.getS())) 
 					continue;
 				
 				// return false if section is the same
@@ -168,7 +168,7 @@ public class Constr {
 					if (b.getM() != p.second) continue;
 					
 					// return false if the slot is the same
-					if (a.getS().equals(b.getS()))
+					if (a.getS().overlaps(b.getS()))
 						return false;
 				}
 			}
@@ -191,7 +191,7 @@ public class Constr {
 				if (a.getM() != p.first) continue;
 					
 				// return false if the slot doesn't match second
-				if (!a.getS().equals(p.second))
+				if (!a.getS().overlaps(p.second))
 					return false;
 			}
 		}
@@ -213,7 +213,7 @@ public class Constr {
 				if (a.getM() != p.first) continue;
 					
 				// return false if the slot matches second
-				if (a.getS().equals(p.second))
+				if (a.getS().overlaps(p.second))
 					return false;
 			}
 		}
@@ -279,7 +279,7 @@ public class Constr {
 				if (b.getM().getClass() != NonLecture.class
 						|| b.getS().getClass() != NonLectureSlot.class
 						|| b.getS() == null
-						|| !a.getS().equals(b.getS())) 
+						|| !a.getS().overlaps(b.getS())) 
 					continue;
 				
 				// skip if course number < 500
