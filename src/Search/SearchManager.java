@@ -10,8 +10,12 @@ import Schedule.Section;
 import Schedule.Slot;
 import java.util.concurrent.ThreadLocalRandom;
 
+/*
+ * Object for managing and executing the search
+ */
 public class SearchManager {
 	
+	// the search instance
 	private SearchData data;
 	
 	// constructor
@@ -21,19 +25,23 @@ public class SearchManager {
 	
 	// run the search
 	public void run() {
+		
 		addrandom();
+		
 		data.getTimetable().printAssignments();
+		
 		Eval eval = new Eval(data);
         System.out.print("Eval = ");
         System.out.print(eval.getEval());
         System.out.print("\n");
 	}
 	
+	// return the search data
 	public SearchData getData() {
 		return this.data;
 	}
 	
-	// make a random timetable for testing
+	// fill the timetable randomly for testing
 	private void addrandom() {
 		
 		// for each course in data

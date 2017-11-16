@@ -27,21 +27,27 @@ import Schedule.TimeTable;
 import Search.SearchData.Pair;
 import Search.SearchData.Tri;
 
+/*
+ * Object for calculating how well a schedule fulfills soft constraints
+ */
 public class Eval {
 	
+	// penalties
 	private int pen_coursemin;
 	private int pen_labmin;
 	private int pen_notpaired;
 	private int pen_section;
 	
+	// weights
 	private int wMin;		// shouldn't weights be decimals?
 	private int wPref;
 	private int wPair;
 	private int wSecDiff;
 	
+	// instance
 	private SearchData sdata;
 	
-	//default constructor
+	// constructors
 	public Eval() {
 		
 		//defaults to zero evaluation values and equal weights
@@ -49,7 +55,6 @@ public class Eval {
 	}
 	
 	public Eval(SearchData sd) {
-		//defaults to zero evaluation values and equal weights
 		this(sd, 1,1,1,1);
 	}
 	
@@ -68,7 +73,7 @@ public class Eval {
 		sdata = sd;
 	}
 	
-	//getters and setters
+	// returns total evaluation
 	public int getEval() {
 		if (sdata != null)
 			return getCourseMinEval() 
@@ -239,6 +244,7 @@ public class Eval {
 		return wSecDiff*result;
 	}
 	
+	// getters and setters
 	public void setMinWeight(int weight) {
 		wMin = weight;
 	}

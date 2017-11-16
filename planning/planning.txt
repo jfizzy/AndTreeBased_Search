@@ -14,5 +14,7 @@ Does evening course mean that all Non-Lecture Meetings must be in the evening?
 
 ----------------------------------
 
+Does "department constraint" mean that it only applies for CPSC courses/labs?
 
+----------------------------------
 

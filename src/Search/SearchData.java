@@ -25,6 +25,9 @@ import Schedule.TimeTable;
 import Schedule.Meeting;
 import Schedule.NonLecture;
 
+/*
+ * Container for all the data for a search instance
+ */
 public class SearchData {
 	
 	// classes for tuples
@@ -83,6 +86,8 @@ public class SearchData {
     }
     
     // getters, setters, adders
+    
+    // lecture slots
     public void setLectureSlots(ArrayList<LectureSlot> lecslots) {
     	this.lslots = lecslots;
     }
@@ -91,6 +96,7 @@ public class SearchData {
     	return this.lslots;
     }
     
+    // nonlecture slots
     public void setLabSlots(ArrayList<NonLectureSlot> labslots) {
     	this.nlslots = labslots;
     }
@@ -99,6 +105,7 @@ public class SearchData {
     	return this.nlslots;
     }
     
+    // courses
     public void setCourses(ArrayList<Course> cs) {
     	this.courses = cs;
     }
@@ -107,6 +114,7 @@ public class SearchData {
     	return this.courses;
     }
     
+    // lectures
     public void setLectures(ArrayList<Lecture> lecs) {
     	this.lectures = lecs;
     }
@@ -115,6 +123,7 @@ public class SearchData {
     	return this.lectures;
     }
     
+    // nonlectures
     public void setNonLectures(ArrayList<NonLecture> nonlecs) {
     	this.nonlectures = nonlecs;
     }
@@ -123,6 +132,7 @@ public class SearchData {
     	return this.nonlectures;
     }
     
+    // timetable
     public void setTimetable(TimeTable timetable) {
     	this.tt = timetable;
     }
@@ -131,6 +141,7 @@ public class SearchData {
     	return this.tt;
     }
     
+    // noncompatible
     public void addNoncompatible(Meeting a, Meeting b) {
     	Pair<Meeting,Meeting> p = new Pair<Meeting,Meeting>();
     	p.first = a;
@@ -142,6 +153,7 @@ public class SearchData {
     	return this.noncompatible;
     }
     
+    // unwanted
     public void addUnwanted(Meeting a, Slot s) {
     	Pair<Meeting,Slot> p = new Pair<Meeting,Slot>();
     	p.first = a;
@@ -153,6 +165,7 @@ public class SearchData {
     	return this.unwanted;
     }
     
+    // preference
     public void addPreference(Meeting a, Slot s, int value) {
     	Tri<Meeting, Slot, Integer> t = new Tri<Meeting,Slot,Integer>();
     	t.first = a;
@@ -165,6 +178,7 @@ public class SearchData {
     	return this.preferences;
     }
     
+    // pair
     public void addPair(Meeting a, Meeting b) {
     	Pair<Meeting,Meeting> p = new Pair<Meeting,Meeting>();
     	p.first = a;
@@ -176,6 +190,7 @@ public class SearchData {
     	return this.pairs;
     }
     
+    // partassign
     public void addPartassign(Meeting a, Slot s) {
     	Pair<Meeting,Slot> p = new Pair<Meeting,Slot>();
     	p.first = a;

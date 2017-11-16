@@ -11,8 +11,12 @@ import Schedule.NonLectureSlot;
 import Schedule.Section;
 import Schedule.Slot;
 
+/*
+ * Object for determining whether a schedule satisfies hard constraints
+ */
 public class Constr {
 	
+	// the instance
 	private SearchData data;
 	
 	// constructor for checking if adding an assignment to a search is valid
@@ -25,7 +29,7 @@ public class Constr {
 		this.data = sd;
 	}
 
-	// return true if all hard constraints are met
+	// returns true if all hard constraints are met
 	public boolean check() {
 		return courseMax() && labMax() && labsDifferent() && noncompatible() 
 				&& partassign() && unwanted() && eveningClasses()
@@ -174,7 +178,7 @@ public class Constr {
 		return true;
 	}
 	
-	// partassign a => assign(a)
+	// partassign a => assign a
 	private boolean partassign() {
 		
 		// for each partassign entry
@@ -196,7 +200,7 @@ public class Constr {
 		return true;
 	}
 	
-	// unwanted(a,s) => assign a != s
+	// unwanted a,s => assign a != s
 	private boolean unwanted() {
 		
 		// for each unwanted entry
