@@ -45,17 +45,11 @@ public class Eval {
 	private int wSecDiff;
 	
 	// instance
-	private SearchData sdata;
+	private SearchData data;
 	
 	// constructors
-	public Eval() {
-		
-		//defaults to zero evaluation values and equal weights
-		this(null, 1,1,1,1);
-	}
-	
 	public Eval(SearchData sd) {
-		this(sd, 1,1,1,1);
+		this(sd,1,1,1,1);
 	}
 	
 	public Eval(SearchData sd, int min, int pref, int pair, int secD) {
@@ -70,95 +64,84 @@ public class Eval {
 		wPair = pair;
 		wSecDiff = secD;
 		
-		sdata = sd;
+		data = sd;
 	}
 	
 	// returns total evaluation
 	public int getEval() {
-		if (sdata != null)
+		
+		if (data != null) {
 			return getCourseMinEval() 
 					+ getLabMinEval() 
 					+ getPrefEval() 
 					+ getPairEval() 
 					+ getSecDiffEval();
+		}
 		else return 0;
 	}
 	
 	// Coursemin eval component
+	// penalty if slot has less courses than min
 	public int getCourseMinEval() {
     	int result = 0;
     	
-    	// go through all course slots
-    	for (LectureSlot ls : sdata.getLectureSlots()) {
+    	// for each lecture slot in data
+    	for (LectureSlot ls : data.getLectureSlots()) {
     		
-        	// go through all assignments
-        	for (Assignment a : sdata.getTimetable().getAssignments()) {
-        		
-        		// skip if not a lecture or slot is null
+        	// count how many lecture assignments have that slot
+    		int count = 0;
+        	for (Assignment a : data.getTimetable().getAssignments()) {
         		if (a.getM().getClass() != Lecture.class) continue;
-        		if (a.getS().getClass() != LectureSlot.class) continue;
-        		if (a.getS() == null) continue;
-        		
-        		// count how many have the same slot
-        		int count = 1;
-        		for (Assignment b : sdata.getTimetable().getAssignments()) {
-        			if (a == b) continue; // skip if same
-        			if (a.getS().equals(b.getS()))
-        				count++;
-        		}
-        		
-        		// add penalty for each course less than coursemin
-        		if (count < ls.getCourseMin()) {
-        			result += (ls.getCourseMin() - count) * pen_coursemin;
-        		}
+        		if (a.getS().equals(ls))
+        			count++;
         	}
+        	
+        	// add penalty for each course less than coursemin
+    		if (count < ls.getCourseMin()) {
+    			result += (ls.getCourseMin() - count) * pen_coursemin;
+    		}
     	}
     	
+    	// return weighted result
     	return wMin*result;		
 	}
 	
 	// Labmin eval component
+	// penalty if slot has less labs than min
 	public int getLabMinEval() {
     	int result = 0;
     	
-    	// go through all nonlecture slots
-    	for (NonLectureSlot nls : sdata.getLabSlots()) {
+    	// for each nonlecture slot in data
+    	for (NonLectureSlot nls : data.getLabSlots()) {
     		
-        	// go through all assignments
-        	for (Assignment a : sdata.getTimetable().getAssignments()) {
-        		
-        		// skip if not nonlecture or slot is null
-        		if (a.getM().getClass() == Lecture.class) continue;
-        		if (a.getS().getClass() == LectureSlot.class) continue;
-        		if (a.getS() == null) continue;
-        		
-        		// count how many have the same slot
-        		int count = 1;
-        		for (Assignment b : sdata.getTimetable().getAssignments()) {
-        			if (a == b) continue; // skip if same
-        			if (a.getS().equals(b.getS()))
-        				count++;
-        		}
-        		
-        		// add penalty for each nonlecture less than labmin
-        		if (count < nls.getLabMin()) {
-        			result += (nls.getLabMin() - count) * pen_labmin;
-        		}
+        	// count how many nonlecture assignments have that slot
+    		int count = 0;
+        	for (Assignment a : data.getTimetable().getAssignments()) {
+        		if (a.getM().getClass() != NonLecture.class) continue;
+        		if (a.getS().equals(nls))
+        			count++;
         	}
+        	
+        	// add penalty for each nonlecture less than labmin
+    		if (count < nls.getLabMin()) {
+    			result += (nls.getLabMin() - count) * pen_labmin;
+    		}
     	}
     	
+    	// return weighted result
     	return wMin*result;
 	}
 	
 	// Preference eval component
+	// penalty if course not assigned to preferred slot
 	public int getPrefEval() {
 		int result = 0;
     	
-		// go through preference list
-    	for (Tri<Meeting, Slot, Integer> t : sdata.getPreferences()) {
+		// for each preference in data
+    	for (Tri<Meeting, Slot, Integer> t : data.getPreferences()) {
     		
-    		// go through all assignments
-    		for (Assignment a : sdata.getTimetable().getAssignments()) {
+    		// for each assignment
+    		for (Assignment a : data.getTimetable().getAssignments()) {
     			
     			// add penalty if the course is not assigned to the preferred slot
     			if (a.getM() == t.first && !a.getS().equals(t.second))
@@ -166,27 +149,29 @@ public class Eval {
     		}
     	}
     	
+    	// return weighted result
     	return wPref*result;
 	}
 	 
 	// Pair eval component
+	// penalty if courses not assigned to same slot
 	public int getPairEval() {
 		int result = 0;
     	
-		// go through list of paired courses
-    	for (Pair<Meeting, Meeting> p : sdata.getPairs()) {
+		// for each pair of courses in data
+    	for (Pair<Meeting, Meeting> p : data.getPairs()) {
     		
-    		// go through all assignments
-    		for (Assignment a : sdata.getTimetable().getAssignments()) {
+    		// for each assignment
+    		for (Assignment a : data.getTimetable().getAssignments()) {
     			
     			// if a course matches the first of the pair
     			if (a.getM() == p.first){
     				
-    				// go through all assignments again
-    				for (Assignment b : sdata.getTimetable().getAssignments()) {
+    				// for each other assignment
+    				for (Assignment b : data.getTimetable().getAssignments()) {
     					if (a == b) continue; // skip if same
     					
-    					// penalty if a course matches the second of the pair and has a different slot
+    					// add penalty if a course matches the second of the pair and has a different slot
     					if (b.getM() == p.second && !a.getS().equals(b.getS()))
     						result += pen_notpaired;
     				}
@@ -194,16 +179,18 @@ public class Eval {
     		}
     	}
     	
+    	// return weighted result
 		return wPair*result;
 	}
 	
 	// Section eval component
+	// penalty if courses of the same section are assigned to the same slot
 	// TODO: there is definitely a cleaner/more efficient way to do this
 	public int getSecDiffEval() {
 		int result = 0;
 		
 		// for each course in the data
-		for (Course c : sdata.getCourses()) {
+		for (Course c : data.getCourses()) {
 			int nsections = c.getSections().size();
 			
 			// skip if there is only one section
@@ -220,13 +207,13 @@ public class Eval {
 					Lecture l2 = c.getSections().get(j).getLecture();
 				
 					// for each assignment in the data
-					for (Assignment a : sdata.getTimetable().getAssignments()) {
+					for (Assignment a : data.getTimetable().getAssignments()) {
 						
 						// skip if assignment 1 doesn't match
 						if (a.getM() != l1) continue;
 						
 						// for each other assignment
-						for (Assignment b : sdata.getTimetable().getAssignments()) {
+						for (Assignment b : data.getTimetable().getAssignments()) {
 							if (a == b) continue;	// skip if same assignment
 							
 							// skip if assignment 2 doesn't match

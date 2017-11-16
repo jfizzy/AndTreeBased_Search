@@ -26,14 +26,27 @@ public class SearchManager {
 	// run the search
 	public void run() {
 		
+		// assign randomly
 		addrandom();
 		
+		// print timetable
 		data.getTimetable().printAssignments();
 		
+		// print eval breakdown
 		Eval eval = new Eval(data);
-        System.out.print("Eval = ");
-        System.out.print(eval.getEval());
-        System.out.print("\n");
+		int e1 = eval.getCourseMinEval();
+		int e2 = eval.getLabMinEval();
+		int e3 = eval.getPrefEval();
+		int e4 = eval.getPairEval();
+		int e5 = eval.getSecDiffEval();
+		int sum = e1+e2+e3+e4+e5;
+		
+		System.out.println("Cmin = "+e1);
+		System.out.println("Lmin = "+e2);
+		System.out.println("Pref = "+e3);
+		System.out.println("Pair = "+e4);
+		System.out.println("Sect = "+e5);
+		System.out.println("EVAL = "+sum);
 	}
 	
 	// return the search data
