@@ -28,10 +28,6 @@ import Search.SearchData.Pair;
 import Search.SearchData.Tri;
 
 public class Eval {
-	//private int evalMinFill;
-	//private int evalPref;
-	//private int evalPair;
-	//private int evalSecDiff;
 	
 	private int pen_coursemin;
 	private int pen_labmin;
@@ -47,6 +43,7 @@ public class Eval {
 	
 	//default constructor
 	public Eval() {
+		
 		//defaults to zero evaluation values and equal weights
 		this(null, 1,1,1,1);
 	}
@@ -57,10 +54,6 @@ public class Eval {
 	}
 	
 	public Eval(SearchData sd, int min, int pref, int pair, int secD) {
-		//evalMinFill = 0;
-		//evalPref = 0;
-		//evalPair = 0;
-		//evalSecDiff = 0;
 		
 		pen_coursemin = 1;
 		pen_labmin = 1;
@@ -96,13 +89,13 @@ public class Eval {
         	// go through all assignments
         	for (Assignment a : sdata.getTimetable().getAssignments()) {
         		
-        		// skip if not a lecture
+        		// skip if not a lecture or slot is null
         		if (a.getM().getClass() != Lecture.class) continue;
         		if (a.getS().getClass() != LectureSlot.class) continue;
         		if (a.getS() == null) continue;
         		
         		// count how many have the same slot
-        		int count = 0;
+        		int count = 1;
         		for (Assignment b : sdata.getTimetable().getAssignments()) {
         			if (a == b) continue; // skip if same
         			if (a.getS().equals(b.getS()))
@@ -129,13 +122,13 @@ public class Eval {
         	// go through all assignments
         	for (Assignment a : sdata.getTimetable().getAssignments()) {
         		
-        		// skip if not nonlecture
+        		// skip if not nonlecture or slot is null
         		if (a.getM().getClass() == Lecture.class) continue;
         		if (a.getS().getClass() == LectureSlot.class) continue;
         		if (a.getS() == null) continue;
         		
         		// count how many have the same slot
-        		int count = 0;
+        		int count = 1;
         		for (Assignment b : sdata.getTimetable().getAssignments()) {
         			if (a == b) continue; // skip if same
         			if (a.getS().equals(b.getS()))
