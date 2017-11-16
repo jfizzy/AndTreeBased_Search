@@ -14,7 +14,7 @@ public class Constr {
 	
 	// constructor for checking if an assignment to a timetable is valid
 	public Constr(Assignment a, TimeTable tt) {
-		this(new TimeTable(a,tt));
+		this(new TimeTable(a, tt));
 	}
 
 	// constructor for checking if a timetable is valid
@@ -86,7 +86,7 @@ public class Constr {
 					count++;
 			}
 			
-			// return false if count is greater than slot's labemax
+			// return false if count is greater than slot's labmax
 			NonLectureSlot ls = (NonLectureSlot) a.getS();
 			if (count > ls.getLabMax()) return false;
 		}
@@ -107,8 +107,8 @@ public class Constr {
 			for (Assignment b : tt.getAssignments()) {
 				
 				// skip if not a lecture or slot is different
-				if (b.getM().getClass() != NonLecture.class) continue;
-				if (b.getS().getClass() != NonLectureSlot.class) continue;
+				if (b.getM().getClass() != Lecture.class) continue;
+				if (b.getS().getClass() != LectureSlot.class) continue;
 				if (b.getS() == null) continue;
 				if (a == b) continue;
 				if (!a.getS().equals(b.getS())) continue;

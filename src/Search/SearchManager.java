@@ -42,27 +42,37 @@ public class SearchManager {
 			// for each section in the course
 			for (Section s : c.getSections()) {
 				Lecture l = s.getLecture();
-				int rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
-				Slot slot = data.getLectureSlots().get(rand);//new LectureSlot("MWF", 8, 0, 10, 1);//
-				Assignment a = new Assignment(l, slot);
-				Constr constr = new Constr(a, data.getTimetable());
-				if (constr.check())
-					data.getTimetable().addAssignment(a);
-				else
-					System.out.println("Course violated Constr");
+				
+				// try 10 times to fulfill constr
+				for (int i=0; i < 10; i++) {
+					int rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
+					Slot slot = data.getLectureSlots().get(rand);
+					Assignment a = new Assignment(l, slot);
+					Constr constr = new Constr(a, data.getTimetable());
+					if (constr.check()) {
+						data.getTimetable().addAssignment(a);
+						break;
+					}
+					if (i >= 9) System.out.println("Course violated Constr");
+				}
 			}
 		}
 		
 		// for each nonlecture in data
 		for (NonLecture nl : data.getNonLectures()) {
-			int rand = ThreadLocalRandom.current().nextInt(0, data.getLabSlots().size());
-			Slot slot = data.getLabSlots().get(rand);//new NonLectureSlot("M", 10, 0, 5, 0);//
-			Assignment a = new Assignment(nl, slot);
-			Constr constr = new Constr(a, data.getTimetable());
-			if (constr.check())
-				data.getTimetable().addAssignment(a);
-			else
-				System.out.println("Lab violated Constr");
+			
+			// try 10 times to fulfill constr
+			for (int i=0; i < 10; i++) {
+				int rand = ThreadLocalRandom.current().nextInt(0, data.getLabSlots().size());
+				Slot slot = data.getLabSlots().get(rand);
+				Assignment a = new Assignment(nl, slot);
+				Constr constr = new Constr(a, data.getTimetable());
+				if (constr.check()) {
+					data.getTimetable().addAssignment(a);
+					break;
+				}
+				if (i >= 9) System.out.println("Lab violated Constr");
+			}
 		}
 	}
 }
