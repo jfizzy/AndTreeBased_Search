@@ -42,11 +42,37 @@ public class Constr {
 	 * @return
 	 */
 	public boolean check() {
+		printViolations();
 		return courseMax() && labMax() && labsDifferent() && noncompatible() 
 				&& partassign() && unwanted() && eveningClasses()
 				&& over500Classes() && specificTimes() && specialClasses();
 	}
 	
+	/**
+	 * prints which constraints were violated for debugging
+	 */
+	public void printViolations() {
+		if (!courseMax())
+			System.out.println("Coursemax violated");
+		if (!labMax())
+			System.out.println("Labmax violated");
+		if (!labsDifferent())
+			System.out.println("Labs different from lecture violated");
+		if (!noncompatible())
+			System.out.println("Noncompatible violated");
+		if (!partassign())
+			System.out.println("Partassign violated");
+		if (!unwanted())
+			System.out.println("Unwanted violated");
+		if (!eveningClasses())
+			System.out.println("Evening classes violated");
+		if (!over500Classes())
+			System.out.println("No overlap in >500 courses violated");
+		if (!specificTimes())
+			System.out.println("Tuesday 11:00 constraint violated");
+		if (!specialClasses())
+			System.out.println("CPSC 813/913 constraint violated");
+	}
 	
 	// individual hard constraints
 	

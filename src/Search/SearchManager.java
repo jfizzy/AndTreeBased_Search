@@ -49,6 +49,11 @@ public class SearchManager {
 		System.out.println("Pair = "+eval.getPairEval());
 		System.out.println("Sect = "+eval.getSecDiffEval());
 		System.out.println("EVAL = "+eval.getEval());
+		
+		// check if valid
+		Constr constr = new Constr(data);
+		if (!constr.check())
+			System.out.println("Hard constraints violated");
 	}
 	
 	/**
@@ -153,7 +158,7 @@ public class SearchManager {
 		l1 = s.getLecture();
 		rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
 		ls = data.getLectureSlots().get(rand);
-		data.addPartassign(l1, ls);
+		//data.addPartassign(l1, ls);
 		
 		// preference
 		int pref = 100;
