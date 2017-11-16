@@ -92,7 +92,7 @@ public class Eval {
     		int count = 0;
         	for (Assignment a : data.getTimetable().getAssignments()) {
         		if (a.getM().getClass() != Lecture.class) continue;
-        		if (a.getS().overlaps(ls))
+        		if (a.getS().equals(ls))
         			count++;
         	}
         	
@@ -118,7 +118,7 @@ public class Eval {
     		int count = 0;
         	for (Assignment a : data.getTimetable().getAssignments()) {
         		if (a.getM().getClass() != NonLecture.class) continue;
-        		if (a.getS().overlaps(nls))
+        		if (a.getS().equals(nls))
         			count++;
         	}
         	
@@ -144,7 +144,7 @@ public class Eval {
     		for (Assignment a : data.getTimetable().getAssignments()) {
     			
     			// add penalty if the course is not assigned to the preferred slot
-    			if (a.getM() == t.first && !a.getS().overlaps(t.second))
+    			if (a.getM() == t.first && !a.getS().equals(t.second))
     				result += t.third;
     		}
     	}
@@ -172,7 +172,7 @@ public class Eval {
     					if (a == b) continue; // skip if same
     					
     					// add penalty if a course matches the second of the pair and has a different slot
-    					if (b.getM() == p.second && !a.getS().overlaps(b.getS()))
+    					if (b.getM() == p.second && !a.getS().equals(b.getS()))
     						result += pen_notpaired;
     				}
     			}
@@ -220,7 +220,7 @@ public class Eval {
 							if (b.getM() != l2) continue;
 							
 							// add penalty if slots match
-							if (a.getS().overlaps(b.getS()))
+							if (a.getS().equals(b.getS()))
 								result += pen_section;
 						}
 					}

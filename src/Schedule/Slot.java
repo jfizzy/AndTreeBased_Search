@@ -69,9 +69,10 @@ public abstract class Slot {
         endminute = -1;
     }
     
-    // temporary equals function for when slots are not actually the same object instance
+    // slots are equal if they have the same values
     public boolean equals(Slot s) {
-    	if (day == s.getDay() && hour == s.getHour() && minute == s.getMinute())
+    	if (day == s.getDay() && hour == s.getHour() && minute == s.getMinute()
+    			&& endhour == s.getEndHour() && endminute == s.getEndMinute())
     		return true;
     	else
     		return false;

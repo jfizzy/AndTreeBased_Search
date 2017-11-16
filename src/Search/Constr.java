@@ -62,7 +62,7 @@ public class Constr {
 						|| b.getS() == null)
 					continue;
 				
-				if (a.getS().overlaps(b.getS()))
+				if (a.getS().equals(b.getS()))
 					count++;
 			}
 			
@@ -99,7 +99,7 @@ public class Constr {
 						|| b.getS() == null) 
 					continue;
 				
-				if (a.getS().overlaps(b.getS()))
+				if (a.getS().equals(b.getS()))
 					count++;
 			}
 			
@@ -191,7 +191,7 @@ public class Constr {
 				if (a.getM() != p.first) continue;
 					
 				// return false if the slot doesn't match second
-				if (!a.getS().overlaps(p.second))
+				if (!a.getS().equals(p.second))
 					return false;
 			}
 		}
@@ -213,7 +213,7 @@ public class Constr {
 				if (a.getM() != p.first) continue;
 					
 				// return false if the slot matches second
-				if (a.getS().overlaps(p.second))
+				if (a.getS().equals(p.second))
 					return false;
 			}
 		}
