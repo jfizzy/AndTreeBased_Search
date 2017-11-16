@@ -55,21 +55,26 @@ public class SearchData {
 	private TimeTable tt;
     
 	// input lists
-	private ArrayList<Pair<Meeting, Meeting>> noncompatible;
-	private ArrayList<Pair<Meeting, Slot>> unwanted;
-	private ArrayList<Tri<Meeting, Slot, Integer>> preferences;
-	private ArrayList<Pair<Meeting, Meeting>> pairs;
-	private ArrayList<Pair<Meeting, Slot>> partassign;
+//	private ArrayList<Pair<Meeting, Meeting>> noncompatible;
+//	private ArrayList<Pair<Meeting, Slot>> unwanted;
+//	private ArrayList<Tri<Meeting, Slot, Integer>> preferences;
+//	private ArrayList<Pair<Meeting, Meeting>> pairs;
+//	private ArrayList<Pair<Meeting, Slot>> partassign;
     
     /**
      * default constructor
      */
     public SearchData() {
-    	this.noncompatible = new ArrayList<Pair<Meeting, Meeting>>();
-    	this.unwanted = new ArrayList<Pair<Meeting, Slot>>();
-    	this.preferences = new ArrayList<Tri<Meeting, Slot, Integer>>();
-    	this.pairs = new ArrayList<Pair<Meeting, Meeting>>();
-    	this.partassign = new ArrayList<Pair<Meeting, Slot>>();
+//    	this.lslots = new ArrayList<>();
+//    	this.nlslots = new ArrayList<>();
+//    	this.courses = new ArrayList<>();
+//    	this.lectures = new ArrayList<>();
+//    	this.nonlectures = new ArrayList<>();
+//    	this.noncompatible = new ArrayList<Pair<Meeting, Meeting>>();
+//    	this.unwanted = new ArrayList<Pair<Meeting, Slot>>();
+//    	this.preferences = new ArrayList<Tri<Meeting, Slot, Integer>>();
+//    	this.pairs = new ArrayList<Pair<Meeting, Meeting>>();
+//    	this.partassign = new ArrayList<Pair<Meeting, Slot>>();
     }
     
     /**
@@ -85,11 +90,11 @@ public class SearchData {
     	this.nonlectures = orig.getNonLectures();
     	this.tt = tt;
     	
-    	this.noncompatible = new ArrayList<Pair<Meeting, Meeting>>();
-    	this.unwanted = new ArrayList<Pair<Meeting, Slot>>();
-    	this.preferences = new ArrayList<Tri<Meeting, Slot, Integer>>();
-    	this.pairs = new ArrayList<Pair<Meeting, Meeting>>();
-    	this.partassign = new ArrayList<Pair<Meeting, Slot>>();
+    	//this.noncompatible = new ArrayList<Pair<Meeting, Meeting>>();
+    	//this.unwanted = new ArrayList<Pair<Meeting, Slot>>();
+    	//this.preferences = new ArrayList<Tri<Meeting, Slot, Integer>>();
+    	//this.pairs = new ArrayList<Pair<Meeting, Meeting>>();
+    	//this.partassign = new ArrayList<Pair<Meeting, Slot>>();
     }
     
     // getters, setters, adders
@@ -149,63 +154,63 @@ public class SearchData {
     }
     
     // noncompatible
-    public void addNoncompatible(Meeting a, Meeting b) {
-    	Pair<Meeting,Meeting> p = new Pair<Meeting,Meeting>();
-    	p.first = a;
-    	p.second = b;
-    	this.noncompatible.add(p);
-    }
+//    public void addNoncompatible(Meeting a, Meeting b) {
+//    	Pair<Meeting,Meeting> p = new Pair<Meeting,Meeting>();
+//    	p.first = a;
+//    	p.second = b;
+//    	this.noncompatible.add(p);
+//    }
     
-    public ArrayList<Pair<Meeting, Meeting>> getNoncompatible() {
-    	return this.noncompatible;
-    }
+//    public ArrayList<Pair<Meeting, Meeting>> getNoncompatible() {
+//    	return this.noncompatible;
+//    }
     
-    // unwanted
-    public void addUnwanted(Meeting a, Slot s) {
-    	Pair<Meeting,Slot> p = new Pair<Meeting,Slot>();
-    	p.first = a;
-    	p.second = s;
-    	this.unwanted.add(p);
-    }
+//    // unwanted
+//    public void addUnwanted(Meeting a, Slot s) {
+//    	Pair<Meeting,Slot> p = new Pair<Meeting,Slot>();
+//    	p.first = a;
+//    	p.second = s;
+//    	this.unwanted.add(p);
+//    }
     
-    public ArrayList<Pair<Meeting, Slot>> getUnwanted() {
-    	return this.unwanted;
-    }
+//    public ArrayList<Pair<Meeting, Slot>> getUnwanted() {
+//    	return this.unwanted;
+//    }
     
     // preference
-    public void addPreference(Meeting a, Slot s, int value) {
-    	Tri<Meeting, Slot, Integer> t = new Tri<Meeting,Slot,Integer>();
-    	t.first = a;
-    	t.second = s;
-    	t.third = value;
-    	this.preferences.add(t);
-    }
+//    public void addPreference(Meeting a, Slot s, int value) {
+//    	Tri<Meeting, Slot, Integer> t = new Tri<Meeting,Slot,Integer>();
+//    	t.first = a;
+//    	t.second = s;
+//    	t.third = value;
+//    	this.preferences.add(t);
+//    }
     
-    public ArrayList<Tri<Meeting, Slot, Integer>> getPreferences() {
-    	return this.preferences;
-    }
+//    public ArrayList<Tri<Meeting, Slot, Integer>> getPreferences() {
+//    	return this.preferences;
+//    }
     
     // pair
-    public void addPair(Meeting a, Meeting b) {
-    	Pair<Meeting,Meeting> p = new Pair<Meeting,Meeting>();
-    	p.first = a;
-    	p.second = b;
-    	this.pairs.add(p);
-    }
+//    public void addPair(Meeting a, Meeting b) {
+//    	Pair<Meeting,Meeting> p = new Pair<Meeting,Meeting>();
+//    	p.first = a;
+//    	p.second = b;
+//    	this.pairs.add(p);
+//    }
     
-    public ArrayList<Pair<Meeting, Meeting>> getPairs() {
-    	return this.pairs;
-    }
+//    public ArrayList<Pair<Meeting, Meeting>> getPairs() {
+//    	return this.pairs;
+//    }
     
     // partassign
-    public void addPartassign(Meeting a, Slot s) {
-    	Pair<Meeting,Slot> p = new Pair<Meeting,Slot>();
-    	p.first = a;
-    	p.second = s;
-    	this.partassign.add(p);
-    }
+//    public void addPartassign(Meeting a, Slot s) {
+//    	Pair<Meeting,Slot> p = new Pair<Meeting,Slot>();
+//    	p.first = a;
+//    	p.second = s;
+//    	this.partassign.add(p);
+//    }
     
-    public ArrayList<Pair<Meeting, Slot>> getPartassign() {
-    	return this.partassign;
-    }
+//    public ArrayList<Pair<Meeting, Slot>> getPartassign() {
+//    	return this.partassign;
+//    }
 }

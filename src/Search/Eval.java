@@ -162,16 +162,16 @@ public class Eval {
 		int result = 0;
     	
 		// for each preference in data
-    	for (Tri<Meeting, Slot, Integer> t : data.getPreferences()) {
-    		
-    		// for each assignment
-    		for (Assignment a : data.getTimetable().getAssignments()) {
-    			
-    			// add penalty if the course is not assigned to the preferred slot
-    			if (a.getM() == t.first && !a.getS().equals(t.second))
-    				result += t.third;
-    		}
-    	}
+//    	for (Tri<Meeting, Slot, Integer> t : data.getPreferences()) {
+//    		
+//    		// for each assignment
+//    		for (Assignment a : data.getTimetable().getAssignments()) {
+//    			
+//    			// add penalty if the course is not assigned to the preferred slot
+//    			if (a.getM() == t.first && !a.getS().equals(t.second))
+//    				result += t.third;
+//    		}
+//    	}
     	
     	// return weighted result
     	return wPref*result;
@@ -186,25 +186,25 @@ public class Eval {
 		int result = 0;
     	
 		// for each pair of courses in data
-    	for (Pair<Meeting, Meeting> p : data.getPairs()) {
-    		
-    		// for each assignment
-    		for (Assignment a : data.getTimetable().getAssignments()) {
-    			
-    			// if a course matches the first of the pair
-    			if (a.getM() == p.first){
-    				
-    				// for each other assignment
-    				for (Assignment b : data.getTimetable().getAssignments()) {
-    					if (a == b) continue; // skip if same
-    					
-    					// add penalty if a course matches the second of the pair and has a different slot
-    					if (b.getM() == p.second && !a.getS().equals(b.getS()))
-    						result += pen_notpaired;
-    				}
-    			}
-    		}
-    	}
+//    	for (Pair<Meeting, Meeting> p : data.getPairs()) {
+//    		
+//    		// for each assignment
+//    		for (Assignment a : data.getTimetable().getAssignments()) {
+//    			
+//    			// if a course matches the first of the pair
+//    			if (a.getM() == p.first){
+//    				
+//    				// for each other assignment
+//    				for (Assignment b : data.getTimetable().getAssignments()) {
+//    					if (a == b) continue; // skip if same
+//    					
+//    					// add penalty if a course matches the second of the pair and has a different slot
+//    					if (b.getM() == p.second && !a.getS().equals(b.getS()))
+//    						result += pen_notpaired;
+//    				}
+//    			}
+//    		}
+//    	}
     	
     	// return weighted result
 		return wPair*result;

@@ -202,27 +202,27 @@ public class Constr {
 	private boolean noncompatible() {
 		
 		// for each noncompatible entry
-		for (Pair<Meeting, Meeting> p : data.getNoncompatible()) {
-			
-			// for each assignment
-			for (Assignment a : data.getTimetable().getAssignments()) {
-				
-				// skip if meeting doesn't match first
-				if (a.getM() != p.first) continue;
-				
-				// for each other assignment
-				for (Assignment b : data.getTimetable().getAssignments()) {
-					if (a == b) continue;
-					
-					// skip if meeting doesn't match second
-					if (b.getM() != p.second) continue;
-					
-					// return false if the slot is the same
-					if (a.getS().overlaps(b.getS()))
-						return false;
-				}
-			}
-		}
+//		for (Pair<Meeting, Meeting> p : data.getNoncompatible()) {
+//			
+//			// for each assignment
+//			for (Assignment a : data.getTimetable().getAssignments()) {
+//				
+//				// skip if meeting doesn't match first
+//				if (a.getM() != p.first) continue;
+//				
+//				// for each other assignment
+//				for (Assignment b : data.getTimetable().getAssignments()) {
+//					if (a == b) continue;
+//					
+//					// skip if meeting doesn't match second
+//					if (b.getM() != p.second) continue;
+//					
+//					// return false if the slot is the same
+//					if (a.getS().overlaps(b.getS()))
+//						return false;
+//				}
+//			}
+//		}
 		
 		// if this is reached the constraint is satisfied
 		return true;
@@ -236,19 +236,19 @@ public class Constr {
 	private boolean partassign() {
 		
 		// for each partassign entry
-		for (Pair<Meeting, Slot> p : data.getPartassign()) {
-			
-			// for each assignment
-			for (Assignment a : data.getTimetable().getAssignments()) {
-				
-				// skip if meeting doesn't match first
-				if (a.getM() != p.first) continue;
-					
-				// return false if the slot doesn't match second
-				if (!a.getS().equals(p.second))
-					return false;
-			}
-		}
+//		for (Pair<Meeting, Slot> p : data.getPartassign()) {
+//			
+//			// for each assignment
+//			for (Assignment a : data.getTimetable().getAssignments()) {
+//				
+//				// skip if meeting doesn't match first
+//				if (a.getM() != p.first) continue;
+//					
+//				// return false if the slot doesn't match second
+//				if (!a.getS().equals(p.second))
+//					return false;
+//			}
+//		}
 		
 		// if this is reached the constraint is satisfied
 		return true;
@@ -262,19 +262,19 @@ public class Constr {
 	private boolean unwanted() {
 		
 		// for each unwanted entry
-		for (Pair<Meeting, Slot> p : data.getUnwanted()) {
-			
-			// for each assignment
-			for (Assignment a : data.getTimetable().getAssignments()) {
-				
-				// skip if meeting doesn't match first
-				if (a.getM() != p.first) continue;
-					
-				// return false if the slot matches second
-				if (a.getS().equals(p.second))
-					return false;
-			}
-		}
+//		for (Pair<Meeting, Slot> p : data.getUnwanted()) {
+//			
+//			// for each assignment
+//			for (Assignment a : data.getTimetable().getAssignments()) {
+//				
+//				// skip if meeting doesn't match first
+//				if (a.getM() != p.first) continue;
+//					
+//				// return false if the slot matches second
+//				if (a.getS().equals(p.second))
+//					return false;
+//			}
+//		}
 		
 		// if this is reached the constraint is satisfied
 		return true;

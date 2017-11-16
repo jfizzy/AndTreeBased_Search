@@ -125,7 +125,7 @@ public class SearchManager {
 		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
 		s = c.getSections().get(rand);
 		Lecture l2 = s.getLecture();
-		data.addNoncompatible(l1, l2);
+		//data.addNoncompatible(l1, l2);
 		
 		// pair
 		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
@@ -138,7 +138,7 @@ public class SearchManager {
 		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
 		s = c.getSections().get(rand);
 		l2 = s.getLecture();
-		data.addPair(l1, l2);
+		//data.addPair(l1, l2);
 		
 		// unwanted
 		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
@@ -148,7 +148,7 @@ public class SearchManager {
 		l1 = s.getLecture();
 		rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
 		LectureSlot ls = data.getLectureSlots().get(rand);
-		data.addUnwanted(l1, ls);
+		//data.addUnwanted(l1, ls);
 		
 		// partassign
 		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
@@ -169,6 +169,6 @@ public class SearchManager {
 		l1 = s.getLecture();
 		rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
 		ls = data.getLectureSlots().get(rand);
-		data.addPreference(l1, ls, pref);
+		//data.addPreference(l1, ls, pref);
 	}
 }
