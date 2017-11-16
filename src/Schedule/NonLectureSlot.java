@@ -13,11 +13,25 @@
  */
 package Schedule;
 
+/**
+ * @author 
+ *
+ */
 public class NonLectureSlot extends Slot {
     
     private final int labmax;
     private final int labmin;
     
+    /**
+     * constructor
+     * @param day
+     * @param h
+     * @param m
+     * @param eh
+     * @param em
+     * @param lmax
+     * @param lmin
+     */
     public NonLectureSlot(String day, int h, int m, int eh, int em, int lmax, int lmin){
         this.day = day;
         this.hour = h;
@@ -27,6 +41,8 @@ public class NonLectureSlot extends Slot {
         this.labmax = lmax;
         this.labmin = lmin;
     }
+    
+    // getters and setters
     
     public int getLabMin() {
     	return this.labmin;

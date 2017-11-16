@@ -25,8 +25,9 @@ import Schedule.TimeTable;
 import Schedule.Meeting;
 import Schedule.NonLecture;
 
-/*
+/**
  * Container for all the data for a search instance
+ *
  */
 public class SearchData {
 	
@@ -60,7 +61,9 @@ public class SearchData {
 	private ArrayList<Pair<Meeting, Meeting>> pairs;
 	private ArrayList<Pair<Meeting, Slot>> partassign;
     
-	// constructor
+    /**
+     * default constructor
+     */
     public SearchData() {
     	this.noncompatible = new ArrayList<Pair<Meeting, Meeting>>();
     	this.unwanted = new ArrayList<Pair<Meeting, Slot>>();
@@ -69,7 +72,11 @@ public class SearchData {
     	this.partassign = new ArrayList<Pair<Meeting, Slot>>();
     }
     
-    // constructor for constr
+    /**
+     * constructor for constr
+     * @param orig
+     * @param tt
+     */
     public SearchData(SearchData orig, TimeTable tt) {
     	this.lslots = orig.getLectureSlots();
     	this.nlslots = orig.getLabSlots();

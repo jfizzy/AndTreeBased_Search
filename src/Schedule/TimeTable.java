@@ -16,16 +16,27 @@ package Schedule;
 import java.util.ArrayList;
 import Schedule.Section;
 
+/**
+ * @author 
+ *
+ */
 public class TimeTable {
     
     private final ArrayList<Meeting> meetings; // must be ordered
     private ArrayList<Assignment> assignments;
     
+    /**
+     * default constructor
+     */
     public TimeTable() {
     	meetings = null;
     	assignments = new ArrayList<Assignment>();
     }
     
+    /**
+     * constructor
+     * @param meetings
+     */
     public TimeTable(ArrayList<Meeting> meetings){
         this.meetings = meetings;
         assignments = new ArrayList<>();
@@ -34,6 +45,11 @@ public class TimeTable {
         });
     }
     
+    /**
+     * constructor for constr
+     * @param a
+     * @param tt
+     */
     public TimeTable(Assignment a, TimeTable tt) {
     	this.meetings = null;//(ArrayList<Meeting>) tt.meetings.clone();
     	this.assignments = (ArrayList<Assignment>) tt.assignments.clone();
@@ -41,7 +57,9 @@ public class TimeTable {
     		this.assignments.add(a);
     }
     
-    // print the timetable for debugging
+    /**
+     * print the timetable for debugging
+     */
     public void printAssignments() {
     	
     	// for each assignment
@@ -79,6 +97,8 @@ public class TimeTable {
     		System.out.print("\n");
     	}
     }
+    
+    // getters and setters
     
     public ArrayList<Assignment> getAssignments() {
         return assignments;

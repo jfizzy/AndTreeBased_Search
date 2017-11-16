@@ -11,25 +11,36 @@ import Schedule.NonLectureSlot;
 import Schedule.Section;
 import Schedule.Slot;
 
-/*
+/**
  * Object for determining whether a schedule satisfies hard constraints
+ *
  */
 public class Constr {
 	
 	// the instance
 	private SearchData data;
 	
-	// constructor for checking if adding an assignment to a search is valid
+	/**
+	 * constructor for checking if adding an assignment to a search is valid
+	 * @param a
+	 * @param sd
+	 */
 	public Constr(Assignment a, SearchData sd) {
 		this(new SearchData(sd, new TimeTable(a, sd.getTimetable())));
 	}
 
-	// constructor for checking if a search is valid
+	/**
+	 * constructor for checking if a search is valid
+	 * @param sd
+	 */
 	public Constr(SearchData sd) {
 		this.data = sd;
 	}
 
-	// returns true if all hard constraints are met
+	/**
+	 * returns true if all hard constraints are met
+	 * @return
+	 */
 	public boolean check() {
 		return courseMax() && labMax() && labsDifferent() && noncompatible() 
 				&& partassign() && unwanted() && eveningClasses()
@@ -39,7 +50,10 @@ public class Constr {
 	
 	// individual hard constraints
 	
-	// course maximum
+	/**
+	 * course maximum
+	 * @return
+	 */
 	private boolean courseMax() {
 		
 		// for each assignment
@@ -76,7 +90,10 @@ public class Constr {
 		return true;
 	}
 	
-	// lab maximum
+	/**
+	 * lab maximum
+	 * @return
+	 */
 	private boolean labMax() {
 		
 		// for each assignment
@@ -113,7 +130,10 @@ public class Constr {
 		return true;
 	}
 	
-	// labs not assigned to same slot as lectures of the same section
+	/**
+	 * labs not assigned to same slot as lectures of the same section
+	 * @return
+	 */
 	private boolean labsDifferent() {
 		
 		// for each assignment
@@ -148,7 +168,11 @@ public class Constr {
 		return true;
 	}
 	
-	// non-compatible(a,b) => assign a != assign b
+	/**
+	 * non-compatible constraint
+	 * non-compatible(a,b) => assign a != assign b
+	 * @return
+	 */
 	private boolean noncompatible() {
 		
 		// for each noncompatible entry
@@ -178,7 +202,11 @@ public class Constr {
 		return true;
 	}
 	
-	// partassign a => assign a
+	/**
+	 * partassign constraint
+	 * partassign a => assign a
+	 * @return
+	 */
 	private boolean partassign() {
 		
 		// for each partassign entry
@@ -200,7 +228,11 @@ public class Constr {
 		return true;
 	}
 	
-	// unwanted a,s => assign a != s
+	/**
+	 * unwanted constraint
+	 * unwanted a,s => assign a != s
+	 * @return
+	 */
 	private boolean unwanted() {
 		
 		// for each unwanted entry
@@ -222,8 +254,11 @@ public class Constr {
 		return true;
 	}
 	
-	// sections with numbers starting with 9 must get evening slots
-	// department constraint
+	/**
+	 * sections with numbers starting with 9 must get evening slots
+	 * department constraint
+	 * @return
+	 */
 	private boolean eveningClasses() {
 		
 		// for each assignment
@@ -253,8 +288,11 @@ public class Constr {
 		return true;
 	}
 	
-	// 500 level classes can't get the same slot
-	// department constraint
+	/**
+	 * 500 level classes can't get the same slot
+	 * department constraint
+	 * @return
+	 */
 	private boolean over500Classes() {
 		
 		// for each assignment
@@ -296,8 +334,11 @@ public class Constr {
 		return true;
 	}
 	
-	// no courses Tuesday 11:00-12:30
-	// department constraint
+	/**
+	 * no courses Tuesday 11:00-12:30
+	 * department constraint
+	 * @return
+	 */
 	private boolean specificTimes() {
 		
 		// for each assignment
@@ -312,8 +353,11 @@ public class Constr {
 		return true;
 	}
 	
-	// special requirements for CPSC 813/913
-	// department constraint
+	/**
+	 * special requirements for CPSC 813/913
+	 * department constraint
+	 * @return
+	 */
 	private boolean specialClasses() {
 		
 		// for each assignment

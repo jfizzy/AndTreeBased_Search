@@ -21,6 +21,18 @@ public class Assignment {
     
     private Meeting m;
     private Slot s;
+    
+    /**
+     * constructor
+     * @param m
+     * @param s
+     */
+    public Assignment(Meeting m, Slot s){
+        this.m = m;
+        this.s = s;
+    }
+    
+    // getters and setters
 
     public Meeting getM() {
         return m;
@@ -38,9 +50,6 @@ public class Assignment {
         this.s = s;
     }
     
-    public Assignment(Meeting m, Slot s){
-        this.m = m;
-        this.s = s;
-    }
+
     
 }

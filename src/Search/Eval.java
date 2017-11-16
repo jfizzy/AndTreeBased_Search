@@ -27,8 +27,9 @@ import Schedule.TimeTable;
 import Search.SearchData.Pair;
 import Search.SearchData.Tri;
 
-/*
+/**
  * Object for calculating how well a schedule fulfills soft constraints
+ *
  */
 public class Eval {
 	
@@ -47,11 +48,22 @@ public class Eval {
 	// instance
 	private SearchData data;
 	
-	// constructors
+	/**
+	 * constructor without weights
+	 * @param sd
+	 */
 	public Eval(SearchData sd) {
 		this(sd,1,1,1,1);
 	}
 	
+	/**
+	 * constructor with weights
+	 * @param sd
+	 * @param min
+	 * @param pref
+	 * @param pair
+	 * @param secD
+	 */
 	public Eval(SearchData sd, int min, int pref, int pair, int secD) {
 		
 		pen_coursemin = 1;
@@ -67,7 +79,10 @@ public class Eval {
 		data = sd;
 	}
 	
-	// returns total evaluation
+	/**
+	 * returns total evaluation
+	 * @return
+	 */
 	public int getEval() {
 		
 		if (data != null) {
@@ -80,8 +95,11 @@ public class Eval {
 		else return 0;
 	}
 	
-	// Coursemin eval component
-	// penalty if slot has less courses than min
+	/**
+	 * Coursemin eval component
+	 * penalty if slot has less courses than min
+	 * @return
+	 */
 	public int getCourseMinEval() {
     	int result = 0;
     	
@@ -106,8 +124,11 @@ public class Eval {
     	return wMin*result;		
 	}
 	
-	// Labmin eval component
-	// penalty if slot has less labs than min
+	/**
+	 * Labmin eval component
+	 * penalty if slot has less labs than min
+	 * @return
+	 */
 	public int getLabMinEval() {
     	int result = 0;
     	
@@ -132,8 +153,11 @@ public class Eval {
     	return wMin*result;
 	}
 	
-	// Preference eval component
-	// penalty if course not assigned to preferred slot
+	/**
+	 * Preference eval component
+	 * penalty if course not assigned to preferred slot
+	 * @return
+	 */
 	public int getPrefEval() {
 		int result = 0;
     	
@@ -153,8 +177,11 @@ public class Eval {
     	return wPref*result;
 	}
 	 
-	// Pair eval component
-	// penalty if courses not assigned to same slot
+	/**
+	 * Pair eval component
+	 * penalty if courses not assigned to same slot
+	 * @return
+	 */
 	public int getPairEval() {
 		int result = 0;
     	
@@ -183,9 +210,12 @@ public class Eval {
 		return wPair*result;
 	}
 	
-	// Section eval component
-	// penalty if courses of the same section are assigned to the same slot
-	// TODO: there is definitely a cleaner/more efficient way to do this
+	/**
+	 * Section eval component
+	 * penalty if courses of the same section are assigned to the same slot
+	 * TODO: there is definitely a cleaner/more efficient way to do this
+	 * @return
+	 */
 	public int getSecDiffEval() {
 		int result = 0;
 		

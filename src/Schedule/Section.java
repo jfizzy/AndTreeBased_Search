@@ -15,6 +15,10 @@ package Schedule;
 
 import java.util.ArrayList;
 
+/**
+ * @author 
+ *
+ */
 public class Section {
 
     private String sectionNum;
@@ -22,6 +26,21 @@ public class Section {
     private ArrayList<Tutorial> tuts;
     private Lecture lecture;
     private final Course parentCourse;
+    
+    /**
+     * constructor
+     * @param c
+     * @param sNum
+     */
+    public Section(Course c, String sNum) {
+        this.parentCourse = c;
+        this.sectionNum = sNum;
+        this.labs = new ArrayList<>();
+        this.tuts = new ArrayList<>();
+        this.lecture = new Lecture(this);
+    }
+    
+    // getters and setters
 
     public String getSectionNum() {
         return sectionNum;
@@ -57,14 +76,6 @@ public class Section {
 
     public void setLecture(Lecture lecture) {
         this.lecture = lecture;
-    }
-    
-    public Section(Course c, String sNum) {
-        this.parentCourse = c;
-        this.sectionNum = sNum;
-        this.labs = new ArrayList<>();
-        this.tuts = new ArrayList<>();
-        this.lecture = new Lecture(this);
     }
     
 }

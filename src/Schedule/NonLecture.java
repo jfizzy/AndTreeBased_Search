@@ -13,10 +13,28 @@
  */
 package Schedule;
 
+/**
+ * @author 
+ *
+ */
 public abstract class NonLecture extends Meeting {
 
     protected Section parentSection;
     protected boolean evening;
+    
+    /**TODO:    figure out if evening Course means all labs and 
+     *          tutorials are evening as well
+     */
+    /**
+     * constructor
+     */
+    public NonLecture(){
+        super();
+        this.parentSection = null;
+        this.evening = false;
+    }
+    
+    // getters and setters
 
     public Section getParentSection() {
         return parentSection;
@@ -24,15 +42,6 @@ public abstract class NonLecture extends Meeting {
 
     public boolean isEvening() {
         return evening;
-    }
-    
-    /**TODO:    figure out if evening Course means all labs and 
-     *          tutorials are evening as well
-     */
-    public NonLecture(){
-        super();
-        this.parentSection = null;
-        this.evening = false;
     }
     
     public String getDept(){

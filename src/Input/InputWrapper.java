@@ -15,6 +15,10 @@ package Input;
 
 import java.util.ArrayList;
 
+/**
+ * @author 
+ *
+ */
 public class InputWrapper {
     ArrayList<String> lectureSlotLines;
     ArrayList<String> nonlectureSlotLines;
@@ -26,6 +30,9 @@ public class InputWrapper {
     ArrayList<String> pairLines;
     ArrayList<String> partialAssignmentLines;
     
+    /**
+     * constructor
+     */
     public InputWrapper(){
         lectureSlotLines = new ArrayList<>();
         nonlectureSlotLines = new ArrayList<>();

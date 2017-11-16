@@ -15,8 +15,22 @@ package Schedule;
 
 import java.util.ArrayList;
 
+/**
+ * @author 
+ *
+ */
 public abstract class Meeting {
+	
     private ArrayList<Meeting> incompatibility;
+    
+    /**
+     * constructor
+     */
+    public Meeting(){
+        incompatibility = new ArrayList<>();
+    }
+    
+    // getters and setters
     
     public ArrayList<Meeting> getIncompatibility() {
         return incompatibility;
@@ -26,7 +40,5 @@ public abstract class Meeting {
         this.incompatibility.add(m);
     }
     
-    public Meeting(){
-        incompatibility = new ArrayList<>();
-    }
+    
 }

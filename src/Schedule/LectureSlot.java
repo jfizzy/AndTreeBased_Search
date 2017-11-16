@@ -13,11 +13,25 @@
  */
 package Schedule;
 
+/**
+ * @author 
+ *
+ */
 public class LectureSlot extends Slot {
 
     private final int coursemax;
     private final int coursemin;
     
+    /**
+     * constructor
+     * @param day
+     * @param h
+     * @param m
+     * @param eh
+     * @param em
+     * @param cmax
+     * @param cmin
+     */
     public LectureSlot(String day, int h, int m, int eh, int em, int cmax, int cmin){
         this.day = day;
         this.hour = h;
@@ -27,6 +41,8 @@ public class LectureSlot extends Slot {
         this.coursemax = cmax;
         this.coursemin = cmin;
     }
+    
+    // getters and setters
     
     public int getCourseMin() {
     	return this.coursemin;

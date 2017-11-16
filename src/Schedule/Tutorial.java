@@ -13,18 +13,31 @@
  */
 package Schedule;
 
+/**
+ * @author 
+ *
+ */
 public class Tutorial extends NonLecture{
     
     private final String tutNum;
-
-    public String getTutNum() {
-        return tutNum;
-    }
     
+    /**
+     * constructor
+     * @param num
+     * @param s
+     * @param evening
+     */
     public Tutorial(String num, Section s, boolean evening){
         super();
         this.tutNum = num;
         this.parentSection = s;
         this.evening = evening;
     }
+    
+    // getters and setters
+
+    public String getTutNum() {
+        return tutNum;
+    }
+    
 }

@@ -15,11 +15,29 @@ package Schedule;
 
 import java.util.ArrayList;
 
+/**
+ * @author 
+ *
+ */
 public class ScheduleManager {
     
     private TimeTable timeTable;
     private ArrayList<LectureSlot> lectureSlots;
     private ArrayList<NonLectureSlot> nonlectureSlots;
+    
+    /**
+     * constructor
+     * @param meetings
+     * @param lectureSlots
+     * @param nonlectureSlots
+     */
+    public ScheduleManager(ArrayList<Meeting> meetings, ArrayList<LectureSlot> lectureSlots, ArrayList<NonLectureSlot> nonlectureSlots) {
+        this.timeTable = new TimeTable(meetings);
+        this.lectureSlots = lectureSlots;
+        this.nonlectureSlots = nonlectureSlots;
+    }
+    
+    // getters and setters
 
     public TimeTable getTimeTable() {
         return timeTable;
@@ -31,11 +49,5 @@ public class ScheduleManager {
 
     public ArrayList<NonLectureSlot> getNonlectureSlots() {
         return nonlectureSlots;
-    }
-    
-    public ScheduleManager(ArrayList<Meeting> meetings, ArrayList<LectureSlot> lectureSlots, ArrayList<NonLectureSlot> nonlectureSlots) {
-        this.timeTable = new TimeTable(meetings);
-        this.lectureSlots = lectureSlots;
-        this.nonlectureSlots = nonlectureSlots;
     }
 }
