@@ -29,6 +29,59 @@ public class SearchManager {
 		// assign randomly
 		addrandom();
 		
+		// add test input
+		int rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
+		Course c = data.getCourses().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
+		Section s = c.getSections().get(rand);
+		Lecture l1 = s.getLecture();
+		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
+		c = data.getCourses().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
+		s = c.getSections().get(rand);
+		Lecture l2 = s.getLecture();
+		data.addNoncompatible(l1, l2);
+		
+		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
+		c = data.getCourses().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
+		s = c.getSections().get(rand);
+		l1 = s.getLecture();
+		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
+		c = data.getCourses().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
+		s = c.getSections().get(rand);
+		l2 = s.getLecture();
+		data.addPair(l1, l2);
+		
+		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
+		c = data.getCourses().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
+		s = c.getSections().get(rand);
+		l1 = s.getLecture();
+		rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
+		LectureSlot ls = data.getLectureSlots().get(rand);
+		data.addUnwanted(l1, ls);
+		
+		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
+		c = data.getCourses().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
+		s = c.getSections().get(rand);
+		l1 = s.getLecture();
+		rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
+		ls = data.getLectureSlots().get(rand);
+		data.addPartassign(l1, ls);
+		
+		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
+		c = data.getCourses().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
+		s = c.getSections().get(rand);
+		l1 = s.getLecture();
+		rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
+		ls = data.getLectureSlots().get(rand);
+		int pref = 100;
+		data.addPreference(l1, ls, pref);
+		
 		// print timetable
 		data.getTimetable().printAssignments();
 		
