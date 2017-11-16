@@ -46,9 +46,9 @@ public class Constr {
 			for (Assignment b : tt.getAssignments()) {
 				
 				// skip if not a lecture or same
-				if (a.getM().getClass() != Lecture.class) continue;
-				if (a.getS().getClass() != LectureSlot.class) continue;
-				if (a.getS() == null) continue;
+				if (b.getM().getClass() != Lecture.class) continue;
+				if (b.getS().getClass() != LectureSlot.class) continue;
+				if (b.getS() == null) continue;
 				if (a == b) continue;
 				
 				if (a.getS().equals(b.getS()))
@@ -77,9 +77,9 @@ public class Constr {
 			for (Assignment b : tt.getAssignments()) {
 				
 				// skip if a lecture or same
-				if (a.getM().getClass() != NonLecture.class) continue;
-				if (a.getS().getClass() != NonLectureSlot.class) continue;
-				if (a.getS() == null) continue;
+				if (b.getM().getClass() != NonLecture.class) continue;
+				if (b.getS().getClass() != NonLectureSlot.class) continue;
+				if (b.getS() == null) continue;
 				if (a == b) continue;
 				
 				if (a.getS().equals(b.getS()))
@@ -107,9 +107,9 @@ public class Constr {
 			for (Assignment b : tt.getAssignments()) {
 				
 				// skip if not a lecture or slot is different
-				if (a.getM().getClass() != NonLecture.class) continue;
-				if (a.getS().getClass() != NonLectureSlot.class) continue;
-				if (a.getS() == null) continue;
+				if (b.getM().getClass() != NonLecture.class) continue;
+				if (b.getS().getClass() != NonLectureSlot.class) continue;
+				if (b.getS() == null) continue;
 				if (a == b) continue;
 				if (!a.getS().equals(b.getS())) continue;
 				
@@ -182,9 +182,9 @@ public class Constr {
 			for (Assignment b : tt.getAssignments()) {
 				
 				// skip if not a lecture or slot is different
-				if (a.getM().getClass() != NonLecture.class) continue;
-				if (a.getS().getClass() != NonLectureSlot.class) continue;
-				if (a.getS() == null) continue;
+				if (b.getM().getClass() != NonLecture.class) continue;
+				if (b.getS().getClass() != NonLectureSlot.class) continue;
+				if (b.getS() == null) continue;
 				if (a == b) continue;
 				if (!a.getS().equals(b.getS())) continue;
 				
