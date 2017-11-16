@@ -62,10 +62,13 @@ public class InputManager {
         SearchData sd = new SearchData();
         sd.setLectureSlots(generateLectureSlots());
         sd.setLabSlots(generateNonLectureSlots());
-        sd.setTimetable(generateTimeTable());
+        sd.setCourses(generateSections());
+        sd.setNonLectures(generateNonLectures(sd.getCourses()));
+        sd.setTimetable(new TimeTable());
         return sd;
     }
 
+    // this is never used
     private void generateTimeTableObjects() {
         ArrayList<LectureSlot> ls = generateLectureSlots();
         ArrayList<NonLectureSlot> nls = generateNonLectureSlots();
@@ -192,7 +195,8 @@ public class InputManager {
      * 
      * @param courses 
      */
-    private void generateNonLectures(ArrayList<Course> courses) {
+    private ArrayList<NonLecture> generateNonLectures(ArrayList<Course> courses) {
+    	ArrayList<NonLecture> result = new ArrayList<NonLecture>();
         iw.nonlectureLines.stream().map((line) -> line.split("\\s+")).forEachOrdered((parts) -> {
             // split on whitespace
             String dept = parts[0];
@@ -212,6 +216,7 @@ public class InputManager {
 
             NonLecture nl = generateNonLecture(dept, courseNum, section, nlType, nlNum, courses);
             if (nl != null) {
+            	result.add(nl);
                 if ("TUT".equals(nlType)) // check for type of NonLecture
                 {
                     System.out.println("[Added NonLecture - " + nl.getDept() + " " + nl.getCourseNum() + " LEC " + nl.getSectionNum() + " TUT " + ((Tutorial) nl).getTutNum() + "]");
@@ -220,6 +225,7 @@ public class InputManager {
                 }
             }
         });
+        return result;
     }
 
     /**
