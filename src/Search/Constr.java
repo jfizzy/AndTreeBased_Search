@@ -75,7 +75,6 @@ public class Constr {
 	
 	/*
 	 *  individual hard constraints
-	 *  
 	 */
 	
 	/**
@@ -203,29 +202,6 @@ public class Constr {
 	 */
 	private boolean noncompatible() {
 		
-		// for each noncompatible entry
-//		for (Pair<Meeting, Meeting> p : data.getNoncompatible()) {
-//			
-//			// for each assignment
-//			for (Assignment a : data.getTimetable().getAssignments()) {
-//				
-//				// skip if meeting doesn't match first
-//				if (a.getM() != p.first) continue;
-//				
-//				// for each other assignment
-//				for (Assignment b : data.getTimetable().getAssignments()) {
-//					if (a == b) continue;
-//					
-//					// skip if meeting doesn't match second
-//					if (b.getM() != p.second) continue;
-//					
-//					// return false if the slot is the same
-//					if (a.getS().overlaps(b.getS()))
-//						return false;
-//				}
-//			}
-//		}
-		
 		// for each assignment
 		for (Assignment a : data.getTimetable().getAssignments()) {
 			
@@ -257,21 +233,6 @@ public class Constr {
 	 */
 	private boolean partassign() {
 		
-		// for each partassign entry
-//		for (Pair<Meeting, Slot> p : data.getPartassign()) {
-//			
-//			// for each assignment
-//			for (Assignment a : data.getTimetable().getAssignments()) {
-//				
-//				// skip if meeting doesn't match first
-//				if (a.getM() != p.first) continue;
-//					
-//				// return false if the slot doesn't match second
-//				if (!a.getS().equals(p.second))
-//					return false;
-//			}
-//		}
-		
 		// for each assignment
 		for (Assignment a : data.getTimetable().getAssignments()) {
 			
@@ -293,21 +254,6 @@ public class Constr {
 	 * @return
 	 */
 	private boolean unwanted() {
-		
-		// for each unwanted entry
-//		for (Pair<Meeting, Slot> p : data.getUnwanted()) {
-//			
-//			// for each assignment
-//			for (Assignment a : data.getTimetable().getAssignments()) {
-//				
-//				// skip if meeting doesn't match first
-//				if (a.getM() != p.first) continue;
-//					
-//				// return false if the slot matches second
-//				if (a.getS().equals(p.second))
-//					return false;
-//			}
-//		}
 		
 		// for each assignment
 		for (Assignment a : data.getTimetable().getAssignments()) {
@@ -415,6 +361,9 @@ public class Constr {
 		// for each assignment
 		for (Assignment a : data.getTimetable().getAssignments()) {
 			
+			// skip if not a lecture
+			if (a.getM().getClass() != Lecture.class) continue;
+			
 			// return false if slot is Tuesday at 11:00
 			if (a.getS().getDay().equals("TU") && a.getS().getHour() == 11)
 				return false;
@@ -433,31 +382,71 @@ public class Constr {
 		
 		// for each assignment
 		for (Assignment a : data.getTimetable().getAssignments()) {
+			String first = "";
+			String second = "";
 			
-			// skip if not CPSC 813/913
-			if (a.getM().getClass() == Lecture.class) {
+			// get course number
+			if (a.getM().getClass() == Lecture.class) {	// if lecture
 				Lecture l = (Lecture) a.getM();
 				if (!l.getParentSection().getParentCourse().getDepartment().equals("CPSC"))
 					continue;
-				if (!l.getParentSection().getParentCourse().getNumber().equals("813")
-						&& !l.getParentSection().getParentCourse().getNumber().equals("913"))
-					continue;
+				first = l.getParentSection().getParentCourse().getNumber();
 			}
-			else if (a.getM().getClass() == NonLecture.class) {
+			else if (a.getM().getClass() == NonLecture.class) {	// if nonlecture
 				NonLecture nl = (NonLecture) a.getM();
 				if (!nl.getDept().equals("CPSC"))
 					continue;
-				if (!nl.getCourseNum().equals("813") && !nl.getCourseNum().equals("913"))
-					continue;
+				first = nl.getCourseNum();
+				
 			}
 			else continue;
+			
+			// skip if not CPSC 813/913
+			if (!first.equals("813") && !first.equals("913"))
+				continue;
 			
 			// return false if not scheduled TuTh 18:00
 			if (!a.getS().getDay().equals("TU") || a.getS().getHour() != 18 || a.getS().getMinute() != 0)
 				return false;
 			
-			// TODO: cpsc 813 not allowed to overlap any sections/tuts of 313 or other courses not allowed to overlap 313
-			// TODO: cpsc 913 not allowed to overlap any sections/tuts of 413 or other courses not allowed to overlap 413
+			// cpsc 813 not allowed to overlap any sections/tuts of 313 or other courses not allowed to overlap 313
+			// cpsc 913 not allowed to overlap any sections/tuts of 413 or other courses not allowed to overlap 413
+			
+			// for each other assignment
+			for (Assignment b : data.getTimetable().getAssignments()) {
+				if (a == b) continue;
+				
+				// get course number
+				if (b.getM().getClass() == Lecture.class) { // if lecture
+					Lecture l = (Lecture) b.getM();
+					if (!l.getParentSection().getParentCourse().getDepartment().equals("CPSC"))
+						continue;
+					second = l.getParentSection().getParentCourse().getNumber();
+				}
+				else if (b.getM().getClass() == NonLecture.class) { // if nonlecture
+					NonLecture nl = (NonLecture) b.getM();
+					if (!nl.getDept().equals("CPSC"))
+						continue;
+					second = nl.getCourseNum();
+				}
+				else continue;
+				
+				// skip if not CPSC 313/413
+				if (!second.equals("313") && !second.equals("413"))
+					continue;
+				
+				// return false if 313 overlaps 813 or 413 overlaps 913
+				if (first.equals("313") && second.equals("813")) {
+					if (a.getS().overlaps(b.getS()))
+						return false;
+				}
+				else if (first.equals("413") && second.equals("913")) {
+					if (a.getS().overlaps(b.getS()))
+						return false;
+				}
+				
+				// TODO: also other courses not allowed to overlap 313/413
+			}
 		}
 		
 		// if this is reached the constraint is satisfied
