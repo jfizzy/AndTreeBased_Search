@@ -31,7 +31,7 @@ public abstract class Meeting {
     private ArrayList<Meeting> incompatibility;
     private ArrayList<Meeting> paired;
     private ArrayList<Slot> unwanted;
-    private ArrayList<Slot> partassign;
+    private Slot partassign;
     private ArrayList<Pair<Slot,Integer>> preferences;
     
     /**
@@ -41,7 +41,7 @@ public abstract class Meeting {
         incompatibility = new ArrayList<>();
         paired = new ArrayList<>();
         unwanted = new ArrayList<>();
-        partassign = new ArrayList<>();
+        //partassign = new ArrayList<>();
         preferences = new ArrayList<>();
     }
     
@@ -71,12 +71,12 @@ public abstract class Meeting {
         this.unwanted.add(s);
     }
     
-    public ArrayList<Slot> getPartassign() {
+    public Slot getPartassign() {
         return partassign;
     }
     
-    public void addPartassign(Slot s){
-        this.partassign.add(s);
+    public void setPartassign(Slot s){
+        this.partassign = s;
     }
     
     public ArrayList<Pair<Slot,Integer>> getPreferences() {

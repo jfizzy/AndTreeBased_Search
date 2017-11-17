@@ -18,14 +18,11 @@ import Schedule.Assignment;
 import Schedule.Course;
 import Schedule.Lecture;
 import Schedule.LectureSlot;
-import Schedule.Meeting;
 import Schedule.NonLecture;
 import Schedule.NonLectureSlot;
-import Schedule.Section;
 import Schedule.Slot;
-import Schedule.TimeTable;
-import Search.SearchData.Pair;
-import Search.SearchData.Tri;
+import Schedule.Meeting;
+import Schedule.Meeting.Pair;
 
 /**
  * Object for calculating how well a schedule fulfills soft constraints
@@ -172,6 +169,18 @@ public class Eval {
 //    				result += t.third;
 //    		}
 //    	}
+		
+		// for each assignment
+		for (Assignment a : data.getTimetable().getAssignments()) {
+			
+			// for each preference entry of the assignment's meeting
+			for (Pair<Slot,Integer> p : a.getM().getPreferences()) {
+				
+				// add preference value to penalty if slot doesn't match
+				if (!a.getS().equals(p.first))
+					result += p.second;
+			}
+		}
     	
     	// return weighted result
     	return wPref*result;
@@ -205,6 +214,26 @@ public class Eval {
 //    			}
 //    		}
 //    	}
+		
+		// for each assignment
+		for (Assignment a : data.getTimetable().getAssignments()) {
+			
+			// for each pair entry of the assignment's meeting
+			for (Meeting m : a.getM().getPaired()) {
+				
+				// for each other assignment
+				for (Assignment b : data.getTimetable().getAssignments()) {
+					if (a == b) continue;
+					
+					// skip if meeting doesn't match
+					if (b.getM() != m) continue;
+					
+					// add penalty if slot doesn't match
+					if (!a.getS().equals(b.getS()))
+						result += pen_notpaired;
+				}
+			}
+		}
     	
     	// return weighted result
 		return wPair*result;
@@ -261,7 +290,11 @@ public class Eval {
 		return wSecDiff*result;
 	}
 	
-	// getters and setters
+    /*
+     * getters, setters, adders
+     * 
+     */
+	
 	public void setMinWeight(int weight) {
 		wMin = weight;
 	}

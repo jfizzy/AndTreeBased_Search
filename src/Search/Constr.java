@@ -2,7 +2,6 @@ package Search;
 
 import Schedule.Assignment;
 import Schedule.TimeTable;
-import Search.SearchData.Pair;
 import Schedule.Lecture;
 import Schedule.LectureSlot;
 import Schedule.Meeting;
@@ -41,8 +40,8 @@ public class Constr {
 	 * returns true if all hard constraints are met
 	 * @return
 	 */
-	public boolean check() {
-		printViolations();
+	public boolean check(boolean show) {
+		if (show) printViolations();
 		return courseMax() && labMax() && labsDifferent() && noncompatible() 
 				&& partassign() && unwanted() && eveningClasses()
 				&& over500Classes() && specificTimes() && specialClasses();
@@ -74,7 +73,10 @@ public class Constr {
 			System.out.println("CPSC 813/913 constraint violated");
 	}
 	
-	// individual hard constraints
+	/*
+	 *  individual hard constraints
+	 *  
+	 */
 	
 	/**
 	 * course maximum
@@ -224,6 +226,26 @@ public class Constr {
 //			}
 //		}
 		
+		// for each assignment
+		for (Assignment a : data.getTimetable().getAssignments()) {
+			
+			// for each noncompatible entry of the assignment's meeting
+			for (Meeting m : a.getM().getIncompatibility()) {
+				
+				// for each other assignment
+				for (Assignment b : data.getTimetable().getAssignments()) {
+					if (a == b) continue;
+					
+					// skip if meeting doesn't match
+					if (b.getM() != m) continue;
+					
+					// return false if slots match
+					if (a.getS().overlaps(b.getS()))
+						return false;
+				}
+			}
+		}
+		
 		// if this is reached the constraint is satisfied
 		return true;
 	}
@@ -250,6 +272,17 @@ public class Constr {
 //			}
 //		}
 		
+		// for each assignment
+		for (Assignment a : data.getTimetable().getAssignments()) {
+			
+			// skip if partassign is not set
+			if (a.getM().getPartassign() == null) continue;
+			
+			// return false if slot doesn't match
+			if (!a.getS().equals(a.getM().getPartassign()))
+				return false;
+		}
+		
 		// if this is reached the constraint is satisfied
 		return true;
 	}
@@ -275,6 +308,18 @@ public class Constr {
 //					return false;
 //			}
 //		}
+		
+		// for each assignment
+		for (Assignment a : data.getTimetable().getAssignments()) {
+			
+			// for each unwanted entry of the assignment's meeting
+			for (Slot s : a.getM().getUnwanted()) {
+				
+				// return false if slot matches
+				if (a.getS().equals(s))
+					return false;
+			}
+		}
 		
 		// if this is reached the constraint is satisfied
 		return true;
