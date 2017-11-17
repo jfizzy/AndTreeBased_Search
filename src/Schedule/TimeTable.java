@@ -23,7 +23,7 @@ import Schedule.Section;
 public class TimeTable {
     
     private final ArrayList<Meeting> meetings; // must be ordered
-    private ArrayList<Assignment> assignments;
+    private ArrayList<Assignment> assignments;	// the list of assignments
     
     /**
      * default constructor
@@ -98,7 +98,9 @@ public class TimeTable {
     	}
     }
     
-    // getters and setters
+    /*
+     *  getters and setters
+     */
     
     public ArrayList<Assignment> getAssignments() {
         return assignments;

@@ -19,8 +19,8 @@ package Schedule;
  */
 public abstract class NonLecture extends Meeting {
 
-    protected Section parentSection;
-    protected boolean evening;
+    protected Section parentSection;	// nonlecture's parent section
+    protected boolean evening;			// whether it is an evening class
     
     /**TODO:    figure out if evening Course means all labs and 
      *          tutorials are evening as well
@@ -34,7 +34,9 @@ public abstract class NonLecture extends Meeting {
         this.evening = false;
     }
     
-    // getters and setters
+    /*
+     *  getters and setters
+     */
 
     public Section getParentSection() {
         return parentSection;

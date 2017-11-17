@@ -19,7 +19,7 @@ package Schedule;
  */
 public class Tutorial extends NonLecture{
     
-    private final String tutNum;
+    private final String tutNum;	// tutorial number
     
     /**
      * constructor
@@ -34,7 +34,9 @@ public class Tutorial extends NonLecture{
         this.evening = evening;
     }
     
-    // getters and setters
+    /*
+     *  getters and setters
+     */
 
     public String getTutNum() {
         return tutNum;

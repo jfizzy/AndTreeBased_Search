@@ -19,7 +19,7 @@ package Schedule;
  */
 public class Lab extends NonLecture{
     
-    private final String labNum;
+    private final String labNum;	// lab number
     
     /**
      * constructor
@@ -33,7 +33,9 @@ public class Lab extends NonLecture{
         this.evening = evening;
     }
     
-    // getters and setters
+    /*
+     *  getters and setters
+     */
 
     public String getLabNum() {
         return labNum;

@@ -23,11 +23,13 @@ import Search.SearchData.Pair;
  */
 public abstract class Meeting {
 	
+	// class for pairs
 	public class Pair<F, S> {
 	    public F first;
 	    public S second;
 	}
 	
+	// special constraints
     private ArrayList<Meeting> incompatibility;
     private ArrayList<Meeting> paired;
     private ArrayList<Slot> unwanted;
@@ -45,8 +47,11 @@ public abstract class Meeting {
         preferences = new ArrayList<>();
     }
     
-    // getters and setters
+    /*
+     *  getters and setters
+     */
     
+    // noncompatible
     public ArrayList<Meeting> getIncompatibility() {
         return incompatibility;
     }
@@ -55,6 +60,7 @@ public abstract class Meeting {
         this.incompatibility.add(m);
     }
     
+    // pair
     public ArrayList<Meeting> getPaired() {
         return paired;
     }
@@ -63,6 +69,7 @@ public abstract class Meeting {
         this.paired.add(m);
     }
     
+    // unwanted
     public ArrayList<Slot> getUnwanted() {
         return unwanted;
     }
@@ -71,6 +78,7 @@ public abstract class Meeting {
         this.unwanted.add(s);
     }
     
+    // partassign
     public Slot getPartassign() {
         return partassign;
     }
@@ -79,6 +87,7 @@ public abstract class Meeting {
         this.partassign = s;
     }
     
+    // preference
     public ArrayList<Pair<Slot,Integer>> getPreferences() {
         return preferences;
     }

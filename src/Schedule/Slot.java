@@ -19,11 +19,11 @@ package Schedule;
  */
 public abstract class Slot {
 
-    protected String day;
-    protected int hour;
-    protected int minute;
-    protected int endhour;
-    protected int endminute;
+    protected String day;		// slot day string
+    protected int hour;			// slot begin hour
+    protected int minute;		// slot begin minute
+    protected int endhour;		// slot end hour
+    protected int endminute;	// slot end minute
 
     /**
      * default constructor
@@ -79,8 +79,11 @@ public abstract class Slot {
     	return false;
     }
     
-    // getters and setters
+    /*
+     *  getters and setters
+     */
     
+    // day
     public String getDay() {
         return day;
     }
@@ -89,6 +92,7 @@ public abstract class Slot {
         this.day = day;
     }
 
+    // hour
     public int getHour() {
         return hour;
     }
@@ -97,6 +101,7 @@ public abstract class Slot {
         this.hour = hour;
     }
 
+    // minute
     public int getMinute() {
         return minute;
     }
@@ -105,6 +110,7 @@ public abstract class Slot {
         this.minute = minute;
     }
     
+    // end hour
     public int getEndHour() {
         return endhour;
     }
@@ -113,6 +119,7 @@ public abstract class Slot {
         this.endhour = hour;
     }
 
+    // end minute
     public int getEndMinute() {
         return endminute;
     }
@@ -120,5 +127,4 @@ public abstract class Slot {
     public void setEndMinute(int minute) {
         this.endminute = minute;
     }
-    
 }

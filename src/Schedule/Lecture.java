@@ -19,7 +19,7 @@ package Schedule;
  */
 public class Lecture extends Meeting{
     
-    private Section parentSection;
+    private Section parentSection;	// lecture's parent section
     
     /**
      * constructor
@@ -30,7 +30,9 @@ public class Lecture extends Meeting{
         this.parentSection = s;
     }
     
-    // getters and setters
+    /*
+     *  getters and setters
+     */
 
     public Section getParentSection() {
         return parentSection;

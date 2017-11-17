@@ -19,8 +19,8 @@ package Schedule;
  */
 public class NonLectureSlot extends Slot {
     
-    private final int labmax;
-    private final int labmin;
+    private final int labmax;	// maximum nonlectures for the slot
+    private final int labmin;	// minimum nonlectures for the slot
     
     /**
      * constructor
@@ -42,7 +42,9 @@ public class NonLectureSlot extends Slot {
         this.labmin = lmin;
     }
     
-    // getters and setters
+    /*
+     *  getters and setters
+     */
     
     public int getLabMin() {
     	return this.labmin;

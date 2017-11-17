@@ -22,9 +22,9 @@ import java.util.ArrayList;
 public class Course {
 
     
-    private String department;
-    private String number;
-    private ArrayList<Section> sections;
+    private String department;				// name of the department
+    private String number;					// course number
+    private ArrayList<Section> sections;	// sections within the course
     
     /**
      * default constructor
@@ -48,8 +48,11 @@ public class Course {
         this.sections.add(new Section(this,sNum));
     }
 
-    // getters and setters
+    /*
+     *  getters and setters
+     */
     
+    // department
     public String getDepartment() {
         return department;
     }
@@ -58,6 +61,7 @@ public class Course {
         this.department = department;
     }
 
+    // number
     public String getNumber() {
         return number;
     }
@@ -66,6 +70,7 @@ public class Course {
         this.number = number;
     }
 
+    // sections
     public ArrayList<Section> getSections() {
         return sections;
     }

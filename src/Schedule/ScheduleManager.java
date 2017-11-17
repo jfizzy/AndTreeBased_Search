@@ -37,7 +37,9 @@ public class ScheduleManager {
         this.nonlectureSlots = nonlectureSlots;
     }
     
-    // getters and setters
+    /*
+     *  getters and setters
+     */
 
     public TimeTable getTimeTable() {
         return timeTable;

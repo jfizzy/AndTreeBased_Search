@@ -19,8 +19,8 @@ package Schedule;
  */
 public class LectureSlot extends Slot {
 
-    private final int coursemax;
-    private final int coursemin;
+    private final int coursemax;	// maximum lectures for the slot
+    private final int coursemin;	// minimum lectures for the slot
     
     /**
      * constructor
@@ -42,7 +42,9 @@ public class LectureSlot extends Slot {
         this.coursemin = cmin;
     }
     
-    // getters and setters
+    /*
+     *  getters and setters
+     */
     
     public int getCourseMin() {
     	return this.coursemin;

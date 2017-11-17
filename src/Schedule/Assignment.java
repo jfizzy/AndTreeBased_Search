@@ -19,8 +19,8 @@ package Schedule;
  */
 public class Assignment {
     
-    private Meeting m;
-    private Slot s;
+    private Meeting m;	// course, lab, tut
+    private Slot s;		// slot it is assigned to
     
     /**
      * constructor
@@ -32,8 +32,11 @@ public class Assignment {
         this.s = s;
     }
     
-    // getters and setters
+    /*
+     *  getters and setters
+     */
 
+    // meeting
     public Meeting getM() {
         return m;
     }
@@ -42,6 +45,7 @@ public class Assignment {
         this.m = m;
     }
 
+    // slot
     public Slot getS() {
         return s;
     }
