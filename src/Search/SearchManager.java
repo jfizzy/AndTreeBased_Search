@@ -66,7 +66,7 @@ public class SearchManager {
 	 * fill the timetable randomly for testing
 	 */
 	private void assignRandom() {
-		int max = 10;	// number of times to try to get a valid assignment
+		int max = 50;	// number of times to try to get a valid assignment
 		
 		// for each course in data
 		for (Course c : data.getCourses()) {
@@ -124,7 +124,7 @@ public class SearchManager {
 	}
 	
 	/**
-	 * add a random entry to each special input list
+	 * add a random entry to each special input list (noncompatible, etc)
 	 */
 	private void addRandomInput() {
 		

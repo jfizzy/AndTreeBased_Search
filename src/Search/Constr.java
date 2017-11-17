@@ -1,7 +1,9 @@
 package Search;
 
 import Schedule.Assignment;
+import Schedule.Lab;
 import Schedule.TimeTable;
+import Schedule.Tutorial;
 import Schedule.Lecture;
 import Schedule.LectureSlot;
 import Schedule.Meeting;
@@ -281,19 +283,24 @@ public class Constr {
 		// for each assignment
 		for (Assignment a : data.getTimetable().getAssignments()) {
 			
-			// get parent section
-			Section s = null;
+			// get section number
+			String snum = null;
 			if (a.getM().getClass() == Lecture.class) {
 				Lecture l = (Lecture) a.getM();
-				s = l.getParentSection();
+				snum = l.getParentSection().getSectionNum();
 			}
-			else if (a.getM().getClass() == NonLecture.class) {
-				NonLecture nl = (NonLecture) a.getM();
-				s = nl.getParentSection();
+			else if (a.getM().getClass() == Lab.class) {
+				Lab nl = (Lab) a.getM();
+				snum = nl.getLabNum();
 			}
+			else if (a.getM().getClass() == Tutorial.class) {
+				Tutorial nl = (Tutorial) a.getM();
+				snum = nl.getTutNum();
+			}
+			else continue;
 			
 			// check section number begins with 9
-			if (s != null && s.getSectionNum().substring(0, 1).equals("9")) {
+			if (snum.substring(0, 1).equals("9")) {
 				
 				// return false if not scheduled in the evening
 				if (a.getS().getHour() < 18)
