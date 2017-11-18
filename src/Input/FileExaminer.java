@@ -25,8 +25,8 @@ public class FileExaminer {
     private final String fp;
     private File f;
     private BufferedReader br;
-    private InputWrapper iw;
-    private final Pattern sectionPatt,breakPatt,departmentPatt,slotPatt,lecturePatt,nonlecturePatt,notCompatiblePatt,unwantedPatt,preferencesPatt,courseSlotPatt,labSlotPatt;
+    private final InputWrapper iw;
+    private final Pattern sectionPatt,breakPatt,departmentPatt,slotPatt,lecturePatt,nonlecturePatt,notCompatiblePatt,unwantedPatt,preferencesPatt,labSlotPatt;
     private boolean inSec,courseSlotSec,labSlotSec,lectureSec,nonlectureSec,notCompatibleSec,unwantedSec,preferencesSec,pairSec,partialAssignmentSec;
 
     /**
@@ -36,17 +36,16 @@ public class FileExaminer {
      * @param iw 
      */
     public FileExaminer(String fp, InputWrapper iw) {
-        this.notCompatiblePatt = Pattern.compile("^\\s*([A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]|(TUT|LAB)\\s*[0-9][0-9])\\s*,\\s*[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]|(TUT|LAB)\\s*[0-9][0-9]))$");
-        this.lecturePatt = Pattern.compile("^\\s*[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*LEC\\s*[0-9][0-9]$");
-        this.nonlecturePatt = Pattern.compile("^\\s*[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9]|(TUT|LAB)\\s*[0-9][0-9])$");
-        this.slotPatt = Pattern.compile("^\\s*(MO|TU|FR)\\s*,\\s*[1-2]?[0-9]:[0-5][0-9]\\s*,\\s*[0-9]*\\s*,\\s*[0-9]*$");
+        this.notCompatiblePatt = Pattern.compile("^([A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]|(TUT|LAB)\\s*[0-9][0-9])\\s*,\\s*[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]|(TUT|LAB)\\s*[0-9][0-9]))$");
+        this.lecturePatt = Pattern.compile("^[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*LEC\\s*[0-9][0-9]$");
+        this.nonlecturePatt = Pattern.compile("^[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9]|(TUT|LAB)\\s*[0-9][0-9])$");
+        this.slotPatt = Pattern.compile("^(MO|TU|FR)\\s*,\\s*[1-2]?[0-9]:[0-5][0-9]\\s*,\\s*[0-9]*\\s*,\\s*[0-9]*$");
         this.departmentPatt = Pattern.compile("^\\s*[a-zA-Z0-9]+$");
         this.breakPatt = Pattern.compile("^\\s*$");
-        this.sectionPatt = Pattern.compile("^\\s*([A-Za-z]+(\\s*[A-Za-z]+)*:)$");
-        this.unwantedPatt = Pattern.compile("^\\s*([A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9])\\s*,\\s*(MO|TU|WE|TR|FR)\\s*,\\s*[ 12]?[0-9]:[0-9][0-9])$");
-        this.preferencesPatt = Pattern.compile("^\\s*(MO|TU|WE|TR|FR)\\s*,\\s*[1-2]?[0-9]:[0-5][0-9]\\s*,\\s*[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9])\\s*,\\s*[0-9]*[0-9]$");
-        this.courseSlotPatt = Pattern.compile("^\\s*(MO|TU).*$");
-        this.labSlotPatt = Pattern.compile("^\\s*(MO|TU|FR).*$");
+        this.sectionPatt = Pattern.compile("^([A-Za-z]+(\\s*[A-Za-z]+)*:)$");
+        this.unwantedPatt = Pattern.compile("^([A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9])\\s*,\\s*(MO|TU|WE|TR|FR)\\s*,\\s*[ 12]?[0-9]:[0-9][0-9])$");
+        this.preferencesPatt = Pattern.compile("^(MO|TU|WE|TR|FR)\\s*,\\s*[1-2]?[0-9]:[0-5][0-9]\\s*,\\s*[A-Z][A-Z][A-Z][A-Z]\\s*[0-9][0-9][0-9]\\s*(LEC\\s*[0-9][0-9]|LEC\\s*[0-9][0-9]\\s*(TUT|LAB)\\s*[0-9][0-9])\\s*,\\s*[0-9]*[0-9]$");
+        this.labSlotPatt = Pattern.compile("^(MO|TU|FR)\\s*,\\s*[1-2]?[0-9]:[0-5][0-9]\\s*,\\s*[0-9]*\\s*,\\s*[0-9]*$");
         this.fp = fp;
         this.f = null;
         this.br = null;
@@ -105,7 +104,6 @@ public class FileExaminer {
                 Matcher muwt = unwantedPatt.matcher(line); // unwanted format regex
                 Matcher mpre = preferencesPatt.matcher(line); // preferences format regex
 
-                Matcher mcslt = courseSlotPatt.matcher(line); // checks that it has a valid course slot prefix
                 Matcher mlslt = labSlotPatt.matcher(line); // checks that it has a valid lab slot prefix
                 
                 if (msec.find()) { // section
@@ -152,14 +150,20 @@ public class FileExaminer {
                             return false; // had an unrecognized section
                     }
                 } else if (mdpt.find() && inSec) { // department
-                    System.out.println("department line");
-                } else if (mslt.find() && inSec && ((courseSlotSec && mcslt.find()) || (labSlotSec && mlslt.find()))) { // slot
-                    if(courseSlotSec){// && mcslt.find()){
-                        System.out.println("lecture slot line");
-                        iw.lectureSlotLines.add(line);
-                    }else if(labSlotSec){// && mlslt.find()){
+                    System.out.println("test name line");
+                } else if (mslt.find() && inSec && (courseSlotSec || labSlotSec)) { // slot
+                    // we know that anything in here matches the generic 'slot regex'
+                    // tricky part is differentiating between lecture and nonlecture slots
+                    // do this with the flags, and make sure no slot with FR is being 
+                    // accepted as a lecture as this is invalid
+                    if(labSlotSec){
                         System.out.println("non lecture slot line");
                         iw.nonlectureSlotLines.add(line);
+                    } else if(courseSlotSec && !line.startsWith("\\s*FR")){
+                        System.out.println("lecture slot line");
+                        iw.lectureSlotLines.add(line);
+                    } else {
+                        System.out.println("found an invalid slot definition");
                     }
                 } else if (mlec.find() && inSec) { // lecture
                     System.out.println("lecture line");
