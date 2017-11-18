@@ -30,11 +30,11 @@ public abstract class Meeting {
 	}
 	
 	// special constraints
-    private ArrayList<Meeting> incompatibility;
-    private ArrayList<Meeting> paired;
-    private ArrayList<Slot> unwanted;
+    private final ArrayList<Meeting> incompatibility;
+    private final ArrayList<Meeting> paired;
+    private final ArrayList<Slot> unwanted;
     private Slot partassign;
-    private ArrayList<Pair<Slot,Integer>> preferences;
+    private final ArrayList<Pair<Slot,Integer>> preferences;
     
     /**
      * constructor
