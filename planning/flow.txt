@@ -1,0 +1,44 @@
+
+This is the flow so far:
+
+
+Manager is the overall coordinator for the program
+
+InputManager uses FileExaminer and InputWrapper to parse the input file
+--> SearchData object
+
+SearchManager works on a SearchData object
+--> fills in the timetable
+
+Constr works on a SearchData object
+--> check() method for checking if hard constraints are met
+
+Eval works on a SearchData object
+--> getEval() method for evaluating soft constraints
+
+
+
+SearchData contains:
+- lecture slots list
+- nonlecture slots list
+- course list
+- lectures list
+- nonlectures list
+- timetable object (contains the current schedule)
+
+LectureSlots are Slots
+NonLectureSlots are Slots
+- have start and end times, min and max values
+
+Courses
+- contain Sections, which have Lectures/Labs/Tutorials
+
+Lectures are Meetings
+Labs are NonLectures, which are Meetings
+Tutorials are NonLectures, which are Meetings
+- have department, course number, section number
+- have noncompatible, unwanted, pair, partassign, preference lists
+
+TimeTable
+- contains a list of Assignments, which have a Meeting and a Slot
+

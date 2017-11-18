@@ -64,6 +64,9 @@ public class FileExaminer {
         
     }
 
+    /**
+     * 
+     */
     public void init() {
         try {
             f = new File(fp);

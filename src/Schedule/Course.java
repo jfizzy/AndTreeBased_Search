@@ -15,13 +15,44 @@ package Schedule;
 
 import java.util.ArrayList;
 
+/**
+ * @author 
+ *
+ */
 public class Course {
 
     
-    private String department;
-    private String number;
-    private ArrayList<Section> sections;
+    private String department;				// name of the department
+    private String number;					// course number
+    private ArrayList<Section> sections;	// sections within the course
+    
+    /**
+     * default constructor
+     */
+    public Course() {
+        this.department = null;
+        this.number = null;
+        this.sections = new ArrayList<>();
+    }
+    
+    /**
+     * constructor
+     * @param dept
+     * @param num
+     * @param sNum
+     */
+    public Course(String dept, String num, String sNum){
+        this.department = dept;
+        this.number = num;
+        this.sections = new ArrayList<>();
+        this.sections.add(new Section(this,sNum));
+    }
 
+    /*
+     *  getters and setters
+     */
+    
+    // department
     public String getDepartment() {
         return department;
     }
@@ -30,6 +61,7 @@ public class Course {
         this.department = department;
     }
 
+    // number
     public String getNumber() {
         return number;
     }
@@ -38,29 +70,13 @@ public class Course {
         this.number = number;
     }
 
-    /**
-     *
-     * @return sections
-     */
+    // sections
     public ArrayList<Section> getSections() {
         return sections;
     }
     
     public void addSection(Section s) {
         sections.add(s);
-    }
-    
-    public Course() {
-        this.department = null;
-        this.number = null;
-        this.sections = new ArrayList<>();
-    }
-    
-    public Course(String dept, String num, String sNum){
-        this.department = dept;
-        this.number = num;
-        this.sections = new ArrayList<>();
-        this.sections.add(new Section(this,sNum));
     }
     
 }

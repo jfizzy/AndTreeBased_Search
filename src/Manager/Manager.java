@@ -24,6 +24,9 @@ import Search.SearchManager;
  */
 class Manager {
     
+    /**
+     * @param args
+     */
     public static void main(String[] args){
         if (args.length == 1){
             // maybe check if file exists here
@@ -34,6 +37,9 @@ class Manager {
         System.out.println("And-Tree based Search Scheduling Manager initialized.");
     }
     
+    /**
+     * @param fp
+     */
     private static void search(String fp){
         InputManager im = new InputManager();
         SearchData sd = im.run(fp);
@@ -42,6 +48,9 @@ class Manager {
         // need to use resulting input data here
     }
     
+    /**
+     * 
+     */
     private static void exit(){
         System.out.println("Exitting...");
         System.exit(0);

@@ -94,9 +94,28 @@ public class InputManager {
             String[] times = parts[1].split(":");
             int hour = Integer.parseInt(times[0]);
             int minute = Integer.parseInt(times[1]);
+            int endhour;
+            int endminute;
+            
+            // hour long lectures MWF
+            if (day.equals("MO") || day.equals("WE") || day.equals("FR")) {
+            	endhour = hour + 1;
+            	endminute = minute;
+            }
+            
+            // otherwise 1.5hour lectures
+            else {
+            	endhour = hour + 1;
+            	endminute = minute + 30;
+            	if (endminute % 60 == 0) {
+            		endminute = 0;
+            		endhour++;
+            	}
+            }
+            
             int coursemax = Integer.parseInt(parts[2]);
             int coursemin = Integer.parseInt(parts[3]);
-            results.add(new LectureSlot(day, hour, minute, coursemax, coursemin));
+            results.add(new LectureSlot(day, hour, minute, endhour, endminute, coursemax, coursemin));
             System.out.println("[Added Lecture Slot - " + day + " " + hour + ":" + minute + " " + coursemax + " " + coursemin + "]");
         });
         return results;
@@ -120,9 +139,14 @@ public class InputManager {
             String[] times = parts[1].split(":");
             int hour = Integer.parseInt(times[0]);
             int minute = Integer.parseInt(times[1]);
+            
+            // always hour long lab sections
+            int endhour = hour + 1;
+            int endminute = minute;
+            
             int labmax = Integer.parseInt(parts[2]);
             int labmin = Integer.parseInt(parts[3]);
-            results.add(new NonLectureSlot(day, hour, minute, labmax, labmin));
+            results.add(new NonLectureSlot(day, hour, minute, endhour, endminute, labmax, labmin));
             System.out.println("[Added Non Lecture Slot - " + day + " " + hour + ":" + minute + " " + labmax + " " + labmin + "]");
         });
         return results;

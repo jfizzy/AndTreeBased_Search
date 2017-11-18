@@ -13,17 +13,32 @@
  */
 package Schedule;
 
+/**
+ * @author 
+ *
+ */
 public class Lab extends NonLecture{
     
-    private final String labNum;
-
-    public String getLabNum() {
-        return labNum;
-    }
+    private final String labNum;	// lab number
     
+    /**
+     * constructor
+     * @param num
+     * @param s
+     * @param evening
+     */
     public Lab(String num, Section s, boolean evening){
         this.labNum = num;
         this.parentSection = s;
         this.evening = evening;
     }
+    
+    /*
+     *  getters and setters
+     */
+
+    public String getLabNum() {
+        return labNum;
+    }
+
 }
