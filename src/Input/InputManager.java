@@ -46,12 +46,12 @@ public class InputManager {
 
     /**
      * SearchData - takes a file path as input and will parse the file at said
-     * in order to extract the valid lines from it, store the valid lines by 
-     * type in an InputWrapper, then begin parsing the data and generating the 
-     * overall structural elements of a 'TimeTable' object for the search system
+ in order to extract the valid lines from it, store the valid lines by 
+ nlType in an InputWrapper, then begin parsing the data and generating the 
+ overall structural elements of a 'TimeTable' object for the search system
      * 
      * @param fp
-     * @return search data type
+     * @return search data nlType
      */
     public SearchData run(String fp) {
 
@@ -65,6 +65,7 @@ public class InputManager {
         sd.setCourses(generateSections());
         sd.setNonLectures(generateNonLectures(sd.getCourses()));
         sd.setTimetable(new TimeTable());
+        generateTimeTable();
         return sd;
     }
 
@@ -123,8 +124,8 @@ public class InputManager {
 
     /**
      * generateNonLectureSlots - generates the NonLecture slots specified by 
-     * the input file lines, indifferent of whether they are Labs or Tutorials,
-     * and returns them as an arraylist of type 'NonLectureSlot'
+ the input file lines, indifferent of whether they are Labs or Tutorials,
+ and returns them as an arraylist of nlType 'NonLectureSlot'
      * @return results
      */
     private ArrayList<NonLectureSlot> generateNonLectureSlots() {
@@ -162,6 +163,9 @@ public class InputManager {
      */
     private TimeTable generateTimeTable() {
         //generate list of courses
+        System.out.println("--------------------");
+        System.out.println("TESTING");
+        System.out.println("--------------------");
         ArrayList<Course> courses = generateSections();
         generateNonLectures(courses);
         generateIncompatibilities(courses);
@@ -241,7 +245,7 @@ public class InputManager {
             NonLecture nl = generateNonLecture(dept, courseNum, section, nlType, nlNum, courses);
             if (nl != null) {
             	result.add(nl);
-                if ("TUT".equals(nlType)) // check for type of NonLecture
+                if ("TUT".equals(nlType)) // check for nlType of NonLecture
                 {
                     System.out.println("[Added NonLecture - " + nl.getDept() + " " + nl.getCourseNum() + " LEC " + nl.getSectionNum() + " TUT " + ((Tutorial) nl).getTutNum() + "]");
                 } else {
@@ -340,56 +344,28 @@ public class InputManager {
         iw.notCompatibleLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((halves) -> {
             String left = halves[0];
             String right = halves[1];
-            String[] lParts = left.split("\\s+");
-            String[] rParts = right.split("\\s+");
-            // left parsing
-            String lDept = lParts[0];
-            String lCNum = lParts[1];
-            String lSec = null, lNType = null, lNNum = null;
-            if ("LEC".equals(lParts[2])) { // lecture specified
-                lSec = lParts[3];
-                if (lParts.length == 6) {
-                    lNType = lParts[4];
-                    lNNum = lParts[5];
-                }
-            } else { // lecture implied (maybe)
-                //TODO: need to get feedback from TA about ignoring the following two
-                lNType = lParts[2];
-                lNNum = lParts[3];
-            }
-            // right parsing
-            String rDept = rParts[0];
-            String rCNum = rParts[1];
-            String rSec = null, rNType = null, rNNum = null;
-            if ("LEC".equals(rParts[2])) {
-                rSec = rParts[3];
-                if (rParts.length == 6) {
-                    rNType = rParts[4];
-                    rNNum = rParts[5];
-                }
-            } else {
-                rNType = rParts[2];
-                rNNum = rParts[3];
-            }
+            
             Meeting l, r;
-            l = findMeeting(courses, lDept, lCNum, lSec, lNType, lNNum);
-            r = findMeeting(courses, rDept, rCNum, rSec, rNType, rNNum);
-            if (l != null && r != null) { //both are found
+            // find the meetings
+            l = findMeeting(courses, left);
+            r = findMeeting(courses, right);
+            
+            if (l != null && r != null) { // if both are found
                 l.addIncompatibility(r); // give them 
                 r.addIncompatibility(l); // the same incompatibility
-                System.out.println("[Not compatible - " + lDept + " " + lCNum + "... =/= " + rDept + " " + rCNum + "..." + "]");
+                System.out.println("[Not compatible - " + l.toString() + " =/= " + r.toString() + "]");
             } else {
                 System.out.println("Could not find specified meetings for incompatibility");
             }
         });
 
     }
-
+    
     /**
-     * findMeeting - given inputs that can very generally specify any type of 
-     * 'Meeting' subclass, whether it be a 'Lecture', 'Tutorial', or 'Lab',
-     * attempts to return the specific object it resides in for use of the 
-     * caller
+     * findMeeting - given an input String that can very generally specify any nlType of 
+ 'Meeting' subclass, whether it be a 'Lecture', 'Tutorial', or 'Lab',
+ attempts to return the specific object it resides in for use of the 
+ caller
      * 
      * @param courses
      * @param dept
@@ -399,31 +375,58 @@ public class InputManager {
      * @param nlNum
      * @return 
      */
-    private Meeting findMeeting(ArrayList<Course> courses, String dept, String cNum, String sec, String type, String nlNum) {
+    private Meeting findMeeting(ArrayList<Course> courses, String meetingString) {
+        
+        String mParts[] = meetingString.split("\\s+");
+        
+        String dept = mParts[0];
+        String cNum = mParts[1];
+        String sec = null, nlType = null, nlNum = null;
+        if ("LEC".equals(mParts[2])) { // lecture specified
+            // looks like 'CPSC 433 LEC ...'
+            sec = mParts[3];
+            if (mParts.length == 6) {
+                // looks like 'CPSC 433 LEC 01 TUT 01'
+                nlType = mParts[4];
+                nlNum = mParts[5];
+            }
+        } else { // lecture implied (maybe)
+            // looks like 'CPSC 433' OR 'CPSC 433 TUT 01'
+            
+            if(mParts.length == 2){
+                // odd case
+                // looks like 'CPSC 433'
+                //TODO: need to get feedback from TA about ignoring the following two
+            }else{
+                nlType = mParts[2];
+                nlNum = mParts[3];
+            }
+        }
         for (Course c : courses) {
             if (c.getDepartment().equals(dept) && c.getNumber().equals(cNum)) {
                 if (sec == null) { // section not specified, assuming first index
-                    if (type == null) {
+                    if (nlType == null) {
+                        // odd case
                         // Lecture was specified
                         //TODO need to ask about this case
                     } else {
                         // NonLecture specified
-                        if ("TUT".equals(type)) {
+                        if ("TUT".equals(nlType)) {
                             for (Tutorial tut : c.getSections().get(0).getTuts()) {
-                                if (nlNum.equals(tut.getTutNum())) {
+                                if (tut.getTutNum().equals(nlNum)) {
                                     return tut; // found the tutorial
                                 }
                             }
-                        } else if ("LAB".equals(type)) {
+                        } else if ("LAB".equals(nlType)) {
                             for (Lab lab : c.getSections().get(0).getLabs()) {
-                                if (nlNum.equals(lab.getLabNum())) {
+                                if (lab.getLabNum().equals(nlNum)) {
                                     return lab; // found the lab
                                 }
                             }
                         }
                     }
                 } else { // section specified
-                    if (type == null) {
+                    if (nlType == null) {
                         // Lecture was specified
                         for (Section s : c.getSections()) {
                             if (sec.equals(s.getSectionNum())) {
@@ -432,23 +435,23 @@ public class InputManager {
                         }
                     } else {
                         // NonLecture specified
-                        if ("TUT".equals(type)) {
+                        if ("TUT".equals(nlType)) {
                             // Left is a Tutorial
                             for (Section s : c.getSections()) {
                                 if (sec.equals(s.getSectionNum())) {
                                     for (Tutorial tut : s.getTuts()) {
-                                        if (nlNum.equals(tut.getTutNum())) {
+                                        if (tut.getTutNum().equals(nlNum)) {
                                             return tut; // found the tutorial
                                         }
                                     }
                                 }
                             }
-                        } else if ("LAB".equals(type)) {
+                        } else if ("LAB".equals(nlType)) {
                             // Left is a Lab
                             for (Section s : c.getSections()) {
                                 if (sec.equals(s.getSectionNum())) {
                                     for (Lab lab : s.getLabs()) {
-                                        if (nlNum.equals(lab.getLabNum())) {
+                                        if (lab.getLabNum().equals(nlNum)) {
                                             return lab; // found the lab
                                         }
                                     }
@@ -462,4 +465,18 @@ public class InputManager {
         return null; // couldnt find a match
     }
 
+    private void generateUnwanted(ArrayList<Course> courses){
+        iw.unwantedLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
+            Meeting m = findMeeting(courses, parts[0]);
+            if(m == null){
+                return; // could not find meeting, no point in continuing
+            }
+            String day = parts[1];
+            String time = parts[2];
+            // find slot method
+            // need to update slots where all are created by default, and set to 'active'
+            // when specified by input file
+            
+        });
+    }
 }

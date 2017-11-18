@@ -42,4 +42,12 @@ public class Tutorial extends NonLecture{
         return tutNum;
     }
     
+    @Override
+    public String toString(){
+        String dept = this.parentSection.getParentCourse().getDepartment();
+        String cNum = this.parentSection.getParentCourse().getNumber();
+        String sec = this.parentSection.getSectionNum();
+        return (dept + " " + cNum + " LEC " + sec + " TUT " + this.tutNum);
+    }
+    
 }

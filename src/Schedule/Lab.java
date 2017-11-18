@@ -40,5 +40,13 @@ public class Lab extends NonLecture{
     public String getLabNum() {
         return labNum;
     }
+    
+    @Override
+    public String toString(){
+        String dept = this.parentSection.getParentCourse().getDepartment();
+        String cNum = this.parentSection.getParentCourse().getNumber();
+        String sec = this.parentSection.getSectionNum();
+        return (dept + " " + cNum + " LEC " + sec + " LAB " + this.labNum);
+    }
 
 }
