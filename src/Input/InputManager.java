@@ -65,6 +65,7 @@ public class InputManager {
         sd.setCourses(generateSections());
         sd.setNonLectures(generateNonLectures(sd.getCourses()));
         sd.setTimetable(new TimeTable());
+        generateTimeTable();
         return sd;
     }
 
@@ -162,6 +163,9 @@ public class InputManager {
      */
     private TimeTable generateTimeTable() {
         //generate list of courses
+        System.out.println("--------------------");
+        System.out.println("TESTING");
+        System.out.println("--------------------");
         ArrayList<Course> courses = generateSections();
         generateNonLectures(courses);
         generateIncompatibilities(courses);
@@ -349,7 +353,7 @@ public class InputManager {
             if (l != null && r != null) { // if both are found
                 l.addIncompatibility(r); // give them 
                 r.addIncompatibility(l); // the same incompatibility
-                System.out.println("[Not compatible - " + l.toString() + "... =/= " + r.toString() + "..." + "]");
+                System.out.println("[Not compatible - " + l.toString() + " =/= " + r.toString() + "]");
             } else {
                 System.out.println("Could not find specified meetings for incompatibility");
             }
