@@ -26,6 +26,7 @@ public class LectureSlot extends Slot {
     
     
     /**
+<<<<<<< HEAD
      * constructor
      * @param day
      * @param h
@@ -35,6 +36,16 @@ public class LectureSlot extends Slot {
      * @param cmax
      * @param cmin
      * @param isEvening
+=======
+     * Constructor
+     * @param day Day
+     * @param h Begin hour
+     * @param m Begin minute
+     * @param eh End hour
+     * @param em End minute
+     * @param cmax Course max
+     * @param cmin Course min
+>>>>>>> ac65e4ae6cd1d88603d56b71abd07c378c42c929
      */
     public LectureSlot(String day, int h, int m, int eh, int em, int cmax, int cmin, boolean isEvening){
         this.day = day;

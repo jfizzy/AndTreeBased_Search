@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import Schedule.Section;
 
 /**
+ * Object representing a schedule of assigned meetings to slots
  * @author 
  *
  */
@@ -26,7 +27,7 @@ public class TimeTable {
     private ArrayList<Assignment> assignments;	// the list of assignments
     
     /**
-     * default constructor
+     * Default constructor
      */
     public TimeTable() {
     	meetings = null;
@@ -34,8 +35,8 @@ public class TimeTable {
     }
     
     /**
-     * constructor
-     * @param meetings
+     * Constructor
+     * @param meetings List of meetings
      */
     public TimeTable(ArrayList<Meeting> meetings){
         this.meetings = meetings;
@@ -46,9 +47,9 @@ public class TimeTable {
     }
     
     /**
-     * constructor for constr
-     * @param a
-     * @param tt
+     * Constructor for Constr
+     * @param a Assignment to check
+     * @param tt Existing timetable
      */
     public TimeTable(Assignment a, TimeTable tt) {
     	this.meetings = null;//(ArrayList<Meeting>) tt.meetings.clone();
@@ -58,7 +59,7 @@ public class TimeTable {
     }
     
     /**
-     * print the timetable for debugging
+     * Print the timetable for debugging
      */
     public void printAssignments() {
     	
@@ -90,9 +91,9 @@ public class TimeTable {
     		
     		// slot
     		if (a.getS() != null) {
-    			System.out.print(" --> "+a.getS().getDay()+" "
-    					+a.getS().getHour()+":"+a.getS().getMinute()
-    					+" - "+a.getS().getEndHour()+":"+a.getS().getEndMinute());
+    			System.out.format(" --> %s %02d:%02d - %02d:%02d", 
+    					a.getS().getDay(), a.getS().getHour(), a.getS().getMinute(), 
+    					a.getS().getEndHour(), a.getS().getEndMinute());
     		}
     		System.out.print("\n");
     	}

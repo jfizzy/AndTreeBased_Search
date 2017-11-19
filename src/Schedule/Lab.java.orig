@@ -14,8 +14,12 @@
 package Schedule;
 
 /**
- * Object representing a lab to be scheduled
+<<<<<<< HEAD
  * @author
+=======
+ * Object representing a lab to be scheduled
+ * @author 
+>>>>>>> ac65e4ae6cd1d88603d56b71abd07c378c42c929
  *
  */
 public class Lab extends NonLecture {
@@ -23,29 +27,26 @@ public class Lab extends NonLecture {
     private final String labNum;	// lab number
 
     /**
-     * Constructor
+<<<<<<< HEAD
+     * constructor
      *
+     * @param num
+     * @param s
+     * @param evening
+=======
+     * Constructor
      * @param num Lab number
      * @param s Section number
      * @param evening Evening course flag
+>>>>>>> ac65e4ae6cd1d88603d56b71abd07c378c42c929
      */
-    public Lab(String num, Section s, boolean evening){
+    public Lab(String num, Section s, boolean evening) {
         this.labNum = num;
         this.parentSection = s;
         this.evening = evening;
     }
-    
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString(){
-        String dept = this.parentSection.getParentCourse().getDepartment();
-        String cNum = this.parentSection.getParentCourse().getNumber();
-        String sec = this.parentSection.getSectionNum();
-        return (dept + " " + cNum + " LEC " + sec + " LAB " + this.labNum);
-    }
-    
+<<<<<<< HEAD
+
     /*
      *  getters and setters
      */
@@ -53,6 +54,12 @@ public class Lab extends NonLecture {
         return labNum;
     }
 
+=======
+    
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+>>>>>>> ac65e4ae6cd1d88603d56b71abd07c378c42c929
     @Override
     public String toString() {
         if (this.parentSection == null) {
@@ -67,5 +74,12 @@ public class Lab extends NonLecture {
         }
 
     }
+    
+    /*
+     *  getters and setters
+     */
 
+    public String getLabNum() {
+        return labNum;
+    }
 }

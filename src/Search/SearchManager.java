@@ -19,15 +19,15 @@ public class SearchManager {
 	private SearchData data;
 	
 	/**
-	 * constructor
-	 * @param sd
+	 * Constructor
+	 * @param sd Search data
 	 */
 	public SearchManager(SearchData sd) {
 		this.data = sd;
 	}
 	
 	/**
-	 * run the search
+	 * Run the search
 	 */
 	public void run() {
 		
@@ -55,15 +55,15 @@ public class SearchManager {
 	}
 	
 	/**
-	 * return the search data
-	 * @return
+	 * Return the search data
+	 * @return Search data
 	 */
 	public SearchData getData() {
 		return this.data;
 	}
 	
 	/**
-	 * fill the timetable randomly for testing
+	 * Fill the timetable randomly for testing
 	 */
 	private void assignRandom() {
 		int max = 50;	// number of times to try to get a valid assignment
@@ -124,7 +124,8 @@ public class SearchManager {
 	}
 	
 	/**
-	 * add a random entry to each special input list (noncompatible, etc)
+	 * Add a random entry to each special input list (noncompatible, etc)
+	 * for random meetings
 	 */
 	private void addRandomInput() {
 		

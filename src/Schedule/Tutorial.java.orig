@@ -14,7 +14,12 @@
 package Schedule;
 
 /**
+<<<<<<< HEAD
  * @author
+=======
+ * Object representing a tutorial to be scheduled
+ * @author 
+>>>>>>> ac65e4ae6cd1d88603d56b71abd07c378c42c929
  *
  */
 public class Tutorial extends NonLecture {
@@ -22,11 +27,18 @@ public class Tutorial extends NonLecture {
     private final String tutNum;	// tutorial number
 
     /**
-     * Constructor
+<<<<<<< HEAD
+     * constructor
      *
+     * @param num
+     * @param s
+     * @param evening
+=======
+     * Constructor
      * @param num Tutorial number
      * @param s Section number
      * @param evening Evening flag
+>>>>>>> ac65e4ae6cd1d88603d56b71abd07c378c42c929
      */
     public Tutorial(String num, Section s, boolean evening) {
         super();
@@ -34,17 +46,7 @@ public class Tutorial extends NonLecture {
         this.parentSection = s;
         this.evening = evening;
     }
-    
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString(){
-        String dept = this.parentSection.getParentCourse().getDepartment();
-        String cNum = this.parentSection.getParentCourse().getNumber();
-        String sec = this.parentSection.getSectionNum();
-        return (dept + " " + cNum + " LEC " + sec + " TUT " + this.tutNum);
-    }
+<<<<<<< HEAD
 
     /*
      *  getters and setters
@@ -53,6 +55,12 @@ public class Tutorial extends NonLecture {
         return tutNum;
     }
 
+=======
+    
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+>>>>>>> ac65e4ae6cd1d88603d56b71abd07c378c42c929
     @Override
     public String toString() {
         if (this.parentSection == null) {
@@ -66,5 +74,17 @@ public class Tutorial extends NonLecture {
             return (dept + " " + cNum + " LEC " + sec + " TUT " + this.tutNum);
         }
     }
+<<<<<<< HEAD
 
+=======
+    
+    /*
+     *  getters and setters
+     */
+
+    public String getTutNum() {
+        return tutNum;
+    }
+    
+>>>>>>> ac65e4ae6cd1d88603d56b71abd07c378c42c929
 }

@@ -14,6 +14,7 @@
 package Schedule;
 
 /**
+ * Abstract class representing Labs/Tutorials to be scheduled
  * @author 
  *
  */
@@ -27,7 +28,7 @@ public abstract class NonLecture extends Meeting {
      *          tutorials are evening as well
      */
     /**
-     * constructor
+     * Constructor
      */
     public NonLecture(){
         super();
