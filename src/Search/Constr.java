@@ -408,7 +408,7 @@ public class Constr {
 			}
 			else continue;
 			
-			// skip if not CPSC 813/913
+			// skip if not CPSC 813 or 913
 			if (!first.equals("813") && !first.equals("913"))
 				continue;
 			
@@ -443,16 +443,56 @@ public class Constr {
 					continue;
 				
 				// return false if 313 overlaps 813 or 413 overlaps 913
-				if (first.equals("313") && second.equals("813")) {
+				if (first.equals("813") && second.equals("313")) {
 					if (a.getS().overlaps(b.getS()))
 						return false;
 				}
-				else if (first.equals("413") && second.equals("913")) {
+				else if (first.equals("913") && second.equals("413")) {
 					if (a.getS().overlaps(b.getS()))
 						return false;
 				}
 				
-				// TODO: also other courses not allowed to overlap 313/413
+				// can't overlap other courses that are not allowed to overlap 313/413
+				
+				// if the first course is 813 and second is 313
+				if (first.equals("813") && second.equals("313")) {
+					
+					// for each non-compatible entry of 313
+					for (Meeting m : b.getM().getIncompatibility()) {
+						
+						// for each other assignment
+						for (Assignment c : data.getTimetable().getAssignments()) {
+							if (c == a || c == b) continue;
+							
+							// skip if meeting doesn't match
+							if (c.getM() != m) continue;
+							
+							// return false if slots overlap
+							if (a.getS().overlaps(c.getS()))
+								return false;
+						}
+					}
+				}
+				
+				// if the first course is 913 and second is 413
+				if (first.equals("913") && second.equals("413")) {
+					
+					// for each non-compatible entry of 413
+					for (Meeting m : b.getM().getIncompatibility()) {
+						
+						// for each other assignment
+						for (Assignment c : data.getTimetable().getAssignments()) {
+							if (c == a || c == b) continue;
+							
+							// skip if meeting doesn't match
+							if (c.getM() != m) continue;
+							
+							// return false if slots overlap
+							if (a.getS().overlaps(c.getS()))
+								return false;
+						}
+					}
+				}
 			}
 		}
 		
