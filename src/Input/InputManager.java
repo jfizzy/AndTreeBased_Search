@@ -20,11 +20,11 @@ import Schedule.LectureSlot;
 import Schedule.Meeting;
 import Schedule.NonLecture;
 import Schedule.NonLectureSlot;
+import Schedule.ScheduleManager;
 import Schedule.Section;
 import Schedule.Slot;
 import Schedule.TimeTable;
 import Schedule.Tutorial;
-import Search.SearchData;
 
 import java.util.ArrayList;
 
@@ -47,7 +47,7 @@ public class InputManager {
     }
 
     /**
-     * SearchData - takes a file path as input and will parse the file at said
+     * ScheduleManager - takes a file path as input and will parse the file at said
      * in order to extract the valid lines from it, store the valid lines by
      * nlType in an InputWrapper, then begin parsing the data and generating the
      * overall structural elements of a 'TimeTable' object for the search system
@@ -55,7 +55,7 @@ public class InputManager {
      * @param fp
      * @return search data nlType
      */
-    public SearchData run(String fp) {
+    public ScheduleManager run(String fp) {
 
         iw = new InputWrapper();
         fe = new FileExaminer(fp, iw);
@@ -66,13 +66,13 @@ public class InputManager {
         generateTimeTable();
         // comment out to run other code
         
-        SearchData sd = new SearchData();
-        sd.setLectureSlots(activateLectureSlots());
-        sd.setLabSlots(activateNonLectureSlots());
-        sd.setCourses(generateSections());
-        sd.setNonLectures(generateNonLectures(sd.getCourses()));
-        sd.setTimetable(new TimeTable());
-        return sd;
+        ScheduleManager sm = new ScheduleManager();
+        sm.setLectureSlots(activateLectureSlots());
+        sm.setLabSlots(activateNonLectureSlots());
+        sm.setCourses(generateSections());
+        sm.setNonLectures(generateNonLectures(sm.getCourses()));
+        sm.setTimetable(new TimeTable());
+        return sm;
     }
 
     // this is never used

@@ -9,7 +9,7 @@ import Schedule.LectureSlot;
 import Schedule.Meeting;
 import Schedule.NonLecture;
 import Schedule.NonLectureSlot;
-import Schedule.Section;
+import Schedule.ScheduleManager;
 import Schedule.Slot;
 
 /**
@@ -19,23 +19,23 @@ import Schedule.Slot;
 public class Constr {
 	
 	// the instance
-	private SearchData data;
+	private ScheduleManager schedule;
 	
 	/**
 	 * Constructor for checking if adding an assignment to a search is valid
 	 * @param a Assignment
-	 * @param sd Search data
+	 * @param sd Search schedule
 	 */
-	public Constr(Assignment a, SearchData sd) {
-		this(new SearchData(sd, new TimeTable(a, sd.getTimetable())));
+	public Constr(Assignment a, ScheduleManager sd) {
+		this(new ScheduleManager(sd, new TimeTable(a, sd.getTimetable())));
 	}
 
 	/**
 	 * Constructor for checking if a search is valid
-	 * @param sd Search data
+	 * @param sd Search schedule
 	 */
-	public Constr(SearchData sd) {
-		this.data = sd;
+	public Constr(ScheduleManager sd) {
+		this.schedule = sd;
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class Constr {
 	private boolean courseMax() {
 		
 		// for each assignment
-		for (Assignment a : data.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getTimetable().getAssignments()) {
 			
 			// skip if not a lecture or not assigned
 			if (a.getM().getClass() != Lecture.class
@@ -96,7 +96,7 @@ public class Constr {
 			
 			// count how many others have the same slot
 			int count = 1;
-			for (Assignment b : data.getTimetable().getAssignments()) {
+			for (Assignment b : schedule.getTimetable().getAssignments()) {
 				if (a == b) continue;
 				
 				// skip if not a lecture or not assigned
@@ -126,7 +126,7 @@ public class Constr {
 	private boolean labMax() {
 		
 		// for each assignment
-		for (Assignment a : data.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getTimetable().getAssignments()) {
 			
 			// skip if not nonlecture or not assigned
 			if (a.getM().getClass() != NonLecture.class
@@ -136,7 +136,7 @@ public class Constr {
 			
 			// count how many others have the same slot
 			int count = 1;
-			for (Assignment b : data.getTimetable().getAssignments()) {
+			for (Assignment b : schedule.getTimetable().getAssignments()) {
 				if (a == b) continue;
 				
 				// skip if not nonlecture or not assigned
@@ -166,7 +166,7 @@ public class Constr {
 	private boolean labsDifferent() {
 		
 		// for each assignment
-		for (Assignment a : data.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getTimetable().getAssignments()) {
 			
 			// skip if not a nonlecture or not assigned
 			if (a.getM().getClass() != NonLecture.class
@@ -175,7 +175,7 @@ public class Constr {
 				continue;
 			
 			// for each other assignment
-			for (Assignment b : data.getTimetable().getAssignments()) {
+			for (Assignment b : schedule.getTimetable().getAssignments()) {
 				if (a == b) continue;
 				
 				// skip if not a lecture or slot is different
@@ -205,13 +205,13 @@ public class Constr {
 	private boolean noncompatible() {
 		
 		// for each assignment
-		for (Assignment a : data.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getTimetable().getAssignments()) {
 			
 			// for each noncompatible entry of the assignment's meeting
 			for (Meeting m : a.getM().getIncompatibility()) {
 				
 				// for each other assignment
-				for (Assignment b : data.getTimetable().getAssignments()) {
+				for (Assignment b : schedule.getTimetable().getAssignments()) {
 					if (a == b) continue;
 					
 					// skip if meeting doesn't match
@@ -236,7 +236,7 @@ public class Constr {
 	private boolean partassign() {
 		
 		// for each assignment
-		for (Assignment a : data.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getTimetable().getAssignments()) {
 			
 			// skip if partassign is not set
 			if (a.getM().getPartassign() == null) continue;
@@ -258,7 +258,7 @@ public class Constr {
 	private boolean unwanted() {
 		
 		// for each assignment
-		for (Assignment a : data.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getTimetable().getAssignments()) {
 			
 			// for each unwanted entry of the assignment's meeting
 			for (Slot s : a.getM().getUnwanted()) {
@@ -281,7 +281,7 @@ public class Constr {
 	private boolean eveningClasses() {
 		
 		// for each assignment
-		for (Assignment a : data.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getTimetable().getAssignments()) {
 			
 			// get section number
 			String snum = null;
@@ -320,7 +320,7 @@ public class Constr {
 	private boolean over500Classes() {
 		
 		// for each assignment
-		for (Assignment a : data.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getTimetable().getAssignments()) {
 			
 			// skip if not a lecture or not assigned
 			if (a.getM().getClass() != Lecture.class
@@ -334,7 +334,7 @@ public class Constr {
 			if (cnum1 < 500) continue;
 			
 			// for each other assignment
-			for (Assignment b : data.getTimetable().getAssignments()) {
+			for (Assignment b : schedule.getTimetable().getAssignments()) {
 				if (a == b) continue;
 				
 				// skip if not a lecture or slot is different
@@ -366,7 +366,7 @@ public class Constr {
 	private boolean specificTimes() {
 		
 		// for each assignment
-		for (Assignment a : data.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getTimetable().getAssignments()) {
 			
 			// skip if not a lecture
 			if (a.getM().getClass() != Lecture.class) continue;
@@ -388,7 +388,7 @@ public class Constr {
 	private boolean specialClasses() {
 		
 		// for each assignment
-		for (Assignment a : data.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getTimetable().getAssignments()) {
 			String first = "";
 			String second = "";
 			
@@ -420,7 +420,7 @@ public class Constr {
 			// cpsc 913 not allowed to overlap any sections/tuts of 413 or other courses not allowed to overlap 413
 			
 			// for each other assignment
-			for (Assignment b : data.getTimetable().getAssignments()) {
+			for (Assignment b : schedule.getTimetable().getAssignments()) {
 				if (a == b) continue;
 				
 				// get course number
@@ -461,7 +461,7 @@ public class Constr {
 					for (Meeting m : b.getM().getIncompatibility()) {
 						
 						// for each other assignment
-						for (Assignment c : data.getTimetable().getAssignments()) {
+						for (Assignment c : schedule.getTimetable().getAssignments()) {
 							if (c == a || c == b) continue;
 							
 							// skip if meeting doesn't match
@@ -481,7 +481,7 @@ public class Constr {
 					for (Meeting m : b.getM().getIncompatibility()) {
 						
 						// for each other assignment
-						for (Assignment c : data.getTimetable().getAssignments()) {
+						for (Assignment c : schedule.getTimetable().getAssignments()) {
 							if (c == a || c == b) continue;
 							
 							// skip if meeting doesn't match

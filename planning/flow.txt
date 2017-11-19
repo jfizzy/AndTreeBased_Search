@@ -4,13 +4,14 @@ This is the flow so far:
 
 Manager is the overall coordinator for the program
 --> creates and runs an InputManager (parse input)
+--> creates a ScheduleManager (contains schedule and search data)
 --> creates and runs a SearchManager (manage search)
 
 InputManager uses FileExaminer and InputWrapper to parse the input file
 --> data put into SearchData object - contains all the info needed for a search
 --> special input (e.g. noncompatible, pair) is added to each Meeting (Lecture/NonLecture)
 
-SearchManager works on a SearchData object
+SearchManager works on a ScheduleManager object
 --> run the and-tree based search
 --> fills in the timetable with Assignments (Meeting/Slot)
 
@@ -18,17 +19,15 @@ SearchManager works on a SearchData object
                 - fill the timetable randomly
                 - print timetable and eval breakdown
 
-Constr works on a SearchData object
+Constr works on a ScheduleManager object
 --> check() method returns true if hard constraints are met
 
-Eval works on a SearchData object
+Eval works on a ScheduleManager object
 --> getEval() method for evaluating soft constraints
 
-(ScheduleManager class is doing nothing so far)
 
 
-
-SearchData contains:
+ScheduleManager contains:
 - lecture slots list
 - nonlecture slots list
 - course list

@@ -20,6 +20,7 @@ import Schedule.Lecture;
 import Schedule.LectureSlot;
 import Schedule.NonLecture;
 import Schedule.NonLectureSlot;
+import Schedule.ScheduleManager;
 import Schedule.Slot;
 import Schedule.Meeting;
 import Schedule.Meeting.Pair;
@@ -43,25 +44,25 @@ public class Eval {
 	private int wSecDiff;
 	
 	// instance
-	private SearchData data;
+	private ScheduleManager schedule;
 	
 	/**
 	 * Constructor without weights
-	 * @param sd Search data
+	 * @param sd Search schedule
 	 */
-	public Eval(SearchData sd) {
+	public Eval(ScheduleManager sd) {
 		this(sd,1,1,1,1);
 	}
 	
 	/**
 	 * Constructor with weights
-	 * @param sd Search data
+	 * @param sd Search schedule
 	 * @param min Weight for minimums
 	 * @param pref Weight for preference
 	 * @param pair Weight for pair
 	 * @param secD Weight for section diff
 	 */
-	public Eval(SearchData sd, int min, int pref, int pair, int secD) {
+	public Eval(ScheduleManager sd, int min, int pref, int pair, int secD) {
 		
 		pen_coursemin = 1;
 		pen_labmin = 1;
@@ -73,7 +74,7 @@ public class Eval {
 		wPair = pair;
 		wSecDiff = secD;
 		
-		data = sd;
+		schedule = sd;
 	}
 	
 	/**
@@ -82,7 +83,7 @@ public class Eval {
 	 */
 	public int getEval() {
 		
-		if (data != null) {
+		if (schedule != null) {
 			return getCourseMinEval() 
 					+ getLabMinEval() 
 					+ getPrefEval() 
@@ -100,12 +101,12 @@ public class Eval {
 	public int getCourseMinEval() {
     	int result = 0;
     	
-    	// for each lecture slot in data
-    	for (LectureSlot ls : data.getLectureSlots()) {
+    	// for each lecture slot in schedule
+    	for (LectureSlot ls : schedule.getLectureSlots()) {
     		
         	// count how many lecture assignments have that slot
     		int count = 0;
-        	for (Assignment a : data.getTimetable().getAssignments()) {
+        	for (Assignment a : schedule.getTimetable().getAssignments()) {
         		if (a.getM().getClass() != Lecture.class) continue;
         		if (a.getS().equals(ls))
         			count++;
@@ -129,12 +130,12 @@ public class Eval {
 	public int getLabMinEval() {
     	int result = 0;
     	
-    	// for each nonlecture slot in data
-    	for (NonLectureSlot nls : data.getLabSlots()) {
+    	// for each nonlecture slot in schedule
+    	for (NonLectureSlot nls : schedule.getLabSlots()) {
     		
         	// count how many nonlecture assignments have that slot
     		int count = 0;
-        	for (Assignment a : data.getTimetable().getAssignments()) {
+        	for (Assignment a : schedule.getTimetable().getAssignments()) {
         		if (a.getM().getClass() != NonLecture.class) continue;
         		if (a.getS().equals(nls))
         			count++;
@@ -159,7 +160,7 @@ public class Eval {
 		int result = 0;
 		
 		// for each assignment
-		for (Assignment a : data.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getTimetable().getAssignments()) {
 			
 			// for each preference entry of the assignment's meeting
 			for (Pair<Slot,Integer> p : a.getM().getPreferences()) {
@@ -183,13 +184,13 @@ public class Eval {
 		int result = 0;
 		
 		// for each assignment
-		for (Assignment a : data.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getTimetable().getAssignments()) {
 			
 			// for each pair entry of the assignment's meeting
 			for (Meeting m : a.getM().getPaired()) {
 				
 				// for each other assignment
-				for (Assignment b : data.getTimetable().getAssignments()) {
+				for (Assignment b : schedule.getTimetable().getAssignments()) {
 					if (a == b) continue;
 					
 					// skip if meeting doesn't match
@@ -216,8 +217,8 @@ public class Eval {
 		
 		// TODO: there is definitely a cleaner/more efficient way to do this
 		
-		// for each course in the data
-		for (Course c : data.getCourses()) {
+		// for each course in the schedule
+		for (Course c : schedule.getCourses()) {
 			int nsections = c.getSections().size();
 			
 			// skip if there is only one section
@@ -233,14 +234,14 @@ public class Eval {
 					if (i == j) continue;	// skip if same section
 					Lecture l2 = c.getSections().get(j).getLecture();
 				
-					// for each assignment in the data
-					for (Assignment a : data.getTimetable().getAssignments()) {
+					// for each assignment in the schedule
+					for (Assignment a : schedule.getTimetable().getAssignments()) {
 						
 						// skip if assignment 1 doesn't match
 						if (a.getM() != l1) continue;
 						
 						// for each other assignment
-						for (Assignment b : data.getTimetable().getAssignments()) {
+						for (Assignment b : schedule.getTimetable().getAssignments()) {
 							if (a == b) continue;	// skip if same assignment
 							
 							// skip if assignment 2 doesn't match

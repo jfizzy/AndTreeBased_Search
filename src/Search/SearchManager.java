@@ -5,6 +5,7 @@ import Schedule.Course;
 import Schedule.Lecture;
 import Schedule.LectureSlot;
 import Schedule.NonLecture;
+import Schedule.ScheduleManager;
 import Schedule.Section;
 import Schedule.Slot;
 import java.util.concurrent.ThreadLocalRandom;
@@ -15,15 +16,15 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class SearchManager {
 	
-	// the search instance with all the data needed
-	private SearchData data;
+	// the search instance with all the schedule needed
+	private ScheduleManager schedule;
 	
 	/**
 	 * Constructor
-	 * @param sd Search data
+	 * @param sd Search schedule
 	 */
-	public SearchManager(SearchData sd) {
-		this.data = sd;
+	public SearchManager(ScheduleManager sd) {
+		this.schedule = sd;
 	}
 	
 	/**
@@ -58,10 +59,10 @@ public class SearchManager {
 		
 		
 		// print the assignments
-		data.getTimetable().printAssignments();
+		schedule.getTimetable().printAssignments();
 		
 		// print eval breakdown
-		Eval eval = new Eval(data);		
+		Eval eval = new Eval(schedule);		
 		System.out.println("Cmin = "+eval.getCourseMinEval());
 		System.out.println("Lmin = "+eval.getLabMinEval());
 		System.out.println("Pref = "+eval.getPrefEval());
@@ -70,16 +71,16 @@ public class SearchManager {
 		System.out.println("EVAL = "+eval.getEval());
 		
 		// check if valid (meets hard constraints)
-		Constr constr = new Constr(data);
+		Constr constr = new Constr(schedule);
 		constr.check(true); // true means print any violations
 	}
 	
 	/**
-	 * Return the search data
-	 * @return Search data
+	 * Return the search schedule
+	 * @return Search schedule
 	 */
-	public SearchData getData() {
-		return this.data;
+	public ScheduleManager getschedule() {
+		return this.schedule;
 	}
 	
 	/**
@@ -88,8 +89,8 @@ public class SearchManager {
 	private void assignRandom() {
 		int max = 50;	// number of times to try to get a valid assignment
 		
-		// for each course in data
-		for (Course c : data.getCourses()) {
+		// for each course in schedule
+		for (Course c : schedule.getCourses()) {
 			
 			// for each section in the course
 			for (Section s : c.getSections()) {
@@ -99,45 +100,45 @@ public class SearchManager {
 				for (int i=0; i < max; i++) {
 					
 					// make a random assignment for the course
-					int rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
-					Slot slot = data.getLectureSlots().get(rand);
+					int rand = ThreadLocalRandom.current().nextInt(0, schedule.getLectureSlots().size());
+					Slot slot = schedule.getLectureSlots().get(rand);
 					Assignment a = new Assignment(l, slot);
 					
 					// add the assignment, checking if it is valid
-					Constr constr = new Constr(a, data);
+					Constr constr = new Constr(a, schedule);
 					if (constr.check(false)) {
-						data.getTimetable().addAssignment(a);
+						schedule.getTimetable().addAssignment(a);
 						break;
 					}
 					if (i == max-1) {
 						System.out.println("Course violated Constr");
-						data.getTimetable().addAssignment(a); // add anyway
+						schedule.getTimetable().addAssignment(a); // add anyway
 					}
 					
 				}
 			}
 		}
 		
-		// for each nonlecture in data
-		for (NonLecture nl : data.getNonLectures()) {
+		// for each nonlecture in schedule
+		for (NonLecture nl : schedule.getNonLectures()) {
 			
 			// try max times to fulfill constr
 			for (int i=0; i < max; i++) {
 				
 				// make a random assignment for the nonlecture
-				int rand = ThreadLocalRandom.current().nextInt(0, data.getLabSlots().size());
-				Slot slot = data.getLabSlots().get(rand);
+				int rand = ThreadLocalRandom.current().nextInt(0, schedule.getLabSlots().size());
+				Slot slot = schedule.getLabSlots().get(rand);
 				Assignment a = new Assignment(nl, slot);
 				
 				// add the assignment, checking if it is valid
-				Constr constr = new Constr(a, data);
+				Constr constr = new Constr(a, schedule);
 				if (constr.check(false)) {
-					data.getTimetable().addAssignment(a);
+					schedule.getTimetable().addAssignment(a);
 					break;
 				}
 				if (i == max-1) {
 					System.out.println("Lab violated Constr");
-					data.getTimetable().addAssignment(a); // add anyway
+					schedule.getTimetable().addAssignment(a); // add anyway
 				}
 			}
 		}
@@ -150,60 +151,60 @@ public class SearchManager {
 	private void addRandomInput() {
 		
 		// noncompatible (random course, random course)
-		int rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
-		Course c = data.getCourses().get(rand);
+		int rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
+		Course c = schedule.getCourses().get(rand);
 		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
 		Section s = c.getSections().get(rand);
 		Lecture l1 = s.getLecture();
-		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
-		c = data.getCourses().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
+		c = schedule.getCourses().get(rand);
 		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
 		s = c.getSections().get(rand);
 		Lecture l2 = s.getLecture();
 		l1.addIncompatibility(l2);
 		
 		// pair (random course, random course)
-		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
-		c = data.getCourses().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
+		c = schedule.getCourses().get(rand);
 		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
 		s = c.getSections().get(rand);
 		l1 = s.getLecture();
-		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
-		c = data.getCourses().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
+		c = schedule.getCourses().get(rand);
 		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
 		s = c.getSections().get(rand);
 		l2 = s.getLecture();
 		l1.addPaired(l2);
 		
 		// unwanted (random course, random slot)
-		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
-		c = data.getCourses().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
+		c = schedule.getCourses().get(rand);
 		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
 		s = c.getSections().get(rand);
 		l1 = s.getLecture();
-		rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
-		LectureSlot ls = data.getLectureSlots().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, schedule.getLectureSlots().size());
+		LectureSlot ls = schedule.getLectureSlots().get(rand);
 		l1.addUnwanted(ls);
 		
 		// partassign (random course, random slot)
-		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
-		c = data.getCourses().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
+		c = schedule.getCourses().get(rand);
 		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
 		s = c.getSections().get(rand);
 		l1 = s.getLecture();
-		rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
-		ls = data.getLectureSlots().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, schedule.getLectureSlots().size());
+		ls = schedule.getLectureSlots().get(rand);
 		l1.setPartassign(ls);
 		
 		// preference (random course, random slot, value)
 		int pref = 100;
-		rand = ThreadLocalRandom.current().nextInt(0, data.getCourses().size());
-		c = data.getCourses().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
+		c = schedule.getCourses().get(rand);
 		rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
 		s = c.getSections().get(rand);
 		l1 = s.getLecture();
-		rand = ThreadLocalRandom.current().nextInt(0, data.getLectureSlots().size());
-		ls = data.getLectureSlots().get(rand);
+		rand = ThreadLocalRandom.current().nextInt(0, schedule.getLectureSlots().size());
+		ls = schedule.getLectureSlots().get(rand);
 		l1.addPreference(ls, pref);
 	}
 }
