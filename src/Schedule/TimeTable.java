@@ -91,9 +91,9 @@ public class TimeTable {
     		
     		// slot
     		if (a.getS() != null) {
-    			System.out.print(" --> "+a.getS().getDay()+" "
-    					+a.getS().getHour()+":"+a.getS().getMinute()
-    					+" - "+a.getS().getEndHour()+":"+a.getS().getEndMinute());
+    			System.out.format(" --> %s %02d:%02d - %02d:%02d", 
+    					a.getS().getDay(), a.getS().getHour(), a.getS().getMinute(), 
+    					a.getS().getEndHour(), a.getS().getEndMinute());
     		}
     		System.out.print("\n");
     	}
