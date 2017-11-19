@@ -18,12 +18,18 @@ import java.util.ArrayList;
 import Search.SearchData.Pair;
 
 /**
+ * Abstrct class representing a Lecture/Lab/Tutorial to be scheduled
  * @author 
  *
  */
 public abstract class Meeting {
 	
-	// class for pairs
+	/**
+	 * Class for pairs
+	 *
+	 * @param <F> First element
+	 * @param <S> Second element
+	 */
 	public class Pair<F, S> {
 	    public F first;
 	    public S second;
@@ -37,7 +43,7 @@ public abstract class Meeting {
     private final ArrayList<Pair<Slot,Integer>> preferences;
     
     /**
-     * constructor
+     * Constructor
      */
     public Meeting(){
         incompatibility = new ArrayList<>();

@@ -29,7 +29,12 @@ import Schedule.NonLecture;
  */
 public class SearchData {
 	
-	// class for pairs
+	/**
+	 * Class for pairs
+	 *
+	 * @param <F> First element
+	 * @param <S> Second element
+	 */
 	public class Pair<F, S> {
 	    public F first;
 	    public S second;
@@ -48,7 +53,7 @@ public class SearchData {
 	private TimeTable tt;
     
     /**
-     * default constructor
+     * Default constructor
      */
     public SearchData() {
     	this.lslots = new ArrayList<>();
@@ -58,9 +63,9 @@ public class SearchData {
     }
     
     /**
-     * constructor for constr
-     * @param orig
-     * @param tt
+     * Constructor for Constr
+     * @param orig Original search data
+     * @param tt New timetable
      */
     public SearchData(SearchData orig, TimeTable tt) {
     	this.lslots = orig.getLectureSlots();
@@ -72,7 +77,7 @@ public class SearchData {
     }
     
     /**
-     * fills the lectures list using the courses list
+     * Fills the lectures list using the courses list
      */
     private void processLectures() {
     	

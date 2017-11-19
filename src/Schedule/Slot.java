@@ -14,6 +14,7 @@
 package Schedule;
 
 /**
+ * Abstract class representing a time slot
  * @author 
  *
  */
@@ -26,7 +27,7 @@ public abstract class Slot {
     protected int endminute;	// slot end minute
 
     /**
-     * default constructor
+     * Default constructor
      */
     public Slot() {
         day = null;
@@ -37,10 +38,9 @@ public abstract class Slot {
     }
     
     /**
-     * check if slots are equal
-     * (have all the same values)
-     * @param s
-     * @return
+     * Check if slots are equal (have all the same values)
+     * @param s Slot to compare with
+     * @return True if slots are equal
      */
     public boolean equals(Slot s) {
     	if (day == s.getDay() && hour == s.getHour() && minute == s.getMinute()
@@ -51,9 +51,9 @@ public abstract class Slot {
     }
     
     /**
-     * check if slots overlap in time
-     * @param s
-     * @return
+     * Check if slots overlap in time
+     * @param s Slot to compare with
+     * @return True if slots overlap in time
      */
     public boolean overlaps(Slot s) {
     	
@@ -65,7 +65,7 @@ public abstract class Slot {
     	
     	// combine hours and minutes
     	int begin = 60 * hour + minute;
-    	int end = 60 * endhour - endminute;
+    	int end = 60 * endhour + endminute;
     	int sbegin = 60 * s.getHour() + s.getMinute();
     	int send = 60 * s.getEndHour() + s.getEndMinute();
     	
@@ -75,7 +75,7 @@ public abstract class Slot {
     			|| (begin == sbegin && end == send))
     		return true;
     	
-    	// if we got here no overlap
+    	// if we got here there is no overlap
     	return false;
     }
     

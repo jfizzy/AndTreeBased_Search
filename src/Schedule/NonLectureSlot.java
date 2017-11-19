@@ -14,6 +14,7 @@
 package Schedule;
 
 /**
+ * Object representing a time slot into which a nonlecture can be scheduled
  * @author 
  *
  */
@@ -24,13 +25,13 @@ public class NonLectureSlot extends Slot {
     
     /**
      * constructor
-     * @param day
-     * @param h
-     * @param m
-     * @param eh
-     * @param em
-     * @param lmax
-     * @param lmin
+     * @param day Day
+     * @param h Begin hour
+     * @param m Begin minute
+     * @param eh End hour
+     * @param em End minute
+     * @param lmax Lab max
+     * @param lmin Lab min
      */
     public NonLectureSlot(String day, int h, int m, int eh, int em, int lmax, int lmin){
         this.day = day;

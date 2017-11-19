@@ -16,6 +16,7 @@ package Schedule;
 import java.util.ArrayList;
 
 /**
+ * Object representing a section of a course, containing lecures and nonlectures
  * @author 
  *
  */
@@ -28,9 +29,9 @@ public class Section {
     private final Course parentCourse;	// parent course of the section
     
     /**
-     * constructor
-     * @param c
-     * @param sNum
+     * Constructor
+     * @param c Course
+     * @param sNum Section number
      */
     public Section(Course c, String sNum) {
         this.parentCourse = c;

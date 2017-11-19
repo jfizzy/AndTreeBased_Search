@@ -22,25 +22,25 @@ public class Constr {
 	private SearchData data;
 	
 	/**
-	 * constructor for checking if adding an assignment to a search is valid
-	 * @param a
-	 * @param sd
+	 * Constructor for checking if adding an assignment to a search is valid
+	 * @param a Assignment
+	 * @param sd Search data
 	 */
 	public Constr(Assignment a, SearchData sd) {
 		this(new SearchData(sd, new TimeTable(a, sd.getTimetable())));
 	}
 
 	/**
-	 * constructor for checking if a search is valid
-	 * @param sd
+	 * Constructor for checking if a search is valid
+	 * @param sd Search data
 	 */
 	public Constr(SearchData sd) {
 		this.data = sd;
 	}
 
 	/**
-	 * returns true if all hard constraints are met
-	 * @return
+	 * Check hard constraints
+	 * @return True if all hard constraints are met
 	 */
 	public boolean check(boolean show) {
 		if (show) printViolations();
@@ -50,7 +50,7 @@ public class Constr {
 	}
 	
 	/**
-	 * prints which constraints were violated for debugging
+	 * Prints which constraints were violated for debugging
 	 */
 	public void printViolations() {
 		if (!courseMax())
@@ -80,8 +80,8 @@ public class Constr {
 	 */
 	
 	/**
-	 * course maximum
-	 * @return
+	 * Course maximum
+	 * @return True if course max constraint is met
 	 */
 	private boolean courseMax() {
 		
@@ -120,8 +120,8 @@ public class Constr {
 	}
 	
 	/**
-	 * lab maximum
-	 * @return
+	 * Lab maximum
+	 * @return True if lab max constraint is met
 	 */
 	private boolean labMax() {
 		
@@ -160,8 +160,8 @@ public class Constr {
 	}
 	
 	/**
-	 * labs not assigned to same slot as lectures of the same section
-	 * @return
+	 * Labs not assigned to same slot as lectures of the same section
+	 * @return True if labs assignment constraint is met
 	 */
 	private boolean labsDifferent() {
 		
@@ -198,9 +198,9 @@ public class Constr {
 	}
 	
 	/**
-	 * non-compatible constraint
+	 * Non-compatible constraint
 	 * non-compatible(a,b) => assign a != assign b
-	 * @return
+	 * @return True if non-compatible constraint is met
 	 */
 	private boolean noncompatible() {
 		
@@ -229,9 +229,9 @@ public class Constr {
 	}
 	
 	/**
-	 * partassign constraint
+	 * Partassign constraint
 	 * partassign a => assign a
-	 * @return
+	 * @return True if partassign constraint is met
 	 */
 	private boolean partassign() {
 		
@@ -251,9 +251,9 @@ public class Constr {
 	}
 	
 	/**
-	 * unwanted constraint
+	 * Unwanted constraint
 	 * unwanted a,s => assign a != s
-	 * @return
+	 * @return True if unwanted constraint is met
 	 */
 	private boolean unwanted() {
 		
@@ -274,9 +274,9 @@ public class Constr {
 	}
 	
 	/**
-	 * sections with numbers starting with 9 must get evening slots
-	 * department constraint
-	 * @return
+	 * Sections with numbers starting with 9 must get evening slots
+	 * (department constraint)
+	 * @return True if evening classes constraint is met
 	 */
 	private boolean eveningClasses() {
 		
@@ -314,8 +314,8 @@ public class Constr {
 	
 	/**
 	 * 500 level classes can't get the same slot
-	 * department constraint
-	 * @return
+	 * (department constraint)
+	 * @return True if 500-level constraint is met
 	 */
 	private boolean over500Classes() {
 		
@@ -359,9 +359,9 @@ public class Constr {
 	}
 	
 	/**
-	 * no courses Tuesday 11:00-12:30
-	 * department constraint
-	 * @return
+	 * No courses Tuesday 11:00-12:30
+	 * (department constraint)
+	 * @return True if Tues 11:00 constraint is met
 	 */
 	private boolean specificTimes() {
 		
@@ -381,9 +381,9 @@ public class Constr {
 	}
 	
 	/**
-	 * special requirements for CPSC 813/913
-	 * department constraint
-	 * @return
+	 * Special requirements for CPSC 813/913
+	 * (department constraint)
+	 * @return True if CPSC813/913 constraint is met
 	 */
 	private boolean specialClasses() {
 		

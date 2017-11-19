@@ -14,7 +14,7 @@
 package Schedule;
 
 /**
- *
+ * Object representing an assignment of a Meeting to a Slot
  * @author jmaci
  */
 public class Assignment {
@@ -23,9 +23,9 @@ public class Assignment {
     private Slot s;		// slot it is assigned to
     
     /**
-     * constructor
-     * @param m
-     * @param s
+     * Constructor
+     * @param m Meeting
+     * @param s Slot
      */
     public Assignment(Meeting m, Slot s){
         this.m = m;

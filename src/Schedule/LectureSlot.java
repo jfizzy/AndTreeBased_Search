@@ -14,6 +14,7 @@
 package Schedule;
 
 /**
+ * Object representing a time slot into which a lecture can be scheduled
  * @author 
  *
  */
@@ -23,14 +24,14 @@ public class LectureSlot extends Slot {
     private final int coursemin;	// minimum lectures for the slot
     
     /**
-     * constructor
-     * @param day
-     * @param h
-     * @param m
-     * @param eh
-     * @param em
-     * @param cmax
-     * @param cmin
+     * Constructor
+     * @param day Day
+     * @param h Begin hour
+     * @param m Begin minute
+     * @param eh End hour
+     * @param em End minute
+     * @param cmax Course max
+     * @param cmin Course min
      */
     public LectureSlot(String day, int h, int m, int eh, int em, int cmax, int cmin){
         this.day = day;

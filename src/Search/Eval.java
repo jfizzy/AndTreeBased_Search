@@ -46,20 +46,20 @@ public class Eval {
 	private SearchData data;
 	
 	/**
-	 * constructor without weights
-	 * @param sd
+	 * Constructor without weights
+	 * @param sd Search data
 	 */
 	public Eval(SearchData sd) {
 		this(sd,1,1,1,1);
 	}
 	
 	/**
-	 * constructor with weights
-	 * @param sd
-	 * @param min
-	 * @param pref
-	 * @param pair
-	 * @param secD
+	 * Constructor with weights
+	 * @param sd Search data
+	 * @param min Weight for minimums
+	 * @param pref Weight for preference
+	 * @param pair Weight for pair
+	 * @param secD Weight for section diff
 	 */
 	public Eval(SearchData sd, int min, int pref, int pair, int secD) {
 		
@@ -77,8 +77,8 @@ public class Eval {
 	}
 	
 	/**
-	 * returns total evaluation
-	 * @return
+	 * Get evaluation
+	 * @return Total evaluation of search instance
 	 */
 	public int getEval() {
 		
@@ -95,7 +95,7 @@ public class Eval {
 	/**
 	 * Coursemin eval component
 	 * penalty if slot has less courses than min
-	 * @return
+	 * @return Penalty for violating coursemin
 	 */
 	public int getCourseMinEval() {
     	int result = 0;
@@ -124,7 +124,7 @@ public class Eval {
 	/**
 	 * Labmin eval component
 	 * penalty if slot has less labs than min
-	 * @return
+	 * @return Penalty for violating labmin
 	 */
 	public int getLabMinEval() {
     	int result = 0;
@@ -153,7 +153,7 @@ public class Eval {
 	/**
 	 * Preference eval component
 	 * penalty if course not assigned to preferred slot
-	 * @return
+	 * @return Penalty for violating preferences
 	 */
 	public int getPrefEval() {
 		int result = 0;
@@ -189,7 +189,7 @@ public class Eval {
 	/**
 	 * Pair eval component
 	 * penalty if courses not assigned to same slot
-	 * @return
+	 * @return Penalty for violating pairs
 	 */
 	public int getPairEval() {
 		int result = 0;
@@ -243,7 +243,7 @@ public class Eval {
 	 * Section eval component
 	 * penalty if courses of the same section are assigned to the same slot
 	 * TODO: there is definitely a cleaner/more efficient way to do this
-	 * @return
+	 * @return Penalty for violating section difference
 	 */
 	public int getSecDiffEval() {
 		int result = 0;

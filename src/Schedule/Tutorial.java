@@ -14,6 +14,7 @@
 package Schedule;
 
 /**
+ * Object representing a tutorial to be scheduled
  * @author 
  *
  */
@@ -22,10 +23,10 @@ public class Tutorial extends NonLecture{
     private final String tutNum;	// tutorial number
     
     /**
-     * constructor
-     * @param num
-     * @param s
-     * @param evening
+     * Constructor
+     * @param num Tutorial number
+     * @param s Section number
+     * @param evening Evening flag
      */
     public Tutorial(String num, Section s, boolean evening){
         super();
@@ -34,20 +35,23 @@ public class Tutorial extends NonLecture{
         this.evening = evening;
     }
     
-    /*
-     *  getters and setters
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
      */
-
-    public String getTutNum() {
-        return tutNum;
-    }
-    
     @Override
     public String toString(){
         String dept = this.parentSection.getParentCourse().getDepartment();
         String cNum = this.parentSection.getParentCourse().getNumber();
         String sec = this.parentSection.getSectionNum();
         return (dept + " " + cNum + " LEC " + sec + " TUT " + this.tutNum);
+    }
+    
+    /*
+     *  getters and setters
+     */
+
+    public String getTutNum() {
+        return tutNum;
     }
     
 }
