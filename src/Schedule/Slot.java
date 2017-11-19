@@ -71,6 +71,7 @@ public abstract class Slot {
     		return false;
     	if ((day.equals("TU") || day.equals("TH")) 
     			&& !(s.getDay().equals("TU") || s.getDay().equals("TH")))
+    		return false;
 
         // combine hours and minutes
         int begin = 60 * hour + minute;
