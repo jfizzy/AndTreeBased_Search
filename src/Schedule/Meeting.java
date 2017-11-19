@@ -15,8 +15,6 @@ package Schedule;
 
 import java.util.ArrayList;
 
-import Search.SearchData.Pair;
-
 /**
  * @author 
  *
