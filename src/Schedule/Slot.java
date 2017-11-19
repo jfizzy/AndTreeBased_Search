@@ -66,11 +66,11 @@ public abstract class Slot {
     public boolean overlaps(Slot s) {
 
         // return false if days don't match
-        // TODO: this is going to have problems
-        // like checking if a Fr lab overlaps a Mo(WeFr) lecture
-        if (!day.equals(s.getDay())) {
-            return false;
-        }
+    	if ((day.equals("MO") || day.equals("WE") || day.equals("FR")) 
+    			&& (s.getDay().equals("TU") || s.getDay().equals("TH")))
+    		return false;
+    	if ((day.equals("TU") || day.equals("TH")) 
+    			&& !(s.getDay().equals("TU") || s.getDay().equals("TH")))
 
         // combine hours and minutes
         int begin = 60 * hour + minute;
