@@ -13,11 +13,42 @@
  */
 package Schedule;
 
-public abstract class NonLecture implements Meeting {
+/**
+ * Abstract class representing Labs/Tutorials to be scheduled
+ * @author 
+ *
+ */
+public abstract class NonLecture extends Meeting {
 
-    protected Section parentSection;
-    protected boolean evening;
+    private Course parentCourse;
+    protected Section parentSection;	// nonlecture's parent section
+    protected boolean evening;			// whether it is an evening class
+    
+    /**TODO:    figure out if evening Course means all labs and 
+     *          tutorials are evening as well
+     */
+    /**
+     * Constructor
+     */
+    public NonLecture(){
+        super();
+        this.parentCourse = null;
+        this.parentSection = null;
+        this.evening = false;
+    }
+    
+    /*
+     *  getters and setters
+     */
 
+    public Course getParentCourse(){
+        return parentCourse;
+    }
+    
+    public void setParentCourse(Course c){
+        this.parentCourse = c;
+    }
+    
     public Section getParentSection() {
         return parentSection;
     }
@@ -26,12 +57,16 @@ public abstract class NonLecture implements Meeting {
         return evening;
     }
     
-    /**TODO:    figure out if evening Course means all labs and 
-     *          tutorials are evening as well
-     */
-    public NonLecture(){
-        this.parentSection = null;
-        this.evening = false;
+    public String getDept(){
+        return parentSection.getParentCourse().getDepartment();
+    }
+    
+    public String getCourseNum(){
+        return parentSection.getParentCourse().getNumber();
+    }
+    
+    public String getSectionNum(){
+        return parentSection.getSectionNum();
     }
     
 }

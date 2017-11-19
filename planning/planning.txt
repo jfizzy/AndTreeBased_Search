@@ -1,1 +1,20 @@
-This is the planning folder
+Clarifications needed:
+
+----------------------------------
+Can a 'Not compatible' contain an input like this:
+
+CPSC 546, CPSC 674 LEC 04 TUT 01
+
+where the section of a lecture remains unspecified?
+
+
+----------------------------------
+
+Does evening course mean that all Non-Lecture Meetings must be in the evening?
+
+----------------------------------
+
+Does "department constraint" mean that it only applies for CPSC courses/labs?
+
+----------------------------------
+

@@ -13,6 +13,93 @@
  */
 package Schedule;
 
-public interface Meeting {
+import java.util.ArrayList;
+
+/**
+ * Abstrct class representing a Lecture/Lab/Tutorial to be scheduled
+ * @author 
+ *
+ */
+public abstract class Meeting {
+	
+	/**
+	 * Class for pairs
+	 *
+	 * @param <F> First element
+	 * @param <S> Second element
+	 */
+	public class Pair<F, S> {
+	    public F first;
+	    public S second;
+	}
+	
+	// special constraints
+    private final ArrayList<Meeting> incompatibility;
+    private final ArrayList<Meeting> paired;
+    private final ArrayList<Slot> unwanted;
+    private Slot partassign;
+    private final ArrayList<Pair<Slot,Integer>> preferences;
     
+    /**
+     * Constructor
+     */
+    public Meeting(){
+        incompatibility = new ArrayList<>();
+        paired = new ArrayList<>();
+        unwanted = new ArrayList<>();
+        //partassign = new ArrayList<>();
+        preferences = new ArrayList<>();
+    }
+    
+    /*
+     *  getters and setters
+     */
+    
+    // noncompatible
+    public ArrayList<Meeting> getIncompatibility() {
+        return incompatibility;
+    }
+    
+    public void addIncompatibility(Meeting m){
+        this.incompatibility.add(m);
+    }
+    
+    // pair
+    public ArrayList<Meeting> getPaired() {
+        return paired;
+    }
+    
+    public void addPaired(Meeting m){
+        this.paired.add(m);
+    }
+    
+    // unwanted
+    public ArrayList<Slot> getUnwanted() {
+        return unwanted;
+    }
+    
+    public void addUnwanted(Slot s){
+        this.unwanted.add(s);
+    }
+    
+    // partassign
+    public Slot getPartassign() {
+        return partassign;
+    }
+    
+    public void setPartassign(Slot s){
+        this.partassign = s;
+    }
+    
+    // preference
+    public ArrayList<Pair<Slot,Integer>> getPreferences() {
+        return preferences;
+    }
+    
+    public void addPreference(Slot s, int value){
+    	Pair<Slot,Integer> p = new Pair<Slot,Integer>();
+    	p.first = s;
+    	p.second = value;
+        this.preferences.add(p);
+    }
 }
