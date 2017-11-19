@@ -32,7 +32,7 @@ public class SearchManager {
 	public void run() {
 		
 		// add random test input (noncompatible, etc)
-		addRandomInput();
+		//addRandomInput();
 		
 		// assign schedule randomly
 		assignRandom();
