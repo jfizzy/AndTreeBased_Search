@@ -37,6 +37,26 @@ public class SearchManager {
 		// assign schedule randomly
 		assignRandom();
 		
+		
+		// TODO for the actual search:
+		
+		// start at root node with no assignments
+		
+		// generate all possible branches - one additional assignment each
+		//     (branches must satisfy Constr)
+		
+		// depth-first search to determine bound value
+		//     (find first valid solution quickly, bound = its Eval)
+		
+		// go back to root node
+		
+		// determine which other branches to take 
+		//     (using Eval, don't take if greater than bound)
+		
+		// evaluate all possibilities with Eval < bound
+		// repeat until optimal solution is found
+		
+		
 		// print the assignments
 		data.getTimetable().printAssignments();
 		
