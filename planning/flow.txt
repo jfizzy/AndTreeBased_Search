@@ -2,28 +2,36 @@
 This is the flow so far:
 
 
-Manager is the overall coordinator for the program
---> creates and runs an InputManager (parse input)
---> creates a ScheduleManager (contains schedule and search data)
---> creates and runs a SearchManager (manage search)
+Manager is the overall coordinator for the program - has main()
+--> creates and runs an InputManager (parses input file)
+--> creates a ScheduleManager (handles schedule and search data)
+--> creates and runs a SearchManager (performs the search)
 
 InputManager uses FileExaminer and InputWrapper to parse the input file
---> data put into SearchData object - contains all the info needed for a search
---> special input (e.g. noncompatible, pair) is added to each Meeting (Lecture/NonLecture)
+--> data is put into a ScheduleManager - has all the info needed for a search
+--> special input (e.g. noncompatible, etc) is added to each Meeting (Lecture/NonLecture)
 
 SearchManager works on a ScheduleManager object
---> run the and-tree based search
+--> runs the and-tree based search using data in ScheduleManager
 --> fills in the timetable with Assignments (Meeting/Slot)
 
-    Currently:  - generate random special input (noncompatible, etc.)
-                - fill the timetable randomly
-                - print timetable and eval breakdown
+    Currently:  - fill in the timetable randomly, multiple tries to get valid assignments
+                - print timetable, eval breakdown, any violated hard constraints
 
 Constr works on a ScheduleManager object
 --> check() method returns true if hard constraints are met
 
 Eval works on a ScheduleManager object
 --> getEval() method for evaluating soft constraints
+
+    To use these:
+
+    Constr c = new Constr(schedulemanager);
+    if (c.check())
+        <do stuff>
+        
+    Eval e = new Eval(schedulemanager);
+    int value = e.getEval();
 
 
 
@@ -38,9 +46,10 @@ ScheduleManager contains:
 LectureSlots are Slots
 NonLectureSlots are Slots
 - have start and end times, min and max values
+- can be active or inactive (if they are not mentioned in input)
 
 Courses
-- contain Sections, which have Lectures/Labs/Tutorials
+- have Sections, which have Lectures/Labs/Tutorials
 
 Lectures are Meetings
 Labs are NonLectures, which are Meetings
@@ -49,5 +58,5 @@ Tutorials are NonLectures, which are Meetings
 - have noncompatible, unwanted, pair, partassign, preference lists
 
 TimeTable
-- contains a list of Assignments, which have a Meeting and a Slot
+- has a list of Assignments, which each have a Meeting and a Slot
 
