@@ -16,15 +16,50 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class SearchManager {
 	
-	// the search instance with all the schedule needed
-	private ScheduleManager schedule;
+	//----------------------------------------------------------------
+	// TODO for the actual search:
+	
+	// create tree/node classes, data structures
+	
+	// create functions for adding/removing nodes, traversing tree
+	
+	// implement a way to tell if the goal condition is met
+	
+	// implement and-tree search (branch and bound):
+	
+		// start at the root node with no assignments
+		
+		// generate all possible branches - each represents one added assignment
+		//     (branches must satisfy Constr)
+		
+		// do a depth-first search to determine the bound value
+		//     (find the first valid solution quickly, then set bound to its Eval value)
+		
+		// go back to the root node
+		
+		// take branch with the lowest Eval
+		//     (close off branches if Eval greater than bound)
+		
+		// generate all possible branches for the new node
+		
+		// repeat until a solution is found, backtracking if necessary
+		
+		// if solution Eval < bound, set bound to new Eval value
+		
+		// return to root node, evaluate all possible solutions with Eval < bound
+		//     (final solution = lowest Eval leaf)
+	
+	//----------------------------------------------------------------
+	
+	private ScheduleManager schedule; 	// all the data required for the search
+	private int bound;					// the bound value
 	
 	/**
 	 * Constructor
 	 * @param sd Search schedule
 	 */
-	public SearchManager(ScheduleManager sd) {
-		this.schedule = sd;
+	public SearchManager(ScheduleManager schedule) {
+		this.schedule = schedule;
 	}
 	
 	/**
@@ -37,26 +72,6 @@ public class SearchManager {
 		
 		// assign schedule randomly
 		assignRandom();
-		
-		
-		// TODO for the actual search:
-		
-		// start at root node with no assignments
-		
-		// generate all possible branches - one additional assignment each
-		//     (branches must satisfy Constr)
-		
-		// depth-first search to determine bound value
-		//     (find first valid solution quickly, bound = its Eval)
-		
-		// go back to root node
-		
-		// determine which other branches to take 
-		//     (using Eval, don't take if greater than bound)
-		
-		// evaluate all possibilities with Eval < bound
-		// repeat until optimal solution is found
-		
 		
 		// print the assignments
 		schedule.getTimetable().printAssignments();
@@ -72,14 +87,15 @@ public class SearchManager {
 		
 		// check if valid (meets hard constraints)
 		Constr constr = new Constr(schedule);
-		constr.check(true); // true means print any violations
+		//constr.check();
+		constr.printViolations();
 	}
 	
 	/**
-	 * Return the search schedule
-	 * @return Search schedule
+	 * Return the schedule
+	 * @return Schedule
 	 */
-	public ScheduleManager getschedule() {
+	public ScheduleManager getSchedule() {
 		return this.schedule;
 	}
 	
@@ -106,7 +122,7 @@ public class SearchManager {
 					
 					// add the assignment, checking if it is valid
 					Constr constr = new Constr(a, schedule);
-					if (constr.check(false)) {
+					if (constr.check()) {
 						schedule.getTimetable().addAssignment(a);
 						break;
 					}
@@ -132,7 +148,7 @@ public class SearchManager {
 				
 				// add the assignment, checking if it is valid
 				Constr constr = new Constr(a, schedule);
-				if (constr.check(false)) {
+				if (constr.check()) {
 					schedule.getTimetable().addAssignment(a);
 					break;
 				}
@@ -146,7 +162,7 @@ public class SearchManager {
 	
 	/**
 	 * Add a random entry to each special input list (noncompatible, etc)
-	 * for random meetings
+	 * 
 	 */
 	private void addRandomInput() {
 		

@@ -23,9 +23,8 @@ public class ScheduleManager {
     
 	/**
 	 * Class for pairs
-	 *
-	 * @param <F> First element
-	 * @param <S> Second element
+	 * @param <F> First element type
+	 * @param <S> Second element type
 	 */
 	public class Pair<F, S> {
 	    public F first;

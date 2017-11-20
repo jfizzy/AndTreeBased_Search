@@ -39,11 +39,9 @@ public class Constr {
 	}
 
 	/**
-	 * Check hard constraints
-	 * @return True if all hard constraints are met
+	 * Check hard constraints, true if all are satisfied
 	 */
-	public boolean check(boolean show) {
-		if (show) printViolations();
+	public boolean check() {
 		return courseMax() && labMax() && labsDifferent() && noncompatible() 
 				&& partassign() && unwanted() && eveningClasses()
 				&& over500Classes() && specificTimes() && specialClasses();
