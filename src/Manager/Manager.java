@@ -16,7 +16,7 @@ package Manager;
 import java.io.File;
 
 import Input.InputManager;
-import Search.SearchData;
+import Schedule.ScheduleManager;
 import Search.SearchManager;
 
 /**
@@ -48,8 +48,8 @@ class Manager {
      */
     private static void search(String fp){
         InputManager im = new InputManager();
-        SearchData sd = im.run(fp);
-        SearchManager sm = new SearchManager(sd);
+        ScheduleManager schedule = im.run(fp);
+        SearchManager sm = new SearchManager(schedule);
         sm.run();
         // need to use resulting input data here
     }

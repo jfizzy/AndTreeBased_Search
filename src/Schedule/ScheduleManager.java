@@ -21,35 +21,123 @@ import java.util.ArrayList;
  */
 public class ScheduleManager {
     
-    private TimeTable timeTable;
-    private ArrayList<LectureSlot> lectureSlots;
-    private ArrayList<NonLectureSlot> nonlectureSlots;
+	/**
+	 * Class for pairs
+	 * @param <F> First element type
+	 * @param <S> Second element type
+	 */
+	public class Pair<F, S> {
+	    public F first;
+	    public S second;
+	}
+	
+	// slots
+	private ArrayList<LectureSlot> lslots;
+	private ArrayList<NonLectureSlot> nlslots;
+	
+	// meetings
+	private ArrayList<Course> courses;
+	private ArrayList<Lecture> lectures;
+	private ArrayList<NonLecture> nonlectures;
+	
+	// the timetable
+	private TimeTable tt;
     
     /**
-     * constructor
-     * @param meetings
-     * @param lectureSlots
-     * @param nonlectureSlots
+     * Default constructor
      */
-    public ScheduleManager(ArrayList<Meeting> meetings, ArrayList<LectureSlot> lectureSlots, ArrayList<NonLectureSlot> nonlectureSlots) {
-        this.timeTable = new TimeTable(meetings);
-        this.lectureSlots = lectureSlots;
-        this.nonlectureSlots = nonlectureSlots;
+    public ScheduleManager() {
+    	this.lslots = new ArrayList<>();
+    	this.nlslots = new ArrayList<>();
+    	this.courses = new ArrayList<>();
+    	this.lectures = new ArrayList<>();
+    }
+    
+    /**
+     * Constructor for Constr
+     * @param orig Original search data
+     * @param tt New timetable
+     */
+    public ScheduleManager(ScheduleManager orig, TimeTable tt) {
+    	this.lslots = orig.getLectureSlots();
+    	this.nlslots = orig.getLabSlots();
+    	this.courses = orig.getCourses();
+    	this.lectures = orig.getLectures();
+    	this.nonlectures = orig.getNonLectures();
+    	this.tt = tt;
+    }
+    
+    /**
+     * Fills the lectures list using the courses list
+     */
+    private void processLectures() {
+    	
+    	// for each course
+    	for (Course c : courses) {
+    		
+    		// add the lecture for each section of that course
+    		for (int i = 0; i < c.getSections().size(); i++)
+    			lectures.add(c.getSections().get(i).getLecture());
+    	}
     }
     
     /*
-     *  getters and setters
+     * getters, setters, adders
+     * 
      */
-
-    public TimeTable getTimeTable() {
-        return timeTable;
+    
+    // lecture slots
+    public void setLectureSlots(ArrayList<LectureSlot> lecslots) {
+    	this.lslots = lecslots;
     }
-
+    
     public ArrayList<LectureSlot> getLectureSlots() {
-        return lectureSlots;
+    	return this.lslots;
     }
-
-    public ArrayList<NonLectureSlot> getNonlectureSlots() {
-        return nonlectureSlots;
+    
+    // nonlecture slots
+    public void setLabSlots(ArrayList<NonLectureSlot> labslots) {
+    	this.nlslots = labslots;
+    }
+    
+    public ArrayList<NonLectureSlot> getLabSlots() {
+    	return this.nlslots;
+    }
+    
+    // courses
+    public void setCourses(ArrayList<Course> cs) {
+    	this.courses = cs;
+    	processLectures(); // fill the lectures list using the courses list
+    }
+    
+    public ArrayList<Course> getCourses() {
+    	return this.courses;
+    }
+    
+    // lectures
+    public void setLectures(ArrayList<Lecture> lecs) {
+    	this.lectures = lecs;
+    }
+    
+    public ArrayList<Lecture> getLectures() {
+    	return this.lectures;
+    }
+    
+    // nonlectures
+    public void setNonLectures(ArrayList<NonLecture> nonlecs) {
+    	this.nonlectures = nonlecs;
+    }
+    
+    public ArrayList<NonLecture> getNonLectures() {
+    	return this.nonlectures;
+    }
+    
+    // timetable
+    public void setTimetable(TimeTable timetable) {
+    	this.tt = timetable;
+    }
+    
+    public TimeTable getTimetable() {
+    	return this.tt;
     }
 }
