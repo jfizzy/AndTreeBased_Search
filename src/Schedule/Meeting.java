@@ -22,23 +22,12 @@ import java.util.ArrayList;
  */
 public abstract class Meeting {
 	
-	/**
-	 * Class for pairs
-	 *
-	 * @param <F> First element
-	 * @param <S> Second element
-	 */
-	public class Pair<F, S> {
-	    public F first;
-	    public S second;
-	}
-	
 	// special constraints
     private final ArrayList<Meeting> incompatibility;
     private final ArrayList<Meeting> paired;
     private final ArrayList<Slot> unwanted;
     private Slot partassign;
-    private final ArrayList<Pair<Slot,Integer>> preferences;
+    private final ArrayList<Preference> preferences;
     
     /**
      * Constructor
@@ -47,7 +36,6 @@ public abstract class Meeting {
         incompatibility = new ArrayList<>();
         paired = new ArrayList<>();
         unwanted = new ArrayList<>();
-        //partassign = new ArrayList<>();
         preferences = new ArrayList<>();
     }
     
@@ -92,14 +80,12 @@ public abstract class Meeting {
     }
     
     // preference
-    public ArrayList<Pair<Slot,Integer>> getPreferences() {
+    public ArrayList<Preference> getPreferences() {
         return preferences;
     }
     
     public void addPreference(Slot s, int value){
-    	Pair<Slot,Integer> p = new Pair<Slot,Integer>();
-    	p.first = s;
-    	p.second = value;
+    	Preference p = new Preference(s, value);
         this.preferences.add(p);
     }
 }
