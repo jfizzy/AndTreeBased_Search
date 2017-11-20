@@ -648,4 +648,10 @@ public class InputManager {
         });
     }
 
+    private void generatePreferences(ArrayList<Course> courses, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots){
+        // should look at the list of course and lab assignments
+        // and then attach a 'preference' object to each containing 
+        // the slot name and the penalty for not complying with it
+    }
+    
 }
