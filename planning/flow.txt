@@ -1,28 +1,33 @@
 
+
 This is the flow so far:
 
 
 Manager is the overall coordinator for the program - has main()
---> creates and runs an InputManager (parses input file)
---> creates a ScheduleManager (handles schedule and search data)
---> creates and runs a SearchManager (performs the search)
+	--> creates and runs an InputManager (parses input file)
+	--> creates a ScheduleManager (handles schedule and search data)
+	--> creates and runs a SearchManager (performs the search)
 
 InputManager uses FileExaminer and InputWrapper to parse the input file
---> data is put into a ScheduleManager - has all the info needed for a search
---> special input (e.g. noncompatible, etc) is added to each Meeting (Lecture/NonLecture)
+	--> data is put into a ScheduleManager - has all the info needed for a search
+	--> noncompatibles (and pairs, preferences, etc) are added to each Meeting (Lecture/NonLecture)
 
 SearchManager works on a ScheduleManager object
---> runs the and-tree based search using data in ScheduleManager
---> fills in the timetable with Assignments (Meeting/Slot)
+	--> runs the and-tree based search using data in ScheduleManager
+	--> fills in the timetable with Assignments (Meeting/Slot)
 
     Currently:  - fill in the timetable randomly, multiple tries to get valid assignments
                 - print timetable, eval breakdown, any violated hard constraints
+                
+    See SearchManager.java for a breakdown of what we need to implement still
+
+
 
 Constr works on a ScheduleManager object
---> check() method returns true if hard constraints are met
+	--> check() method returns true if hard constraints are met
 
 Eval works on a ScheduleManager object
---> getEval() method for evaluating soft constraints
+	--> getEval() method for evaluating soft constraints
 
     To use these:
 
@@ -32,31 +37,40 @@ Eval works on a ScheduleManager object
         
     Eval e = new Eval(schedulemanager);
     int value = e.getEval();
+    
 
 
 
-ScheduleManager contains:
-- lecture slots list
-- nonlecture slots list
-- course list
-- lectures list
-- nonlectures list
-- timetable object (contains the current schedule)
+ScheduleManager has:
+	- lecture slots list
+	- nonlecture slots list
+	- course list
+	- lectures list
+	- nonlectures list
+	- timetable object (contains the current assignments)
 
 LectureSlots are Slots
 NonLectureSlots are Slots
-- have start and end times, min and max values
-- can be active or inactive (if they are not mentioned in input)
+	- have start and end times, min and max values
+	- can be active or inactive (if they are not mentioned in input)
 
 Courses
-- have Sections, which have Lectures/Labs/Tutorials
+	- have Sections, which have Lectures/Labs/Tutorials
+	- these are used to produce the Lecture list
 
 Lectures are Meetings
 Labs are NonLectures, which are Meetings
 Tutorials are NonLectures, which are Meetings
-- have department, course number, section number
-- have noncompatible, unwanted, pair, partassign, preference lists
+	- have department, course number, section number
+	- have noncompatible, unwanted, pair, partassign, preference lists
 
 TimeTable
-- has a list of Assignments, which each have a Meeting and a Slot
+	- has a list of Assignments, which each have a Meeting and a Slot
+
+
+
+
+
+
+
 
