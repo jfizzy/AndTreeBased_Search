@@ -44,7 +44,7 @@ public class Eval {
 	 * Otherwise:
 	 * 
 	 * Total eval of a schedule:
-	 * 		Eval e = new Eval(searchmanager);
+	 * 		Eval e = new Eval(schedulemanager);
 	 * 		int value = e.getEval();
 	 * 
 	 * Total eval of a schedule if an assignment was added:
@@ -53,7 +53,7 @@ public class Eval {
 	 * 		int value = e.getEval();
 	 * 
 	 * To use weights, add them to the end of the parameters
-	 * e.g. Eval e = new Eval(searchmanager, 0.5, 1.5, 10, 0);
+	 * e.g. Eval e = new Eval(schedulemanager, 0.5, 1.5, 10, 0);
 	 * 
 	 * You can also check individual evals if you need:
 	 * 		e.getCourseMinEval()
