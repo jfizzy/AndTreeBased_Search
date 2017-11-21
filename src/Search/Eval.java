@@ -20,10 +20,9 @@ import Schedule.Lecture;
 import Schedule.LectureSlot;
 import Schedule.NonLecture;
 import Schedule.NonLectureSlot;
+import Schedule.Preference;
 import Schedule.ScheduleManager;
-import Schedule.Slot;
 import Schedule.Meeting;
-import Schedule.Meeting.Pair;
 
 /**
  * Object for calculating how well a schedule fulfills soft constraints
@@ -163,11 +162,11 @@ public class Eval {
 		for (Assignment a : schedule.getTimetable().getAssignments()) {
 			
 			// for each preference entry of the assignment's meeting
-			for (Pair<Slot,Integer> p : a.getM().getPreferences()) {
+			for (Preference p : a.getM().getPreferences()) {
 				
 				// add preference value to penalty if slot doesn't match
-				if (!a.getS().equals(p.first))
-					result += p.second;
+				if (!a.getS().equals(p.getSlot()))
+					result += p.getValue();
 			}
 		}
     	
