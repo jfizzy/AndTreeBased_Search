@@ -35,8 +35,8 @@ public class Constr {
 	/* How to use:
 	 * --------------
 	 * 
-	 * Quick way:	searchmanager.isValid()
-	 * 				searchmanager.isValidWith(assignment)
+	 * Quick way:	schedulemanager.isValid()
+	 * 				schedulemanager.isValidWith(assignment)
 	 * 				- checks if valid without actually adding the assignment
 	 * 
 	 * Otherwise:
