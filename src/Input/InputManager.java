@@ -13,6 +13,7 @@
  */
 package Input;
 
+import Schedule.Assignment;
 import Schedule.Course;
 import Schedule.Lab;
 import Schedule.Lecture;
@@ -47,10 +48,11 @@ public class InputManager {
     }
 
     /**
-     * ScheduleManager - takes a file path as input and will parse the file at said
-     * in order to extract the valid lines from it, store the valid lines by
-     * nlType in an InputWrapper, then begin parsing the data and generating the
-     * overall structural elements of a 'TimeTable' object for the search system
+     * ScheduleManager - takes a file path as input and will parse the file at
+     * said in order to extract the valid lines from it, store the valid lines
+     * by nlType in an InputWrapper, then begin parsing the data and generating
+     * the overall structural elements of a 'TimeTable' object for the search
+     * system
      *
      * @param fp
      * @return search data nlType
@@ -61,11 +63,11 @@ public class InputManager {
         fe = new FileExaminer(fp, iw);
         fe.init();
         fe.parse();
-        
+
         // Just added this to test new input line functions
         generateTimeTable();
         // comment out to run other code
-        
+
         ScheduleManager sm = new ScheduleManager();
         sm.setLectureSlots(activateLectureSlots());
         sm.setLabSlots(activateNonLectureSlots());
@@ -189,8 +191,8 @@ public class InputManager {
 
     /**
      * activateNonLectureSlots - generates the NonLecture slots specified by the
- input file lines, indifferent of whether they are Labs or Tutorials, and
- returns them as an arraylist of nlType 'NonLectureSlot'
+     * input file lines, indifferent of whether they are Labs or Tutorials, and
+     * returns them as an arraylist of nlType 'NonLectureSlot'
      *
      * @return slots
      */
@@ -234,6 +236,32 @@ public class InputManager {
         generateNonLectures(courses);
         generateIncompatibilities(courses);
         generateUnwanted(courses, lecSlots, nonlecSlots);
+
+        ArrayList<Meeting> meetings = new ArrayList<>();
+        courses.forEach((c) -> {
+            c.getSections().forEach((s) -> {
+                meetings.add(s.getLecture());
+            });
+        });
+        courses.forEach((c) -> {
+            c.getSections().forEach((s) -> {
+                s.getLabs().forEach((l) -> {
+                    meetings.add(l);
+                });
+            });
+        });
+        courses.forEach((c) -> {
+            c.getSections().forEach((s) -> {
+                s.getTuts().forEach((t) -> {
+                    meetings.add(t);
+                });
+            });
+        });
+        TimeTable tt = new TimeTable(meetings, lecSlots, nonlecSlots);
+        tt.printAssignments();
+        
+        generatePreferences(tt, courses, lecSlots, nonlecSlots);
+        // have to create the timetable here
         System.out.println("--------------------");
         System.out.println("DONE");
         System.out.println("--------------------");
@@ -348,8 +376,8 @@ public class InputManager {
                         // check if first section has an the open nonlecture already
                         s = course.getSections().get(0);
                         if ("TUT".equals(nlType)) {
-                            for(Tutorial t : s.getTuts()){
-                                if(t.getTutNum().equals(nlNum) && t.getSectionNum() == null){
+                            for (Tutorial t : s.getTuts()) {
+                                if (t.getTutNum().equals(nlNum) && t.getSectionNum() == null) {
                                     System.out.println("This is a duplicate open tutorial declaration");
                                     return null;
                                 }
@@ -361,8 +389,8 @@ public class InputManager {
                                 cs.addTutorial(tut);
                             });
                         } else { // LAB
-                            for(Lab l : s.getLabs()){
-                                if(l.getLabNum().equals(nlNum) && l.getSectionNum() == null){
+                            for (Lab l : s.getLabs()) {
+                                if (l.getLabNum().equals(nlNum) && l.getSectionNum() == null) {
                                     System.out.println("This is a duplicate open lab declaration");
                                     return null;
                                 }
@@ -590,7 +618,7 @@ public class InputManager {
             System.out.println("problem with integer parsing");
             return null;
         }
-
+        System.out.println("Could not find a matching LectureSlot");
         return null;
     }
 
@@ -621,6 +649,7 @@ public class InputManager {
             System.out.println("problem with integer parsing");
             return null;
         }
+        System.out.println("Could not find a matching NonLectureSlot");
         return null;
     }
 
@@ -628,23 +657,90 @@ public class InputManager {
         iw.unwantedLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
             Meeting m = findMeeting(courses, parts[0]);
             Slot s = null;
-            if(m instanceof Lecture){
+            if (m instanceof Lecture) {
                 LectureSlot l = findLectureSlot(lSlots, (parts[1] + ", " + parts[2]));
-                if(l.isActive()) s = l;
-            } else if (m instanceof NonLecture){
+                if (l.isActive()) {
+                    s = l;
+                }
+            } else if (m instanceof NonLecture) {
                 NonLectureSlot nl = findNonLectureSlot(nlSlots, (parts[1] + ", " + parts[2]));
-                if(nl.isActive()) s = nl;
+                if (nl.isActive()) {
+                    s = nl;
+                }
             } else {
                 System.out.println("oddly enough, not a lec slot or nonlec slot");
             }
-            if(s == null){
+            if (s == null) {
                 System.out.println("Did not find the specified slot as active");
-            }else if (m == null) {
+            } else if (m == null) {
                 System.out.println("Could not find the meeting");
-            }else{
+            } else {
                 m.addUnwanted(s); // set it
-                System.out.println("[Unwanted - "+m.toString()+" & "+s.getDay()+" "+s.printHour()+":"+s.printMinute()+"]");
+                System.out.println("[Unwanted - " + m.toString() + " & " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + "]");
             }
+        });
+    }
+
+    private void generatePreferences(TimeTable tt, ArrayList<Course> courses, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
+        iw.preferencesLines.forEach((line) -> {
+            String[] parts = line.split("\\s*,\\s*");
+            String slotS = parts[0] + ", " + parts[1];
+            String meetingS = parts[2];
+            int penalty = Integer.parseInt(parts[3]);
+
+            System.out.println("Slot: "+slotS+", Meeting: "+meetingS+", Penalty: "+penalty);
+            
+            Meeting m = findMeeting(courses, meetingS);
+            if (m == null) {
+                System.out.println("Meeting does not exist");
+            } else {
+                System.out.println("Meeting Exists");
+                Assignment assignment = null;
+                for (Assignment a : tt.getAssignments()) {
+                    if (a.getM().equals(m)) {
+                        assignment = a;
+                    }
+                }
+                
+                if(assignment == null){
+                    System.out.println("could not find the needed assignment");
+                    return;
+                }
+                System.out.println("Assignment was found");
+                
+                LectureSlot ls = null;
+                NonLectureSlot nls = null;
+                
+                if (m instanceof Lecture) {
+                    System.out.println("Meeting is a Lecture");
+                    ls = findLectureSlot(lSlots, slotS);
+                    if(ls == null){
+                        System.out.println("could not find the lecture slot");
+                        return;
+                    }
+                    if(!ls.isActive()){
+                        System.out.println("that lecture slot is inactive");
+                        return;
+                    }
+                    assignment.getM().addPreference(ls, penalty);
+                    System.out.println("Added the Lecture Slot Preference");
+                } else {
+                    System.out.println("Meeting is a NonLecture");
+                    nls = findNonLectureSlot(nlSlots, slotS);
+                    if(nls == null){
+                        System.out.println("could not find the non lecture slot");
+                        return;
+                    }
+                    if(!nls.isActive()){
+                        System.out.println("that non lecture slot is inactive");
+                        return;
+                    }
+                    assignment.getM().addPreference(nls, penalty);
+                    System.out.println("Added the Non Lecture Slot Preference");
+                }
+
+            }
+
         });
     }
 
