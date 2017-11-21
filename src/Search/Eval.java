@@ -22,13 +22,46 @@ import Schedule.NonLecture;
 import Schedule.NonLectureSlot;
 import Schedule.Preference;
 import Schedule.ScheduleManager;
+import Schedule.TimeTable;
 import Schedule.Meeting;
 
 /**
- * Object for calculating how well a schedule fulfills soft constraints
+ * Class for calculating how well a schedule fulfills soft constraints
  *
  */
 public class Eval {
+	
+	/* How to use:
+	 * --------------
+	 * 
+	 * Quick way:	schedulemanager.getEval();
+	 * 				schedulemanager.getEvalWith(assignment);
+	 * 				- returns the eval without actually adding the assignment
+	 * 
+	 * 				To use weights, add them to the end of the parameters
+	 * 				e.g. schedulemanager.getEval(assignment, 0.5, 1.5, 10, 0);
+	 * 
+	 * Otherwise:
+	 * 
+	 * Total eval of a schedule:
+	 * 		Eval e = new Eval(searchmanager);
+	 * 		int value = e.getEval();
+	 * 
+	 * Total eval of a schedule if an assignment was added:
+	 * --> this does not add the assignment to the schedule
+	 * 		Eval e = new Eval(assignment, schedulemanager);
+	 * 		int value = e.getEval();
+	 * 
+	 * To use weights, add them to the end of the parameters
+	 * e.g. Eval e = new Eval(searchmanager, 0.5, 1.5, 10, 0);
+	 * 
+	 * You can also check individual evals if you need:
+	 * 		e.getCourseMinEval()
+	 * 		e.getLabMinEval()
+	 * 		e.getPrefEval()
+	 * 		e.getPairEval()
+	 * 		e.getSecDiffEval()
+	 */
 	
 	// penalties
 	private int pen_coursemin;
@@ -37,31 +70,33 @@ public class Eval {
 	private int pen_section;
 	
 	// weights
-	private int wMin;		// shouldn't weights be decimals?
-	private int wPref;
-	private int wPair;
-	private int wSecDiff;
+	private double wMin;
+	private double wPref;
+	private double wPair;
+	private double wSecDiff;
 	
 	// instance
 	private ScheduleManager schedule;
 	
 	/**
 	 * Constructor without weights
-	 * @param sd Search schedule
+	 * 
+	 * @param schedule Schedule data
 	 */
-	public Eval(ScheduleManager sd) {
-		this(sd,1,1,1,1);
+	public Eval(ScheduleManager schedule) {
+		this(schedule,1,1,1,1);
 	}
 	
 	/**
 	 * Constructor with weights
-	 * @param sd Search schedule
+	 * 
+	 * @param schedule Schedule data
 	 * @param min Weight for minimums
 	 * @param pref Weight for preference
 	 * @param pair Weight for pair
 	 * @param secD Weight for section diff
 	 */
-	public Eval(ScheduleManager sd, int min, int pref, int pair, int secD) {
+	public Eval(ScheduleManager sd, double min, double pref, double pair, double secD) {
 		
 		pen_coursemin = 1;
 		pen_labmin = 1;
@@ -77,28 +112,53 @@ public class Eval {
 	}
 	
 	/**
-	 * Get evaluation
-	 * @return Total evaluation of search instance
+	 * Constructor for getting evaluation if an assignment was added
+	 * 
+	 * @param a Assignment
+	 * @param schedule Schedule data
 	 */
-	public int getEval() {
-		
-		if (schedule != null) {
-			return getCourseMinEval() 
-					+ getLabMinEval() 
-					+ getPrefEval() 
-					+ getPairEval() 
-					+ getSecDiffEval();
-		}
-		else return 0;
+	 // *** Use this to get eval of schedule if an assignment was added but WITHOUT 
+	 // actually adding it to the timetable ***
+	public Eval(Assignment a, ScheduleManager schedule) {
+		this(new ScheduleManager(schedule, new TimeTable(a, schedule.getTimetable())));
 	}
 	
 	/**
-	 * Coursemin eval component
-	 * penalty if slot has less courses than min
+	 * Constructor for getting evaluation if an assignment was added
+	 * (with weights)
+	 * 
+	 * @param a Assignment
+	 * @param schedule Schedule data
+	 */
+	 // *** Use this to get eval of schedule if an assignment was added but WITHOUT 
+	 // actually adding it to the timetable ***
+	public Eval(Assignment a, ScheduleManager schedule, 
+			double min, double pref, double pair, double secD) {
+		this(new ScheduleManager(schedule, new TimeTable(a, schedule.getTimetable())), 
+				min, pref, pair, secD);
+	}
+	
+	/**
+	 * Get total evaluation
+	 * 
+	 * @return Total evaluation of search instance
+	 */
+	public int getEval() {
+		return getCourseMinEval() 
+				+ getLabMinEval() 
+				+ getPrefEval() 
+				+ getPairEval() 
+				+ getSecDiffEval();
+	}
+	
+	/**
+	 * Get coursemin eval component
+	 * (penalty if slot has less courses than min)
+	 * 
 	 * @return Penalty for violating coursemin
 	 */
 	public int getCourseMinEval() {
-    	int result = 0;
+    	double result = 0.0;
     	
     	// for each lecture slot in schedule
     	for (LectureSlot ls : schedule.getLectureSlots()) {
@@ -118,16 +178,17 @@ public class Eval {
     	}
     	
     	// return weighted result
-    	return wMin*result;		
+    	return (int) (wMin*result);		
 	}
 	
 	/**
-	 * Labmin eval component
-	 * penalty if slot has less labs than min
+	 * Get labmin eval component
+	 * (penalty if slot has less labs than min)
+	 * 
 	 * @return Penalty for violating labmin
 	 */
 	public int getLabMinEval() {
-    	int result = 0;
+    	double result = 0.0;
     	
     	// for each nonlecture slot in schedule
     	for (NonLectureSlot nls : schedule.getLabSlots()) {
@@ -147,16 +208,17 @@ public class Eval {
     	}
     	
     	// return weighted result
-    	return wMin*result;
+    	return (int) (wMin*result);
 	}
 	
 	/**
-	 * Preference eval component
-	 * penalty if course not assigned to preferred slot
+	 * Get preference eval component
+	 * (penalty if course not assigned to preferred slot)
+	 * 
 	 * @return Penalty for violating preferences
 	 */
 	public int getPrefEval() {
-		int result = 0;
+		double result = 0.0;
 		
 		// for each assignment
 		for (Assignment a : schedule.getTimetable().getAssignments()) {
@@ -171,16 +233,17 @@ public class Eval {
 		}
     	
     	// return weighted result
-    	return wPref*result;
+    	return (int) (wPref*result);
 	}
 	 
 	/**
-	 * Pair eval component
-	 * penalty if courses not assigned to same slot
+	 * Get pair eval component
+	 * (penalty if courses not assigned to same slot)
+	 * 
 	 * @return Penalty for violating pairs
 	 */
 	public int getPairEval() {
-		int result = 0;
+		double result = 0.0;
 		
 		// for each assignment
 		for (Assignment a : schedule.getTimetable().getAssignments()) {
@@ -203,16 +266,17 @@ public class Eval {
 		}
     	
     	// return weighted result
-		return wPair*result;
+		return (int) (wPair*result);
 	}
 	
 	/**
-	 * Section eval component
-	 * penalty if courses of the same section are assigned to the same slot
+	 * Get section difference eval component
+	 * (penalty if courses of the same section are assigned to the same slot)
+	 * 
 	 * @return Penalty for violating section difference
 	 */
 	public int getSecDiffEval() {
-		int result = 0;
+		double result = 0.0;
 		
 		// TODO: there is definitely a cleaner/more efficient way to do this
 		
@@ -255,7 +319,7 @@ public class Eval {
 			}
 		}
 		
-		return wSecDiff*result;
+		return (int) (wSecDiff*result);
 	}
 	
     /*
@@ -263,19 +327,19 @@ public class Eval {
      * 
      */
 	
-	public void setMinWeight(int weight) {
+	public void setMinWeight(double weight) {
 		wMin = weight;
 	}
 	
-	public void setPrefWeight(int weight) {
+	public void setPrefWeight(double weight) {
 		wPref = weight;
 	}
 	
-	public void setPairWeight(int weight) {
+	public void setPairWeight(double weight) {
 		wPair = weight;
 	}
 	
-	public void setSecDiffWeight(int weight) {
+	public void setSecDiffWeight(double weight) {
 		wSecDiff = weight;
 	}
 }

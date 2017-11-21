@@ -15,21 +15,14 @@ package Schedule;
 
 import java.util.ArrayList;
 
+import Search.Constr;
+import Search.Eval;
+
 /**
- * @author 
+ * Class for containing all the data for a schedule 
  *
  */
 public class ScheduleManager {
-    
-	/**
-	 * Class for pairs
-	 * @param <F> First element type
-	 * @param <S> Second element type
-	 */
-	public class Pair<F, S> {
-	    public F first;
-	    public S second;
-	}
 	
 	// slots
 	private ArrayList<LectureSlot> lslots;
@@ -54,8 +47,34 @@ public class ScheduleManager {
     }
     
     /**
+     * Constructor
+     * 
+     * @param lslots LectureSlot list
+     * @param nlslots NonLectureSlot list 
+     * @param courses Course list
+     * @param lectures Lecture list
+     * @param nonlectures NonLecture list
+     * @param tt TimeTable
+     */
+    public ScheduleManager(ArrayList<LectureSlot> lslots, 
+    		ArrayList<NonLectureSlot> nlslots,
+    		ArrayList<Course> courses, 
+    		ArrayList<Lecture> lectures, 
+    		ArrayList<NonLecture> nonlectures,
+    		TimeTable tt) {
+    	
+    	this.lslots = lslots;
+    	this.nlslots = nlslots;
+    	this.courses = courses;
+    	this.lectures = lectures;
+    	this.tt = tt;
+    }
+    
+    /**
      * Constructor for Constr
-     * @param orig Original search data
+     * (copies a schedule but with a new timetable) 
+     * 
+     * @param orig Original schedule
      * @param tt New timetable
      */
     public ScheduleManager(ScheduleManager orig, TimeTable tt) {
@@ -79,6 +98,77 @@ public class ScheduleManager {
     		for (int i = 0; i < c.getSections().size(); i++)
     			lectures.add(c.getSections().get(i).getLecture());
     	}
+    }
+    
+    /**
+     * Checks if the schedule meets all hard constraints
+     * 
+     * @return True if all hard constraints are met
+     */
+    public boolean isValid() {
+    	Constr c = new Constr(this);
+    	return c.check();
+    }
+    
+    /**
+     * Checks if adding an assignment to the schedule would meet hard constraints
+     * 
+     * @param a The assignment
+     * @return True if the schedule with the assignment meets all hard constraints
+     */
+    public boolean isValidWith(Assignment a) {
+    	Constr c = new Constr(a, this);
+    	return c.check();
+    }
+    
+    /**
+     * Get the evaluation without weights
+     * 
+     * @return The evaluation of the schedule
+     */
+    public int getEval() {
+    	Eval e = new Eval(this);
+    	return e.getEval();
+    }
+    
+    /**
+     * Get the evaluation with added assignment without weights
+     * 
+     * @param a The assignment
+     * @return The evaluation of the schedule with the assignment
+     */
+    public int getEvalWith(Assignment a) {
+    	Eval e = new Eval(a, this);
+    	return e.getEval();
+    }
+    
+    /**
+     * Get the evaluation with weights
+     * 
+     * @param w1
+     * @param w2
+     * @param w3
+     * @param w4
+     * @return The evaluation of the schedule
+     */
+    public int getEval(double w1, double w2, double w3, double w4) {
+    	Eval e = new Eval(this, w1, w2, w3, w4);
+    	return e.getEval();
+    }
+
+    /**
+     * Get the evaluation with added assignment with weights
+     * 
+     * @param a The assignment
+     * @param w1
+     * @param w2
+     * @param w3
+     * @param w4
+     * @return The evaluation of the schedule with the assignment
+     */
+    public int getEvalWith(Assignment a, double w1, double w2, double w3, double w4) {
+    	Eval e = new Eval(a, this, w1, w2, w3, w4);
+    	return e.getEval();
     }
     
     /*

@@ -1,3 +1,17 @@
+/* 
+ * CPSC 433 Fall 2017
+ * 
+ * And-Tree-Based Scheduling Problem Solver
+ * 
+ * Created by:
+ * 
+ * Evan Loughlin
+ * Geordie Tait
+ * James MacIsaac
+ * Luke Kissick
+ * Sidney Shane Dizon
+ */
+
 package Search;
 
 import Schedule.Assignment;
@@ -13,75 +27,112 @@ import Schedule.ScheduleManager;
 import Schedule.Slot;
 
 /**
- * Object for determining whether a schedule satisfies hard constraints
+ * Class for determining whether a schedule satisfies hard constraints
  *
  */
 public class Constr {
 	
-	// the instance
+	/* How to use:
+	 * --------------
+	 * 
+	 * Quick way:	searchmanager.isValid()
+	 * 				searchmanager.isValidWith(assignment)
+	 * 				- checks if valid without actually adding the assignment
+	 * 
+	 * Otherwise:
+	 * 
+	 * Constr c = new Constr(schedulemanager);
+	 * c.check() == true if schedule meets all hard constraints
+	 * 
+	 * Constr c = new Constr(assignment, schedulemanager);
+	 * c.check() == true if adding assignment to schedule would meet all hard constraints
+	 * 		--> this does not add the assignment to the schedule
+	 * 
+	 * You can also check individual constraints if you need:
+	 * 		c.checkCourseMax()
+	 * 		c.checkLabMax()
+	 * 		c.checkLabsDifferent()
+	 * 		c.checkNoncompatible()
+	 * 		c.checkPartassign()
+	 * 		c.checkUnwanted()
+	 * 		c.checkEveningClasses()
+	 * 		c.checkOver500Classes()
+	 * 		c.checkSpecificTimes()
+	 * 		c.checkSpecialClasses()
+	 */
+	
+	// the schedule data
 	private ScheduleManager schedule;
 	
 	/**
 	 * Constructor for checking if adding an assignment to a search is valid
+	 * 
+	 * *** Use this to check if an assignment would be valid but WITHOUT 
+	 * actually adding it to the timetable ***
+	 * 
 	 * @param a Assignment
-	 * @param sd Search schedule
+	 * @param schedule Schedule data
 	 */
-	public Constr(Assignment a, ScheduleManager sd) {
-		this(new ScheduleManager(sd, new TimeTable(a, sd.getTimetable())));
+	public Constr(Assignment a, ScheduleManager schedule) {
+		this(new ScheduleManager(schedule, new TimeTable(a, schedule.getTimetable())));
 	}
 
 	/**
 	 * Constructor for checking if a search is valid
-	 * @param sd Search schedule
+	 * 
+	 * @param schedule Schedule data
 	 */
-	public Constr(ScheduleManager sd) {
-		this.schedule = sd;
+	public Constr(ScheduleManager schedule) {
+		this.schedule = schedule;
 	}
 
 	/**
-	 * Check hard constraints, true if all are satisfied
+	 * Check all hard constraints
+	 * 
+	 * @return True if all hard constraints are satisfied
 	 */
 	public boolean check() {
-		return courseMax() && labMax() && labsDifferent() && noncompatible() 
-				&& partassign() && unwanted() && eveningClasses()
-				&& over500Classes() && specificTimes() && specialClasses();
+		return checkCourseMax() && checkLabMax() && checkLabsDifferent() && checkNoncompatible() 
+				&& checkPartassign() && checkUnwanted() && checkEveningClasses()
+				&& checkOver500Classes() && checkSpecificTimes() && checkSpecialClasses();
 	}
 	
 	/**
 	 * Prints which constraints were violated for debugging
 	 */
 	public void printViolations() {
-		if (!courseMax())
+		if (!checkCourseMax())
 			System.out.println("Coursemax violated");
-		if (!labMax())
+		if (!checkLabMax())
 			System.out.println("Labmax violated");
-		if (!labsDifferent())
+		if (!checkLabsDifferent())
 			System.out.println("Labs different from lecture violated");
-		if (!noncompatible())
+		if (!checkNoncompatible())
 			System.out.println("Noncompatible violated");
-		if (!partassign())
+		if (!checkPartassign())
 			System.out.println("Partassign violated");
-		if (!unwanted())
+		if (!checkUnwanted())
 			System.out.println("Unwanted violated");
-		if (!eveningClasses())
+		if (!checkEveningClasses())
 			System.out.println("Evening classes violated");
-		if (!over500Classes())
+		if (!checkOver500Classes())
 			System.out.println("No overlap in >500 courses violated");
-		if (!specificTimes())
+		if (!checkSpecificTimes())
 			System.out.println("Tuesday 11:00 constraint violated");
-		if (!specialClasses())
+		if (!checkSpecialClasses())
 			System.out.println("CPSC 813/913 constraint violated");
 	}
 	
 	/*
-	 *  individual hard constraints
+	 *  Individual hard constraints
 	 */
 	
 	/**
-	 * Course maximum
+	 * Check course maximum constraint
+	 * 
 	 * @return True if course max constraint is met
 	 */
-	private boolean courseMax() {
+	public boolean checkCourseMax() {
 		
 		// for each assignment
 		for (Assignment a : schedule.getTimetable().getAssignments()) {
@@ -118,10 +169,11 @@ public class Constr {
 	}
 	
 	/**
-	 * Lab maximum
+	 * Check lab maximum constraint
+	 * 
 	 * @return True if lab max constraint is met
 	 */
-	private boolean labMax() {
+	public boolean checkLabMax() {
 		
 		// for each assignment
 		for (Assignment a : schedule.getTimetable().getAssignments()) {
@@ -158,10 +210,11 @@ public class Constr {
 	}
 	
 	/**
-	 * Labs not assigned to same slot as lectures of the same section
+	 * Check if labs not assigned to same slots as lectures of the same section
+	 * 
 	 * @return True if labs assignment constraint is met
 	 */
-	private boolean labsDifferent() {
+	public boolean checkLabsDifferent() {
 		
 		// for each assignment
 		for (Assignment a : schedule.getTimetable().getAssignments()) {
@@ -196,11 +249,12 @@ public class Constr {
 	}
 	
 	/**
-	 * Non-compatible constraint
+	 * Check non-compatible constraint:
 	 * non-compatible(a,b) => assign a != assign b
+	 * 
 	 * @return True if non-compatible constraint is met
 	 */
-	private boolean noncompatible() {
+	public boolean checkNoncompatible() {
 		
 		// for each assignment
 		for (Assignment a : schedule.getTimetable().getAssignments()) {
@@ -227,11 +281,12 @@ public class Constr {
 	}
 	
 	/**
-	 * Partassign constraint
+	 * Check partassign constraint:
 	 * partassign a => assign a
+	 * 
 	 * @return True if partassign constraint is met
 	 */
-	private boolean partassign() {
+	public boolean checkPartassign() {
 		
 		// for each assignment
 		for (Assignment a : schedule.getTimetable().getAssignments()) {
@@ -249,11 +304,12 @@ public class Constr {
 	}
 	
 	/**
-	 * Unwanted constraint
+	 * Check unwanted constraint:
 	 * unwanted a,s => assign a != s
+	 * 
 	 * @return True if unwanted constraint is met
 	 */
-	private boolean unwanted() {
+	public boolean checkUnwanted() {
 		
 		// for each assignment
 		for (Assignment a : schedule.getTimetable().getAssignments()) {
@@ -272,11 +328,12 @@ public class Constr {
 	}
 	
 	/**
-	 * Sections with numbers starting with 9 must get evening slots
+	 * Check if sections with numbers starting with 9 get evening slots
 	 * (department constraint)
+	 * 
 	 * @return True if evening classes constraint is met
 	 */
-	private boolean eveningClasses() {
+	public boolean checkEveningClasses() {
 		
 		// for each assignment
 		for (Assignment a : schedule.getTimetable().getAssignments()) {
@@ -311,11 +368,12 @@ public class Constr {
 	}
 	
 	/**
-	 * 500 level classes can't get the same slot
+	 * Check if 500 level classes don't have the same slot
 	 * (department constraint)
+	 * 
 	 * @return True if 500-level constraint is met
 	 */
-	private boolean over500Classes() {
+	public boolean checkOver500Classes() {
 		
 		// for each assignment
 		for (Assignment a : schedule.getTimetable().getAssignments()) {
@@ -357,11 +415,12 @@ public class Constr {
 	}
 	
 	/**
-	 * No courses Tuesday 11:00-12:30
+	 * Check if no courses Tuesday 11:00-12:30
 	 * (department constraint)
+	 * 
 	 * @return True if Tues 11:00 constraint is met
 	 */
-	private boolean specificTimes() {
+	public boolean checkSpecificTimes() {
 		
 		// for each assignment
 		for (Assignment a : schedule.getTimetable().getAssignments()) {
@@ -379,11 +438,12 @@ public class Constr {
 	}
 	
 	/**
-	 * Special requirements for CPSC 813/913
+	 * Check special requirements for CPSC 813/913
 	 * (department constraint)
+	 * 
 	 * @return True if CPSC813/913 constraint is met
 	 */
-	private boolean specialClasses() {
+	public boolean checkSpecialClasses() {
 		
 		// for each assignment
 		for (Assignment a : schedule.getTimetable().getAssignments()) {
@@ -450,7 +510,7 @@ public class Constr {
 						return false;
 				}
 				
-				// can't overlap other courses that are not allowed to overlap 313/413
+				// also can't overlap other courses that are not allowed to overlap 313/413
 				
 				// if the first course is 813 and second is 313
 				if (first.equals("813") && second.equals("313")) {
