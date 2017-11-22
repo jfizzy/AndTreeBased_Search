@@ -16,18 +16,19 @@ package Schedule;
 import java.util.ArrayList;
 
 /**
+ * Object representing a course to be scheduled
+ * (Not a lecture; contains sections of lectures and nonlectures)
  * @author 
  *
  */
 public class Course {
-
     
     private String department;				// name of the department
     private String number;					// course number
     private ArrayList<Section> sections;	// sections within the course
     
     /**
-     * default constructor
+     * Default constructor
      */
     public Course() {
         this.department = null;
@@ -36,10 +37,10 @@ public class Course {
     }
     
     /**
-     * constructor
-     * @param dept
-     * @param num
-     * @param sNum
+     * Constructor
+     * @param dept Department
+     * @param num Course number
+     * @param sNum Section number
      */
     public Course(String dept, String num, String sNum){
         this.department = dept;

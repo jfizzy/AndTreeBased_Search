@@ -14,11 +14,13 @@
 package Schedule;
 
 /**
+ * Abstract class representing Labs/Tutorials to be scheduled
  * @author 
  *
  */
 public abstract class NonLecture extends Meeting {
 
+    private Course parentCourse;
     protected Section parentSection;	// nonlecture's parent section
     protected boolean evening;			// whether it is an evening class
     
@@ -26,10 +28,11 @@ public abstract class NonLecture extends Meeting {
      *          tutorials are evening as well
      */
     /**
-     * constructor
+     * Constructor
      */
     public NonLecture(){
         super();
+        this.parentCourse = null;
         this.parentSection = null;
         this.evening = false;
     }
@@ -38,6 +41,14 @@ public abstract class NonLecture extends Meeting {
      *  getters and setters
      */
 
+    public Course getParentCourse(){
+        return parentCourse;
+    }
+    
+    public void setParentCourse(Course c){
+        this.parentCourse = c;
+    }
+    
     public Section getParentSection() {
         return parentSection;
     }

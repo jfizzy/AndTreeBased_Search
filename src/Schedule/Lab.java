@@ -14,18 +14,20 @@
 package Schedule;
 
 /**
- * @author 
+ * Object representing a lab to be scheduled
+ * @author
  *
  */
-public class Lab extends NonLecture{
-    
+public class Lab extends NonLecture {
+
     private final String labNum;	// lab number
-    
+
     /**
-     * constructor
-     * @param num
-     * @param s
-     * @param evening
+     * Constructor
+     *
+     * @param num Lab number
+     * @param s Section number
+     * @param evening Evening course flag
      */
     public Lab(String num, Section s, boolean evening){
         this.labNum = num;
@@ -36,17 +38,23 @@ public class Lab extends NonLecture{
     /*
      *  getters and setters
      */
-
     public String getLabNum() {
         return labNum;
     }
-    
+
     @Override
-    public String toString(){
-        String dept = this.parentSection.getParentCourse().getDepartment();
-        String cNum = this.parentSection.getParentCourse().getNumber();
-        String sec = this.parentSection.getSectionNum();
-        return (dept + " " + cNum + " LEC " + sec + " LAB " + this.labNum);
+    public String toString() {
+        if (this.parentSection == null) {
+            String dept = this.getParentCourse().getDepartment();
+            String cNum = this.getParentCourse().getNumber();
+            return (dept + " " + cNum + " LAB " + this.labNum);
+        } else {
+            String dept = this.parentSection.getParentCourse().getDepartment();
+            String cNum = this.parentSection.getParentCourse().getNumber();
+            String sec = this.parentSection.getSectionNum();
+            return (dept + " " + cNum + " LEC " + sec + " LAB " + this.labNum);
+        }
+
     }
 
 }

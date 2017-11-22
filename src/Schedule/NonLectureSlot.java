@@ -14,25 +14,27 @@
 package Schedule;
 
 /**
+ * Object representing a time slot into which a nonlecture can be scheduled
  * @author 
  *
  */
 public class NonLectureSlot extends Slot {
     
-    private final int labmax;	// maximum nonlectures for the slot
-    private final int labmin;	// minimum nonlectures for the slot
+    private int labmax;	// maximum nonlectures for the slot
+    private int labmin;	// minimum nonlectures for the slot
     
     /**
      * constructor
-     * @param day
-     * @param h
-     * @param m
-     * @param eh
-     * @param em
-     * @param lmax
-     * @param lmin
+     * @param day Day
+     * @param h Begin hour
+     * @param m Begin minute
+     * @param eh End hour
+     * @param em End minute
+     * @param lmax Lab max
+     * @param lmin Lab min
      */
-    public NonLectureSlot(String day, int h, int m, int eh, int em, int lmax, int lmin){
+    public NonLectureSlot(String day, int h, int m, int eh, int em, int lmax, int lmin, boolean isEvening){
+        super();
         this.day = day;
         this.hour = h;
         this.minute = m;
@@ -40,6 +42,7 @@ public class NonLectureSlot extends Slot {
         this.endminute = em;
         this.labmax = lmax;
         this.labmin = lmin;
+        this.evening = isEvening;
     }
     
     /*
@@ -52,6 +55,15 @@ public class NonLectureSlot extends Slot {
     
     public int getLabMax() {
     	return this.labmax;
+    }
+    
+    public boolean isActive(){
+        return (this.labmax > 0);
+    }
+    
+    public void activate(int labmax, int labmin){
+        this.labmax = labmax;
+        this.labmin = labmin;
     }
     
 }

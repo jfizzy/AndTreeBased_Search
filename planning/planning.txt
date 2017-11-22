@@ -18,3 +18,14 @@ Does "department constraint" mean that it only applies for CPSC courses/labs?
 
 ----------------------------------
 
+
+priority list for ordering Assingments:
+
+	-partial assignment
+	-evening meetings
+	-number of incompatibilities
+	-highest preference penalty
+	-number of unwanted
+	-number of pairs
+
+

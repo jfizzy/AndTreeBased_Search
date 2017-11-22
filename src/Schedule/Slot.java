@@ -17,7 +17,7 @@ package Schedule;
 
 
 /**
- * Slot: represents a timeslot within a schedule week. One slot can represent 
+ * Slot: abstract class that represents a timeslot within a schedule week. One slot can represent 
  * several different days and times, which is handled using arrays and an index.
  * @author jmaci
  */
@@ -27,10 +27,10 @@ public abstract class Slot {
     protected int hour;			// slot begin hour
     protected int minute;		// slot begin minute
     protected int endhour;		// slot end hour
-    protected int endminute;            // slot end minute
-
+    protected int endminute;	// slot end minute
+    protected boolean evening;
     /**
-     * default constructor
+     * Default constructor
      */
     public Slot() {
         day = null;
@@ -38,20 +38,26 @@ public abstract class Slot {
         minute = -1;
         endhour = -1;
         endminute = -1;
+        evening = false;
     }
-    
+
     /**
-     * check if slots are equal
-     * (have all the same values)
+     * check if slots are equal (have all the same values)
+     *
      * @param s
-     * @return
+     * @return True if slots are equal
      */
     public boolean equals(Slot s) {
-    	if (day == s.getDay() && hour == s.getHour() && minute == s.getMinute()
-    			&& endhour == s.getEndHour() && endminute == s.getEndMinute())
-    		return true;
-    	else
-    		return false;
+        if (day == s.getDay() && hour == s.getHour() && minute == s.getMinute()
+                && endhour == s.getEndHour() && endminute == s.getEndMinute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public boolean isEvening(){
+        return this.evening;
     }
     
     /**
@@ -60,33 +66,35 @@ public abstract class Slot {
      * @return True if times of this slot overlaps with slot s.
      */
     public boolean overlaps(Slot s) {
-    	
-    	// return false if days don't match
-    	// TODO: this is going to have problems
-    	// like checking if a Fr lab overlaps a Mo(WeFr) lecture
-    	if (!day.equals(s.getDay()))
+
+        // return false if days don't match
+    	if ((day.equals("MO") || day.equals("WE") || day.equals("FR")) 
+    			&& (s.getDay().equals("TU") || s.getDay().equals("TH")))
     		return false;
-    	
-    	// combine hours and minutes
-    	int begin = 60 * hour + minute;
-    	int end = 60 * endhour - endminute;
-    	int sbegin = 60 * s.getHour() + s.getMinute();
-    	int send = 60 * s.getEndHour() + s.getEndMinute();
-    	
-    	// check for overlap
-    	if ((begin < sbegin && end > sbegin) 
-    			|| (begin < send && end > send)
-    			|| (begin == sbegin && end == send))
-    		return true;
-    	
-    	// if we got here no overlap
-    	return false;
+    	if ((day.equals("TU") || day.equals("TH")) 
+    			&& !(s.getDay().equals("TU") || s.getDay().equals("TH")))
+    		return false;
+
+        // combine hours and minutes
+        int begin = 60 * hour + minute;
+        int end = 60 * endhour - endminute;
+        int sbegin = 60 * s.getHour() + s.getMinute();
+        int send = 60 * s.getEndHour() + s.getEndMinute();
+
+        // check for overlap
+        if ((begin < sbegin && end > sbegin)
+                || (begin < send && end > send)
+                || (begin == sbegin && end == send)) {
+            return true;
+        }
+
+        // if we got here no overlap
+        return false;
     }
-    
+
     /*
      *  getters and setters
      */
-    
     // day
     public String getDay() {
         return day;
@@ -100,6 +108,13 @@ public abstract class Slot {
     public int getHour() {
         return hour;
     }
+    
+    public String printHour(){
+        String s = "" + hour;
+        if(s.length() < 2)
+            s = "0"+s;
+        return s;
+    }
 
     public void setHour(int hour) {
         this.hour = hour;
@@ -110,10 +125,17 @@ public abstract class Slot {
         return minute;
     }
 
+    public String printMinute(){
+        String s = "" + minute;
+        if(s.length() < 2)
+            s = "0"+s;
+        return s;
+    }
+    
     public void setMinute(int minute) {
         this.minute = minute;
     }
-    
+
     // end hour
     public int getEndHour() {
         return endhour;
