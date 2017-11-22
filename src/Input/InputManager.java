@@ -233,8 +233,9 @@ public class InputManager {
         generateNonLectures(courses);
         generateIncompatibilities(courses);
         generateUnwanted(courses, lecSlots, nonlecSlots);
-
-        Schedule sched = new Schedule();
+        
+        
+        Schedule sched = new Schedule(lecSlots, nonlecSlots, courses, null);
         sched.printAssignments();
         
         generatePreferences(sched, courses, lecSlots, nonlecSlots);
@@ -349,11 +350,9 @@ public class InputManager {
                 Section s = null;
                 if (section == null) {
                     // open to all sections
-                    if (course.getSections() != null) {
-                        // check if first section has an the open nonlecture already
-                        s = course.getSections().get(0);
+                    if (course.getSections() != null) { // course has to have at least one section TODO
                         if ("TUT".equals(nlType)) {
-                            for (Tutorial t : s.getTuts()) {
+                            for (Tutorial t : course.getOpenTuts()) {
                                 if (t.getTutNum().equals(nlNum) && t.getSectionNum() == null) {
                                     System.out.println("This is a duplicate open tutorial declaration");
                                     return null;
@@ -361,13 +360,10 @@ public class InputManager {
                             }
                             Tutorial tut = new Tutorial(nlNum, null, false); // null means any section
                             tut.setParentCourse(course);
-                            // add tutorial to all sections in course
-                            course.getSections().forEach((cs) -> {
-                                cs.addTutorial(tut);
-                            });
+                            course.addOpenTut(tut); // now adds tutorial to course
                             return tut;
                         } else { // LAB
-                            for (Lab l : s.getLabs()) {
+                            for (Lab l : course.getOpenLabs()) {
                                 if (l.getLabNum().equals(nlNum) && l.getSectionNum() == null) {
                                     System.out.println("This is a duplicate open lab declaration");
                                     return null;
@@ -376,14 +372,12 @@ public class InputManager {
                             Lab lab = new Lab(nlNum, null, false);
                             lab.setParentCourse(course);
                             // add lab to all sections in course
-                            course.getSections().forEach((cs) -> {
-                                cs.addLab(lab);
-                            });
+                            course.addOpenLab(lab); // now adds lab to course
                             return lab;
                         }
 
                     } else {
-                        return null; // section does not exist
+                        return null; // no sections exist
                     }
                 } else {
                     for (Section sec : course.getSections()) {
@@ -495,7 +489,7 @@ public class InputManager {
                 nlType = mParts[4];
                 nlNum = mParts[5];
             }
-        } else { // lecture implied (maybe)
+        } else { // lecture not given
             // looks like 'CPSC 433' OR 'CPSC 433 TUT 01'
 
             if (mParts.length == 2) {
@@ -517,13 +511,13 @@ public class InputManager {
                     } else {
                         // NonLecture specified
                         if ("TUT".equals(nlType)) {
-                            for (Tutorial tut : c.getSections().get(0).getTuts()) {
+                            for (Tutorial tut : c.getOpenTuts()) { // its an open tutorial
                                 if (tut.getTutNum().equals(nlNum)) {
                                     return tut; // found the tutorial
                                 }
                             }
-                        } else if ("LAB".equals(nlType)) {
-                            for (Lab lab : c.getSections().get(0).getLabs()) {
+                        } else if ("LAB".equals(nlType)) { // its an open lab
+                            for (Lab lab : c.getOpenLabs()) {
                                 if (lab.getLabNum().equals(nlNum)) {
                                     return lab; // found the lab
                                 }
