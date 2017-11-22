@@ -16,13 +16,13 @@ package Search;
 
 import java.util.ArrayList;
 
-import Schedule.TimeTable;
+import Schedule.Schedule;
 
 public class AndSearchTree {
 	//A search tree is composed of a state, and it's sub tree, these need to be parameters
 	//Additionally, there is a parent to the tree, and root should have a null parent
 	
-	private TimeTable state;
+	private Schedule state;
 	private AndSearchTree parent;
 	private ArrayList<AndSearchTree> subTree;
 	private int eValue = 1000000000;
@@ -30,14 +30,14 @@ public class AndSearchTree {
 	//Constructors
 
 	//This constructor will be used for the root node.
-	public AndSearchTree(TimeTable tt) {
-		state = tt;
+	public AndSearchTree(Schedule s) {
+		state = s;
 		parent = null;
 		//TO-DO (maybe?) add child trees to array list?
 	}
 	
-	public AndSearchTree(TimeTable tt, AndSearchTree parent) {
-		state = tt;
+	public AndSearchTree(Schedule s, AndSearchTree parent) {
+		state = s;
 		this.parent = parent;
 	}
 	
@@ -59,7 +59,7 @@ public class AndSearchTree {
 		return this.parent;
 	}
 	
-	public TimeTable getState() {
+	public Schedule getState() {
 		return this.state;
 	}
 	

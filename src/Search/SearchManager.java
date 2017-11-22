@@ -5,7 +5,7 @@ import Schedule.Course;
 import Schedule.Lecture;
 import Schedule.LectureSlot;
 import Schedule.NonLecture;
-import Schedule.ScheduleManager;
+import Schedule.Schedule;
 import Schedule.Section;
 import Schedule.Slot;
 import java.util.concurrent.ThreadLocalRandom;
@@ -51,14 +51,14 @@ public class SearchManager {
 	
 	//----------------------------------------------------------------
 	
-	private ScheduleManager schedule; 	// all the data required for the search
-	private int bound;					// the bound value
+	private Schedule schedule; 	// all the data required for the search
+	private int bound;			// the bound value
 	
 	/**
 	 * Constructor
 	 * @param sd Search schedule
 	 */
-	public SearchManager(ScheduleManager schedule) {
+	public SearchManager(Schedule schedule) {
 		this.schedule = schedule;
 	}
 	
@@ -74,7 +74,7 @@ public class SearchManager {
 		assignRandom();
 		
 		// print the assignments
-		schedule.getTimetable().printAssignments();
+		schedule.printAssignments();
 		
 		// print eval breakdown
 		Eval eval = new Eval(schedule);		
@@ -95,7 +95,7 @@ public class SearchManager {
 	 * Return the schedule
 	 * @return Schedule
 	 */
-	public ScheduleManager getSchedule() {
+	public Schedule getSchedule() {
 		return this.schedule;
 	}
 	
@@ -123,12 +123,12 @@ public class SearchManager {
 					// add the assignment, checking if it is valid
 					Constr constr = new Constr(a, schedule);
 					if (constr.check()) {
-						schedule.getTimetable().addAssignment(a);
+						schedule.addAssignment(a);
 						break;
 					}
 					if (i == max-1) {
 						System.out.println("Course violated Constr");
-						schedule.getTimetable().addAssignment(a); // add anyway
+						schedule.addAssignment(a); // add anyway
 					}
 					
 				}
@@ -149,12 +149,12 @@ public class SearchManager {
 				// add the assignment, checking if it is valid
 				Constr constr = new Constr(a, schedule);
 				if (constr.check()) {
-					schedule.getTimetable().addAssignment(a);
+					schedule.addAssignment(a);
 					break;
 				}
 				if (i == max-1) {
 					System.out.println("Lab violated Constr");
-					schedule.getTimetable().addAssignment(a); // add anyway
+					schedule.addAssignment(a); // add anyway
 				}
 			}
 		}

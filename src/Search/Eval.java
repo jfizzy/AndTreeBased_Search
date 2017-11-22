@@ -21,8 +21,7 @@ import Schedule.LectureSlot;
 import Schedule.NonLecture;
 import Schedule.NonLectureSlot;
 import Schedule.Preference;
-import Schedule.ScheduleManager;
-import Schedule.TimeTable;
+import Schedule.Schedule;
 import Schedule.Meeting;
 
 /**
@@ -34,26 +33,26 @@ public class Eval {
 	/* How to use:
 	 * --------------
 	 * 
-	 * Quick way:	schedulemanager.getEval();
-	 * 				schedulemanager.getEvalWith(assignment);
+	 * Quick way:	schedule.eval();
+	 * 				schedule.evalWith(assignment);
 	 * 				- returns the eval without actually adding the assignment
 	 * 
 	 * 				To use weights, add them to the end of the parameters
-	 * 				e.g. schedulemanager.getEval(assignment, 0.5, 1.5, 10, 0);
+	 * 				e.g. schedulemanager.evalWith(assignment, 0.5, 1.5, 10, 0);
 	 * 
 	 * Otherwise:
 	 * 
 	 * Total eval of a schedule:
-	 * 		Eval e = new Eval(schedulemanager);
+	 * 		Eval e = new Eval(schedule);
 	 * 		int value = e.getEval();
 	 * 
 	 * Total eval of a schedule if an assignment was added:
 	 * --> this does not add the assignment to the schedule
-	 * 		Eval e = new Eval(assignment, schedulemanager);
+	 * 		Eval e = new Eval(assignment, schedule);
 	 * 		int value = e.getEval();
 	 * 
 	 * To use weights, add them to the end of the parameters
-	 * e.g. Eval e = new Eval(schedulemanager, 0.5, 1.5, 10, 0);
+	 * e.g. Eval e = new Eval(schedule, 0.5, 1.5, 10, 0);
 	 * 
 	 * You can also check individual evals if you need:
 	 * 		e.getCourseMinEval()
@@ -76,14 +75,14 @@ public class Eval {
 	private double wSecDiff;
 	
 	// instance
-	private ScheduleManager schedule;
+	private Schedule schedule;
 	
 	/**
 	 * Constructor without weights
 	 * 
 	 * @param schedule Schedule data
 	 */
-	public Eval(ScheduleManager schedule) {
+	public Eval(Schedule schedule) {
 		this(schedule,1,1,1,1);
 	}
 	
@@ -96,7 +95,7 @@ public class Eval {
 	 * @param pair Weight for pair
 	 * @param secD Weight for section diff
 	 */
-	public Eval(ScheduleManager sd, double min, double pref, double pair, double secD) {
+	public Eval(Schedule schedule, double min, double pref, double pair, double secD) {
 		
 		pen_coursemin = 1;
 		pen_labmin = 1;
@@ -108,7 +107,7 @@ public class Eval {
 		wPair = pair;
 		wSecDiff = secD;
 		
-		schedule = sd;
+		this.schedule = schedule;
 	}
 	
 	/**
@@ -119,8 +118,8 @@ public class Eval {
 	 */
 	 // *** Use this to get eval of schedule if an assignment was added but WITHOUT 
 	 // actually adding it to the timetable ***
-	public Eval(Assignment a, ScheduleManager schedule) {
-		this(new ScheduleManager(schedule, new TimeTable(a, schedule.getTimetable())));
+	public Eval(Assignment a, Schedule schedule) {
+		this(new Schedule(a, schedule));
 	}
 	
 	/**
@@ -132,10 +131,9 @@ public class Eval {
 	 */
 	 // *** Use this to get eval of schedule if an assignment was added but WITHOUT 
 	 // actually adding it to the timetable ***
-	public Eval(Assignment a, ScheduleManager schedule, 
+	public Eval(Assignment a, Schedule schedule, 
 			double min, double pref, double pair, double secD) {
-		this(new ScheduleManager(schedule, new TimeTable(a, schedule.getTimetable())), 
-				min, pref, pair, secD);
+		this(new Schedule(a, schedule), min, pref, pair, secD);
 	}
 	
 	/**
@@ -165,7 +163,7 @@ public class Eval {
     		
         	// count how many lecture assignments have that slot
     		int count = 0;
-        	for (Assignment a : schedule.getTimetable().getAssignments()) {
+        	for (Assignment a : schedule.getAssignments()) {
         		if (a.getM().getClass() != Lecture.class) continue;
         		if (a.getS().equals(ls))
         			count++;
@@ -195,7 +193,7 @@ public class Eval {
     		
         	// count how many nonlecture assignments have that slot
     		int count = 0;
-        	for (Assignment a : schedule.getTimetable().getAssignments()) {
+        	for (Assignment a : schedule.getAssignments()) {
         		if (a.getM().getClass() != NonLecture.class) continue;
         		if (a.getS().equals(nls))
         			count++;
@@ -221,7 +219,7 @@ public class Eval {
 		double result = 0.0;
 		
 		// for each assignment
-		for (Assignment a : schedule.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getAssignments()) {
 			
 			// for each preference entry of the assignment's meeting
 			for (Preference p : a.getM().getPreferences()) {
@@ -246,13 +244,13 @@ public class Eval {
 		double result = 0.0;
 		
 		// for each assignment
-		for (Assignment a : schedule.getTimetable().getAssignments()) {
+		for (Assignment a : schedule.getAssignments()) {
 			
 			// for each pair entry of the assignment's meeting
 			for (Meeting m : a.getM().getPaired()) {
 				
 				// for each other assignment
-				for (Assignment b : schedule.getTimetable().getAssignments()) {
+				for (Assignment b : schedule.getAssignments()) {
 					if (a == b) continue;
 					
 					// skip if meeting doesn't match
@@ -298,13 +296,13 @@ public class Eval {
 					Lecture l2 = c.getSections().get(j).getLecture();
 				
 					// for each assignment in the schedule
-					for (Assignment a : schedule.getTimetable().getAssignments()) {
+					for (Assignment a : schedule.getAssignments()) {
 						
 						// skip if assignment 1 doesn't match
 						if (a.getM() != l1) continue;
 						
 						// for each other assignment
-						for (Assignment b : schedule.getTimetable().getAssignments()) {
+						for (Assignment b : schedule.getAssignments()) {
 							if (a == b) continue;	// skip if same assignment
 							
 							// skip if assignment 2 doesn't match

@@ -21,12 +21,10 @@ import Schedule.LectureSlot;
 import Schedule.Meeting;
 import Schedule.NonLecture;
 import Schedule.NonLectureSlot;
-import Schedule.ScheduleManager;
+import Schedule.Schedule;
 import Schedule.Section;
 import Schedule.Slot;
-import Schedule.TimeTable;
 import Schedule.Tutorial;
-
 import java.util.ArrayList;
 
 /**
@@ -57,7 +55,7 @@ public class InputManager {
      * @param fp
      * @return search data nlType
      */
-    public ScheduleManager run(String fp) {
+    public Schedule run(String fp) {
 
         iw = new InputWrapper();
         fe = new FileExaminer(fp, iw);
@@ -68,20 +66,19 @@ public class InputManager {
         generateTimeTable();
         // comment out to run other code
 
-        ScheduleManager sm = new ScheduleManager();
-        sm.setLectureSlots(activateLectureSlots());
-        sm.setLabSlots(activateNonLectureSlots());
-        sm.setCourses(generateSections());
-        sm.setNonLectures(generateNonLectures(sm.getCourses()));
-        sm.setTimetable(new TimeTable());
-        return sm;
+        Schedule s = new Schedule();
+        s.setLectureSlots(activateLectureSlots());
+        s.setLabSlots(activateNonLectureSlots());
+        s.setCourses(generateSections());
+        s.setNonLectures(generateNonLectures(generateSections()));
+        return s;
     }
 
     // this is never used
     private void generateTimeTableObjects() {
         ArrayList<LectureSlot> ls = activateLectureSlots();
         ArrayList<NonLectureSlot> nls = activateNonLectureSlots();
-        TimeTable tt = generateTimeTable();
+        Schedule s = generateTimeTable();
     }
 
     private ArrayList<LectureSlot> generateGenericLectureSlots() {
@@ -225,7 +222,7 @@ public class InputManager {
      *
      * @return null
      */
-    private TimeTable generateTimeTable() {
+    private Schedule generateTimeTable() {
         //generate list of courses
         System.out.println("--------------------");
         System.out.println("TESTING");
@@ -257,7 +254,7 @@ public class InputManager {
                 });
             });
         });
-        TimeTable tt = new TimeTable(meetings, lecSlots, nonlecSlots);
+        Schedule tt = new Schedule();
         tt.printAssignments();
         
         generatePreferences(tt, courses, lecSlots, nonlecSlots);
@@ -681,7 +678,7 @@ public class InputManager {
         });
     }
 
-    private void generatePreferences(TimeTable tt, ArrayList<Course> courses, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
+    private void generatePreferences(Schedule sched, ArrayList<Course> courses, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
         iw.preferencesLines.forEach((line) -> {
             String[] parts = line.split("\\s*,\\s*");
             String slotS = parts[0] + ", " + parts[1];
@@ -696,7 +693,7 @@ public class InputManager {
             } else {
                 System.out.println("Meeting Exists");
                 Assignment assignment = null;
-                for (Assignment a : tt.getAssignments()) {
+                for (Assignment a : sched.getAssignments()) {
                     if (a.getM().equals(m)) {
                         assignment = a;
                     }
