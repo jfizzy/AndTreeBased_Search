@@ -340,9 +340,9 @@ public class InputManager {
                 result.add(nl);
                 if ("TUT".equals(nlType)) // check for nlType of NonLecture
                 {
-                    System.out.println("[Added NonLecture - " + nl.getDept() + " " + nl.getCourseNum() + " LEC " + nl.getSectionNum() + " TUT " + ((Tutorial) nl).getTutNum() + "]");
+                    System.out.println("[Added NonLecture - " + ((Tutorial) nl).toString() + "]");
                 } else {
-                    System.out.println("[Added NonLecture - " + nl.getDept() + " " + nl.getCourseNum() + " LEC " + nl.getSectionNum() + " LAB " + ((Lab) nl).getLabNum() + "]");
+                    System.out.println("[Added NonLecture - " + ((Lab) nl).toString() + "]");
                 }
             }
         });
@@ -385,6 +385,7 @@ public class InputManager {
                             course.getSections().forEach((cs) -> {
                                 cs.addTutorial(tut);
                             });
+                            return tut;
                         } else { // LAB
                             for (Lab l : s.getLabs()) {
                                 if (l.getLabNum().equals(nlNum) && l.getSectionNum() == null) {
@@ -398,6 +399,7 @@ public class InputManager {
                             course.getSections().forEach((cs) -> {
                                 cs.addLab(lab);
                             });
+                            return lab;
                         }
 
                     } else {
@@ -739,6 +741,10 @@ public class InputManager {
             }
 
         });
+    }
+    
+    private void generatePairs(){
+        
     }
 
 }
