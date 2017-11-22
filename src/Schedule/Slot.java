@@ -13,9 +13,13 @@
  */
 package Schedule;
 
+// NOTE: THIS NEEDS TO BE UPDATED TO USE ARRAYS - eml
+
+
 /**
- * @author 
- *
+ * Slot: represents a timeslot within a schedule week. One slot can represent 
+ * several different days and times, which is handled using arrays and an index.
+ * @author jmaci
  */
 public abstract class Slot {
 
@@ -23,7 +27,7 @@ public abstract class Slot {
     protected int hour;			// slot begin hour
     protected int minute;		// slot begin minute
     protected int endhour;		// slot end hour
-    protected int endminute;	// slot end minute
+    protected int endminute;            // slot end minute
 
     /**
      * default constructor
@@ -51,9 +55,9 @@ public abstract class Slot {
     }
     
     /**
-     * check if slots overlap in time
-     * @param s
-     * @return
+     * Check if slots overlap with one another.
+     * @param s Another slot to compare against.
+     * @return True if times of this slot overlaps with slot s.
      */
     public boolean overlaps(Slot s) {
     	
