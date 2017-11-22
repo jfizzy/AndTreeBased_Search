@@ -28,6 +28,7 @@ public abstract class Meeting {
     private final ArrayList<Slot> unwanted;
     private Slot partassign;
     private final ArrayList<Preference> preferences;
+    private Assignment assignment;
     
     /**
      * Constructor
@@ -37,6 +38,7 @@ public abstract class Meeting {
         paired = new ArrayList<>();
         unwanted = new ArrayList<>();
         preferences = new ArrayList<>();
+        assignment = null;
     }
     
     /*
@@ -77,6 +79,14 @@ public abstract class Meeting {
     
     public void setPartassign(Slot s){
         this.partassign = s;
+    }
+
+    public Assignment getAssignment() {
+        return assignment;
+    }
+
+    public void setAssignment(Assignment assignment) {
+        this.assignment = assignment;
     }
     
     // preference
