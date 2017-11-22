@@ -467,11 +467,7 @@ public class InputManager {
      * the caller
      *
      * @param courses
-     * @param dept
-     * @param cNum
-     * @param sec
-     * @param type
-     * @param nlNum
+     * @param meetingString
      * @return
      */
     private Meeting findMeeting(ArrayList<Course> courses, String meetingString) {
