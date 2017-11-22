@@ -147,6 +147,17 @@ public class Schedule {
      * Get the evaluation with added assignment without weights
      * 
      * @param a The assignment
+     * @return The evaluation of the schedule with the assignment
+     */
+    public int evalWith(Assignment a) {
+    	Eval e = new Eval(a, this);
+    	return e.getEval();
+    }
+    
+    /**
+     * Get the evaluation with added assignment and weights
+     * 
+     * @param a The assignment
      * @param w1
      * @param w2
      * @param w3
