@@ -15,7 +15,6 @@
 package Schedule;
 
 import java.util.ArrayList;
-
 import Search.Constr;
 import Search.Eval;
 
@@ -88,6 +87,7 @@ public class Schedule {
      * Fills the lectures list using the courses list
      */
     private void processLectures() {
+    	lectures = new ArrayList<>();
     	
     	// for each course
     	for (Course c : courses) {

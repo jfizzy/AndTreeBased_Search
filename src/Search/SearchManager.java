@@ -78,16 +78,10 @@ public class SearchManager {
 		
 		// print eval breakdown
 		Eval eval = new Eval(schedule);		
-		System.out.println("Cmin = "+eval.getCourseMinEval());
-		System.out.println("Lmin = "+eval.getLabMinEval());
-		System.out.println("Pref = "+eval.getPrefEval());
-		System.out.println("Pair = "+eval.getPairEval());
-		System.out.println("Sect = "+eval.getSecDiffEval());
-		System.out.println("EVAL = "+eval.getEval());
+		eval.printBreakdown();
 		
 		// check if valid (meets hard constraints)
 		Constr constr = new Constr(schedule);
-		//constr.check();
 		constr.printViolations();
 	}
 	

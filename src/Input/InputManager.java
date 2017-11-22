@@ -66,11 +66,11 @@ public class InputManager {
         generateTimeTable();
         // comment out to run other code
 
-        Schedule s = new Schedule();
-        s.setLectureSlots(activateLectureSlots());
-        s.setLabSlots(activateNonLectureSlots());
-        s.setCourses(generateSections());
-        s.setNonLectures(generateNonLectures(generateSections()));
+        ArrayList<Course> courses = generateSections();
+        Schedule s = new Schedule(activateLectureSlots(),
+        						activateNonLectureSlots(),
+        						courses,
+        						generateNonLectures(courses));
         return s;
     }
 

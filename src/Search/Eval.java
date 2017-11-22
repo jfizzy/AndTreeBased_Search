@@ -150,6 +150,18 @@ public class Eval {
 	}
 	
 	/**
+	 * Print a breakdown of all the eval components and then the total
+	 */
+	public void printBreakdown() {
+		System.out.println("Cmin = "+getCourseMinEval());
+		System.out.println("Lmin = "+getLabMinEval());
+		System.out.println("Pref = "+getPrefEval());
+		System.out.println("Pair = "+getPairEval());
+		System.out.println("Sect = "+getSecDiffEval());
+		System.out.println("EVAL = "+getEval());
+	}
+	
+	/**
 	 * Get coursemin eval component
 	 * (penalty if slot has less courses than min)
 	 * 
