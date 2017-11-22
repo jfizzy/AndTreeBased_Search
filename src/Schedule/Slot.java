@@ -77,7 +77,7 @@ public abstract class Slot {
 
         // combine hours and minutes
         int begin = 60 * hour + minute;
-        int end = 60 * endhour - endminute;
+        int end = 60 * endhour + endminute;
         int sbegin = 60 * s.getHour() + s.getMinute();
         int send = 60 * s.getEndHour() + s.getEndMinute();
 
