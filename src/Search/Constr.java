@@ -178,8 +178,8 @@ public class Constr {
 		for (Assignment a : schedule.getAssignments()) {
 			
 			// skip if not nonlecture or not assigned
-			if (a.getM().getClass() != NonLecture.class
-					|| a.getS().getClass() != NonLectureSlot.class
+			if (a.getM().getClass() == Lecture.class
+					|| a.getS().getClass() == LectureSlot.class
 					|| a.getS() == null) 
 				continue;
 			
@@ -189,8 +189,8 @@ public class Constr {
 				if (a == b) continue;
 				
 				// skip if not nonlecture or not assigned
-				if (b.getM().getClass() != NonLecture.class
-						|| b.getS().getClass() != NonLectureSlot.class
+				if (b.getM().getClass() == Lecture.class
+						|| b.getS().getClass() == LectureSlot.class
 						|| b.getS() == null) 
 					continue;
 				
@@ -219,8 +219,8 @@ public class Constr {
 		for (Assignment a : schedule.getAssignments()) {
 			
 			// skip if not a nonlecture or not assigned
-			if (a.getM().getClass() != NonLecture.class
-					|| a.getS().getClass() != NonLectureSlot.class
+			if (a.getM().getClass() == Lecture.class
+					|| a.getS().getClass() == LectureSlot.class
 					|| a.getS() == null) 
 				continue;
 			
@@ -238,7 +238,8 @@ public class Constr {
 				// return false if section is the same
 				Lecture l = (Lecture) b.getM();
 				NonLecture nl = (NonLecture) a.getM();
-				if (l.getParentSection() == nl.getParentSection())
+				
+				if (l.getParentSection().equals(nl.getParentSection()));
 					return false;
 			}
 		}
