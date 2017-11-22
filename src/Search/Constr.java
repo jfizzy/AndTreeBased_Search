@@ -394,8 +394,8 @@ public class Constr {
 				if (a == b) continue;
 				
 				// skip if not a lecture or slot is different
-				if (b.getM().getClass() != NonLecture.class
-						|| b.getS().getClass() != NonLectureSlot.class
+				if (b.getM().getClass() != Lecture.class
+						|| b.getS().getClass() != LectureSlot.class
 						|| b.getS() == null
 						|| !a.getS().overlaps(b.getS())) 
 					continue;
