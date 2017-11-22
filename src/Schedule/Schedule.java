@@ -130,13 +130,31 @@ public class Schedule {
     }
     
     /**
+     * Get the evaluation with weights
+     * 
+     * @param w1
+     * @param w2
+     * @param w3
+     * @param w4
+     * @return The evaluation of the schedule
+     */
+    public int eval(double w1, double w2, double w3, double w4) {
+    	Eval e = new Eval(this, w1, w2, w3, w4);
+    	return e.getEval();
+    }
+    
+    /**
      * Get the evaluation with added assignment without weights
      * 
      * @param a The assignment
+     * @param w1
+     * @param w2
+     * @param w3
+     * @param w4
      * @return The evaluation of the schedule with the assignment
      */
-    public int evalWith(Assignment a) {
-    	Eval e = new Eval(a, this);
+    public int evalWith(Assignment a, double w1, double w2, double w3, double w4) {
+    	Eval e = new Eval(a, this, w1, w2, w3, w4);
     	return e.getEval();
     }
     
