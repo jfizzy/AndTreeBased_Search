@@ -13,10 +13,13 @@
  */
 package Schedule;
 
+// NOTE: THIS NEEDS TO BE UPDATED TO USE ARRAYS - eml
+
+
 /**
- * Abstract class representing a time slot
- * @author
- *
+ * Slot: abstract class that represents a timeslot within a schedule week. One slot can represent 
+ * several different days and times, which is handled using arrays and an index.
+ * @author jmaci
  */
 public abstract class Slot {
 
@@ -58,10 +61,9 @@ public abstract class Slot {
     }
     
     /**
-     * check if slots overlap in time
-     *
-     * @param s
-     * @return True if slots overlap in time
+     * Check if slots overlap with one another.
+     * @param s Another slot to compare against.
+     * @return True if times of this slot overlaps with slot s.
      */
     public boolean overlaps(Slot s) {
 
