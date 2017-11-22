@@ -234,30 +234,10 @@ public class InputManager {
         generateIncompatibilities(courses);
         generateUnwanted(courses, lecSlots, nonlecSlots);
 
-        ArrayList<Meeting> meetings = new ArrayList<>();
-        courses.forEach((c) -> {
-            c.getSections().forEach((s) -> {
-                meetings.add(s.getLecture());
-            });
-        });
-        courses.forEach((c) -> {
-            c.getSections().forEach((s) -> {
-                s.getLabs().forEach((l) -> {
-                    meetings.add(l);
-                });
-            });
-        });
-        courses.forEach((c) -> {
-            c.getSections().forEach((s) -> {
-                s.getTuts().forEach((t) -> {
-                    meetings.add(t);
-                });
-            });
-        });
-        Schedule tt = new Schedule();
-        tt.printAssignments();
+        Schedule sched = new Schedule();
+        sched.printAssignments();
         
-        generatePreferences(tt, courses, lecSlots, nonlecSlots);
+        generatePreferences(sched, courses, lecSlots, nonlecSlots);
         // have to create the timetable here
         System.out.println("--------------------");
         System.out.println("DONE");
@@ -695,11 +675,8 @@ public class InputManager {
             } else {
                 System.out.println("Meeting Exists");
                 Assignment assignment = null;
-                for (Assignment a : sched.getAssignments()) {
-                    if (a.getM().equals(m)) {
-                        assignment = a;
-                    }
-                }
+                if(m.getAssignment()!= null)
+                    assignment = m.getAssignment();
                 
                 if(assignment == null){
                     System.out.println("could not find the needed assignment");

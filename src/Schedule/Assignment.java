@@ -31,6 +31,7 @@ public class Assignment {
     public Assignment(Meeting m, Slot s){
         this.m = m;
         this.s = s;
+        m.setAssignment(this); // need this for backref
     }
     
     /*

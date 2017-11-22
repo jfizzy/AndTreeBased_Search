@@ -171,7 +171,7 @@ public class FileExaminer {
                 } else if (mnle.find() && inSec) { // lecture
                     System.out.println("non lecture line");
                     iw.nonlectureLines.add(line);
-                } else if (mncp.find() && inSec) { // 
+                } else if (mncp.find() && inSec && notCompatibleSec) { // check
                     System.out.println("not compatible line");
                     iw.notCompatibleLines.add(line);
                 } else if (muwt.find() && inSec) {
