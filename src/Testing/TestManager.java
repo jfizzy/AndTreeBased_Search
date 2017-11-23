@@ -14,10 +14,18 @@
 
 package Testing;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
 /**
- * @author 
+ * @author g
  *
  */
+@RunWith(Suite.class)
+@SuiteClasses({ ConstrTests.class, 
+        EvalTests.class })
+
 public class TestManager {
 
 }
