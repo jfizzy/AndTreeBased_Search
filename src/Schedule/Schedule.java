@@ -272,6 +272,24 @@ public class Schedule {
     public void addAssignment(Assignment a) {
         assignments.add(a);
     }
+    
+    public void updateAssignment(Meeting m, Slot s) {
+    	
+    	// for each assignment
+    	for (Assignment a : assignments) {
+    		
+    		// skip if meeting doesn't match
+    		if (a.getM() != m)
+    			continue;
+    		
+    		// otherwise set slot and return
+    		a.setS(s);
+    		return;
+    	}
+    	
+    	// if we got here meeting was not found, so add it
+    	assignments.add(new Assignment(m, s));
+    }
 
     public void clearAssignments() {
         assignments.clear();
