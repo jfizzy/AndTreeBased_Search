@@ -23,7 +23,10 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ ConstrTests.class, 
+@SuiteClasses({ InputTests.class,
+		ScheduleTests.class,
+		SearchTests.class,
+		ConstrTests.class, 
         EvalTests.class })
 
 public class TestManager {
