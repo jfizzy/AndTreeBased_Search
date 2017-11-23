@@ -16,7 +16,7 @@ package Manager;
 import java.io.File;
 
 import Input.InputManager;
-import Search.SearchData;
+import Schedule.Schedule;
 import Search.SearchManager;
 
 /**
@@ -47,11 +47,14 @@ class Manager {
      * @param fp File path
      */
     private static void search(String fp){
+        System.out.println(">>> Reading input file ["+fp+"] and parsing ...");
         InputManager im = new InputManager();
-        SearchData sd = im.run(fp);
-        SearchManager sm = new SearchManager(sd);
+        Schedule schedule = im.run(fp);
+        System.out.println(">>> Done");
+        System.out.println(">>> Finding optimal assignments ...");
+        SearchManager sm = new SearchManager(schedule);
         sm.run();
-        // need to use resulting input data here
+        System.out.println(">>> Done");
     }
     
     /**

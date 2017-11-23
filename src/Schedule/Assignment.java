@@ -11,41 +11,41 @@
  * Luke Kissick
  * Sidney Shane Dizon
  */
+
 package Schedule;
 
 /**
- * Object representing an assignment of a Meeting to a Slot
- * @author jmaci
+ * Assignment: Class which, when instantiated, pairs a given meeting (lecture, lab, or tutorial), with a given slot.
+ * @author
  */
 public class Assignment {
     
-    private Meeting m;	// course, lab, tut
-    private Slot s;		// slot it is assigned to
+    private Meeting m;
+    private Slot s;
     
     /**
-     * Constructor
-     * @param m Meeting
-     * @param s Slot
+     * Constructor class for Assignment
+     * @param m Meeting (lecture, lab, or tutorial) to be assigned.
+     * @param s Slot to be assigned.
      */
     public Assignment(Meeting m, Slot s){
         this.m = m;
         this.s = s;
+        m.setAssignment(this); // need this for backref
     }
     
     /*
-     *  getters and setters
+     *  Getters and Setters
      */
 
-    // meeting
     public Meeting getM() {
         return m;
     }
 
-    public void setM(Meeting m) {
+     void setM(Meeting m) {
         this.m = m;
     }
 
-    // slot
     public Slot getS() {
         return s;
     }

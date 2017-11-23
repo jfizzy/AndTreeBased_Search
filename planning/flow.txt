@@ -1,54 +1,70 @@
 
+
 This is the flow so far:
 
 
-Manager is the overall coordinator for the program
---> creates and runs an InputManager (parse input)
---> creates and runs a SearchManager (manage search)
+Manager is the overall coordinator for the program - has main()
+	--> creates and runs an InputManager (parses input file)
+	--> creates a Schedule (handles schedule and search data)
+	--> creates and runs a SearchManager (performs the search)
 
 InputManager uses FileExaminer and InputWrapper to parse the input file
---> data put into SearchData object - contains all the info needed for a search
---> special input (e.g. noncompatible, pair) is added to each Meeting (Lecture/NonLecture)
+	--> data is put into a Schedule - has all the info needed for a search
+	--> noncompatibles (and pairs, preferences, etc) are added to each Meeting (Lecture/NonLecture)
 
-SearchManager works on a SearchData object
---> run the and-tree based search
---> fills in the timetable with Assignments (Meeting/Slot)
+SearchManager works on a Schedule object
+	--> runs the and-tree based search using data in the Schedule
+	--> fills in the list of Assignments (Meeting/Slot)
 
-    Currently:  - generate random special input (noncompatible, etc.)
-                - fill the timetable randomly
-                - print timetable and eval breakdown
-
-Constr works on a SearchData object
---> check() method returns true if hard constraints are met
-
-Eval works on a SearchData object
---> getEval() method for evaluating soft constraints
-
-(ScheduleManager class is doing nothing so far)
+    Currently:  - fill in the timetable randomly, multiple tries to get valid assignments
+                - print assignments, eval breakdown, any violated hard constraints
+                
+    See SearchManager.java for a breakdown of what we need to implement still
 
 
 
-SearchData contains:
-- lecture slots list
-- nonlecture slots list
-- course list
-- lectures list
-- nonlectures list
-- timetable object (contains the current schedule)
+Constr works on a Schedule object
+	--> checks if hard constraints are satisfied
+	--> see Constr.java for comments on how to use
+
+Eval works on a Schedule object
+	--> checks how well soft constraints are satisfied
+	--> see Eval.java for comments on how to use
+
+    
+
+
+
+Schedule has:
+	- lecture slots list
+	- nonlecture slots list
+	- course list
+	- lectures list
+	- nonlectures list
+	- assignments list
 
 LectureSlots are Slots
 NonLectureSlots are Slots
-- have start and end times, min and max values
+	- have start and end times, min and max values
+	- can be active or inactive (if they are not mentioned in input)
 
 Courses
-- contain Sections, which have Lectures/Labs/Tutorials
+	- have Sections, which have Lectures/Labs/Tutorials
+	- these are used to produce the Lecture list
 
 Lectures are Meetings
 Labs are NonLectures, which are Meetings
 Tutorials are NonLectures, which are Meetings
-- have department, course number, section number
-- have noncompatible, unwanted, pair, partassign, preference lists
+	- have department, course number, section number
+	- have noncompatible, unwanted, pair, partassign, preference lists
 
-TimeTable
-- contains a list of Assignments, which have a Meeting and a Slot
+Assignments
+	- have a Meeting and a Slot
+
+
+
+
+
+
+
 
