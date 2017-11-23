@@ -74,10 +74,10 @@ public class InputParser {
                 if (ls == null) {
                     System.out.println("[!Partial assignment - no such lecture slot was found]");
                     return;
-                }else{
+                } else {
                     //set assignment to this slot
                     m.getAssignment().setS(ls);
-                    System.out.println("[Partial assignment - "+((Lecture) m).toString()+" <=> "+ls.toString()+"]");
+                    System.out.println("[Partial assignment - " + ((Lecture) m).toString() + " <=> " + ls.toString() + "]");
                     return;
                 }
             } else if (m instanceof NonLecture) {
@@ -85,10 +85,10 @@ public class InputParser {
                 if (nls == null) {
                     System.out.println("[!Partial assignment - no such non lecture slot was found]");
                     return;
-                }else{
+                } else {
                     // set assignment to this slot
                     m.getAssignment().setS(nls);
-                    System.out.println("[Partial assignment - "+((NonLecture) m).toString()+" <=> "+nls.toString()+"]");
+                    System.out.println("[Partial assignment - " + ((NonLecture) m).toString() + " <=> " + nls.toString() + "]");
                 }
             }
         });
@@ -440,10 +440,14 @@ public class InputParser {
             if (s != null) {
                 int coursemax = Integer.parseInt(parts[2]);
                 int coursemin = Integer.parseInt(parts[3]);
-                s.activate(coursemax, coursemin); // activate the slot
-                System.out.println("[Activated Lecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + coursemax + " " + coursemin + "]");
+                if (coursemin > coursemax) {
+                    System.out.println("[!Lecture Slot - coursemin ["+ coursemin + "] > [" + coursemax + "]");
+                } else {
+                    s.activate(coursemax, coursemin); // activate the slot
+                    System.out.println("[Activated Lecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + coursemax + " " + coursemin + "]");
+                }
             } else {
-                System.out.println("Could not find the lecture slot");
+                System.out.println("[!Lecture Slot - Could not find the lecture slot]");
             }
         });
         return slots;
@@ -470,8 +474,14 @@ public class InputParser {
             if (s != null) {
                 int labmax = Integer.parseInt(parts[2]);
                 int labmin = Integer.parseInt(parts[3]);
-                s.activate(labmax, labmin);
-                System.out.println("[Activated NonLecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + labmax + " " + labmin + "]");
+                if (labmin > labmax) {
+                    System.out.println("[!NonLecture Slot - labmin [" + labmin + "] > labmax [" + labmax + "]");
+                } else {
+                    s.activate(labmax, labmin);
+                    System.out.println("[Activated NonLecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + labmax + " " + labmin + "]");
+                }
+            }else{
+                System.out.println("[!NonLecture Slot - could not find the non lecture slot]");
             }
         });
         return slots;
