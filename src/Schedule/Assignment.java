@@ -16,7 +16,7 @@ package Schedule;
 
 /**
  * Assignment: Class which, when instantiated, pairs a given meeting (lecture, lab, or tutorial), with a given slot.
- * @author jmaci
+ * @author
  */
 public class Assignment {
     
