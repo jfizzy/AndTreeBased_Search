@@ -39,7 +39,6 @@ class Manager {
         else{
             exit();
         }
-        System.out.println("And-Tree based Search Scheduling Manager initialized.");
     }
     
     /**
