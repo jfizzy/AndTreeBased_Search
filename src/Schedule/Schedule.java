@@ -11,7 +11,6 @@
  * Luke Kissick
  * Sidney Shane Dizon
  */
-
 package Schedule;
 
 import java.util.ArrayList;
@@ -25,113 +24,167 @@ import Search.Eval;
  *
  */
 public class Schedule {
-	
-	private ArrayList<Assignment> assignments;	// the list of assignments
-	private ArrayList<LectureSlot> lslots;		// lecture slots
-	private ArrayList<NonLectureSlot> nlslots;	// nonlecture slots
-	private ArrayList<Course> courses;			// courses
-	private ArrayList<Lecture> lectures;		// lectures
-	private ArrayList<NonLecture> nonlectures;	// nonlectures
+
+    private ArrayList<Assignment> assignments;	// the list of assignments
+    private ArrayList<LectureSlot> lslots;		// lecture slots
+    private ArrayList<NonLectureSlot> nlslots;	// nonlecture slots
+    private ArrayList<Course> courses;			// courses
+    private ArrayList<Lecture> lectures;		// lectures
+    private ArrayList<Lab> labs;
+    private ArrayList<Tutorial> tuts;
 
     /**
      * Default constructor
      */
     public Schedule() {
-    	assignments = new ArrayList<>();
-    	lslots = new ArrayList<>();
-    	nlslots = new ArrayList<>();
-    	courses = new ArrayList<>();
-    	lectures = new ArrayList<>();
-    	nonlectures = new ArrayList<>();
+        assignments = new ArrayList<>();
+        lslots = new ArrayList<>();
+        nlslots = new ArrayList<>();
+        courses = new ArrayList<>();
+        lectures = new ArrayList<>();
+        labs = new ArrayList<>();
+        tuts = new ArrayList<>();
     }
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param lslots
      * @param nlslots
      * @param courses
-     * @param lectures
-     * @param nonlectures
      */
-    public Schedule(ArrayList<LectureSlot> lslots, 
-    		ArrayList<NonLectureSlot> nlslots,
-    		ArrayList<Course> courses, 
-    		ArrayList<NonLecture> nonlectures) {
-    	
-    	assignments = new ArrayList<>();
-    	this.lslots = lslots;
-    	this.nlslots = nlslots;
-    	this.courses = courses;
-    	processLectures();
-    	this.nonlectures = nonlectures;
+    public Schedule(ArrayList<LectureSlot> lslots,
+            ArrayList<NonLectureSlot> nlslots,
+            ArrayList<Course> courses) {
+
+        this.assignments = new ArrayList<>();
+        this.lslots = lslots;
+        this.nlslots = nlslots;
+        this.courses = courses;
+        this.lectures = new ArrayList<>();
+        this.labs = new ArrayList<>();
+        this.tuts = new ArrayList<>();
+        processLectures();
+        processLabs(); // process the things into lists
+        processTuts();
+        generateAssignments();
     }
-    
+
     /**
      * Constructor for Constr/Eval
-     * 
+     *
      * @param a
      * @param orig
      */
     public Schedule(Assignment a, Schedule orig) {
-    	lslots = orig.getLectureSlots();
-    	nlslots = orig.getLabSlots();
-    	courses = orig.getCourses();
-    	lectures = orig.getLectures();
-    	nonlectures = orig.getNonLectures();
-    	assignments = (ArrayList<Assignment>) orig.getAssignments().clone();
-    	assignments.add(a);
+        lslots = orig.getLectureSlots();
+        nlslots = orig.getLabSlots();
+        courses = orig.getCourses();
+        lectures = orig.getLectures();
+        labs = orig.getLabs();
+        tuts = orig.getTuts();
+        assignments = (ArrayList<Assignment>) orig.getAssignments().clone();
+        assignments.add(a);
     }
-    
+
     /**
      * Fills the lectures list using the courses list
      */
     private void processLectures() {
-    	lectures = new ArrayList<>();
-    	
-    	// for each course
-    	for (Course c : courses) {
-    		
-    		// add the lecture for each section of that course
-    		for (int i = 0; i < c.getSections().size(); i++)
-    			lectures.add(c.getSections().get(i).getLecture());
-    	}
+        // for each course
+        this.courses.forEach((c) -> {
+            c.getCourseLectures().forEach((l) -> {
+                this.lectures.add(l);
+            });
+        });
     }
-    
+
+    /**
+     * Fills the labs list
+     */
+    private void processLabs() {
+        this.courses.forEach((c) -> {
+            //System.out.println("course: " + c.getDepartment() + " " + c.getNumber());
+            if (c.getCourseLabs() != null) {
+                //System.out.println("labs: " + c.getCourseLabs().size());
+                c.getCourseLabs().forEach((l) -> {
+                    //System.out.println("lab: " + l.toString());
+                    this.labs.add(l);
+                });
+            } else {
+                //System.out.println("labs: 0");
+            }
+        });
+    }
+
+    /**
+     * Fills the tutorials list
+     */
+    private void processTuts() {
+        this.courses.forEach((c) -> {
+            //System.out.println("course "+ c.getDepartment() + " " + c.getNumber());
+            if (c.getCourseTuts() != null) {
+                //System.out.println("tutorials: "+c.getCourseTuts().size());
+                c.getCourseTuts().forEach((t) -> {
+                    this.tuts.add(t);
+                });
+            }else{
+                //System.out.println("tutorials: 0");
+            }
+        });
+    }
+
+    /**
+     * Generates the set of assignments for all of our meetings
+     */
+    private void generateAssignments() {
+        this.lectures.forEach((l) -> {
+            assignments.add(new Assignment(l, null));
+        });
+        this.labs.forEach((l) -> {
+            assignments.add(new Assignment(l, null));
+        });
+        this.tuts.forEach((t) -> {
+            assignments.add(new Assignment(t, null));
+        });
+    }
+
     /**
      * Checks if the schedule meets all hard constraints
-     * 
+     *
      * @return True if all hard constraints are met
      */
     public boolean isValid() {
-    	Constr c = new Constr(this);
-    	return c.check();
+        Constr c = new Constr(this);
+        return c.check();
     }
-    
+
     /**
-     * Checks if adding an assignment to the schedule would meet hard constraints
-     * 
+     * Checks if adding an assignment to the schedule would meet hard
+     * constraints
+     *
      * @param a The assignment
-     * @return True if the schedule with the assignment meets all hard constraints
+     * @return True if the schedule with the assignment meets all hard
+     * constraints
      */
     public boolean isValidWith(Assignment a) {
-    	Constr c = new Constr(a, this);
-    	return c.check();
+        Constr c = new Constr(a, this);
+        return c.check();
     }
-    
+
     /**
      * Get the evaluation without weights
-     * 
+     *
      * @return The evaluation of the schedule
      */
     public int eval() {
-    	Eval e = new Eval(this);
-    	return e.getEval();
+        Eval e = new Eval(this);
+        return e.getEval();
     }
-    
+
     /**
      * Get the evaluation with weights
-     * 
+     *
      * @param w1
      * @param w2
      * @param w3
@@ -139,24 +192,24 @@ public class Schedule {
      * @return The evaluation of the schedule
      */
     public int eval(double w1, double w2, double w3, double w4) {
-    	Eval e = new Eval(this, w1, w2, w3, w4);
-    	return e.getEval();
+        Eval e = new Eval(this, w1, w2, w3, w4);
+        return e.getEval();
     }
-    
+
     /**
      * Get the evaluation with added assignment without weights
-     * 
+     *
      * @param a The assignment
      * @return The evaluation of the schedule with the assignment
      */
     public int evalWith(Assignment a) {
-    	Eval e = new Eval(a, this);
-    	return e.getEval();
+        Eval e = new Eval(a, this);
+        return e.getEval();
     }
-    
+
     /**
      * Get the evaluation with added assignment and weights
-     * 
+     *
      * @param a The assignment
      * @param w1
      * @param w2
@@ -165,10 +218,10 @@ public class Schedule {
      * @return The evaluation of the schedule with the assignment
      */
     public int evalWith(Assignment a, double w1, double w2, double w3, double w4) {
-    	Eval e = new Eval(a, this, w1, w2, w3, w4);
-    	return e.getEval();
+        Eval e = new Eval(a, this, w1, w2, w3, w4);
+        return e.getEval();
     }
-    
+
     /**
      * Print the timetable for debugging
      */
@@ -199,7 +252,7 @@ public class Schedule {
                 System.out.format(" --> %s %02d:%02d - %02d:%02d",
                         a.getS().getDay(), a.getS().getHour(), a.getS().getMinute(),
                         a.getS().getEndHour(), a.getS().getEndMinute());
-            }else{
+            } else {
                 System.out.print(" --> No Slot");
             }
             return a;
@@ -207,11 +260,10 @@ public class Schedule {
             System.out.print("\n");
         });
     }
-    
+
     /*
      *  Getters and setters
      */
-    
     // assignments
     public ArrayList<Assignment> getAssignments() {
         return assignments;
@@ -224,50 +276,69 @@ public class Schedule {
     public void clearAssignments() {
         assignments.clear();
     }
-    
+
     // lecture slots
     public void setLectureSlots(ArrayList<LectureSlot> lecslots) {
-    	this.lslots = lecslots;
+        this.lslots = lecslots;
     }
-    
+
     public ArrayList<LectureSlot> getLectureSlots() {
-    	return this.lslots;
+        return this.lslots;
     }
-    
+
     // nonlecture slots
     public void setLabSlots(ArrayList<NonLectureSlot> labslots) {
-    	this.nlslots = labslots;
+        this.nlslots = labslots;
     }
-    
+
     public ArrayList<NonLectureSlot> getLabSlots() {
-    	return this.nlslots;
+        return this.nlslots;
     }
-    
+
     // courses
     public void setCourses(ArrayList<Course> cs) {
-    	this.courses = cs;
-    	processLectures(); // fill the lectures list using the courses list
+        this.courses = cs;
+        processLectures(); // fill the lectures list using the courses list
     }
-    
+
     public ArrayList<Course> getCourses() {
-    	return this.courses;
+        return this.courses;
     }
-    
+
     // lectures
     public void setLectures(ArrayList<Lecture> lecs) {
-    	this.lectures = lecs;
+        this.lectures = lecs;
     }
-    
+
     public ArrayList<Lecture> getLectures() {
-    	return this.lectures;
+        return this.lectures;
     }
-    
-    // nonlectures
-    public void setNonLectures(ArrayList<NonLecture> nonlecs) {
-    	this.nonlectures = nonlecs;
+
+    public ArrayList<Lab> getLabs() {
+        return labs;
     }
-    
+
+    public ArrayList<Tutorial> getTuts() {
+        return tuts;
+    }
+
     public ArrayList<NonLecture> getNonLectures() {
-    	return this.nonlectures;
+        ArrayList<NonLecture> nonLectures = new ArrayList<>();
+        this.labs.forEach((l) -> {
+            nonLectures.add(l);
+        });
+        this.tuts.forEach((t) -> {
+            nonLectures.add(t);
+        });
+        return nonLectures;
     }
+
+    public ArrayList<LectureSlot> getLslots() {
+        return lslots;
+    }
+
+    public ArrayList<NonLectureSlot> getNlslots() {
+        return nlslots;
+    }
+
 }

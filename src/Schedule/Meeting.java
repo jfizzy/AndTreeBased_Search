@@ -94,8 +94,9 @@ public abstract class Meeting {
         return preferences;
     }
     
-    public void addPreference(Slot s, int value){
+    public Preference addPreference(Slot s, int value){
     	Preference p = new Preference(s, value);
         this.preferences.add(p);
+        return p;
     }
 }

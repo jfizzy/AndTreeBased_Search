@@ -153,4 +153,9 @@ public abstract class Slot {
     public void setEndMinute(int minute) {
         this.endminute = minute;
     }
+    
+    @Override
+    public String toString(){
+        return getDay()+" "+printHour()+":"+printMinute();
+    }
 }

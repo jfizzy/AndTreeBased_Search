@@ -21,6 +21,7 @@ import Schedule.LectureSlot;
 import Schedule.Meeting;
 import Schedule.NonLecture;
 import Schedule.NonLectureSlot;
+import Schedule.Preference;
 import Schedule.Schedule;
 import Schedule.Section;
 import Schedule.Slot;
@@ -68,9 +69,8 @@ public class InputManager {
 
         ArrayList<Course> courses = generateSections();
         Schedule s = new Schedule(activateLectureSlots(),
-        						activateNonLectureSlots(),
-        						courses,
-        						generateNonLectures(courses));
+                activateNonLectureSlots(),
+                courses);
         return s;
     }
 
@@ -233,13 +233,10 @@ public class InputManager {
         generateNonLectures(courses);
         generateIncompatibilities(courses);
         generateUnwanted(courses, lecSlots, nonlecSlots);
+        Schedule sched = new Schedule(lecSlots, nonlecSlots, courses);
+        generatePreferences(sched, lecSlots, nonlecSlots);
+        generatePairs(courses);
         
-        
-        Schedule sched = new Schedule(lecSlots, nonlecSlots, courses, null);
-        sched.printAssignments();
-        
-        generatePreferences(sched, courses, lecSlots, nonlecSlots);
-        // have to create the timetable here
         System.out.println("--------------------");
         System.out.println("DONE");
         System.out.println("--------------------");
@@ -454,7 +451,7 @@ public class InputManager {
                 r.addIncompatibility(l); // the same incompatibility
                 System.out.println("[Not compatible - " + l.toString() + " =/= " + r.toString() + "]");
             } else {
-                System.out.println("Could not find specified meetings for incompatibility");
+                System.out.println("[!Not compatible - could not find at least one meeting]");
             }
         });
 
@@ -471,7 +468,6 @@ public class InputManager {
      * @return
      */
     private Meeting findMeeting(ArrayList<Course> courses, String meetingString) {
-
         String mParts[] = meetingString.split("\\s+");
 
         String dept = mParts[0];
@@ -564,7 +560,6 @@ public class InputManager {
         String[] parts = slotString.split("\\s*,\\s*");
         String day = parts[0];
         if (!(day.equalsIgnoreCase("MO") || day.equalsIgnoreCase("TU"))) {
-            System.out.println("found an invalid lecture day specifier");
             return null;
         }
         String[] timeParts = parts[1].split(":");
@@ -587,7 +582,7 @@ public class InputManager {
             System.out.println("problem with integer parsing");
             return null;
         }
-        System.out.println("Could not find a matching LectureSlot");
+        //TODO print out warning that no valid lecture slot was found
         return null;
     }
 
@@ -595,7 +590,6 @@ public class InputManager {
         String[] parts = slotString.split("\\s*,\\s*");
         String day = parts[0];
         if (!(day.equalsIgnoreCase("MO") || day.equalsIgnoreCase("TU") || day.equalsIgnoreCase("FR"))) {
-            System.out.println("found an invalid lecture day specifier");
             return null;
         }
         String[] timeParts = parts[1].split(":");
@@ -618,7 +612,6 @@ public class InputManager {
             System.out.println("problem with integer parsing");
             return null;
         }
-        System.out.println("Could not find a matching NonLectureSlot");
         return null;
     }
 
@@ -650,68 +643,88 @@ public class InputManager {
         });
     }
 
-    private void generatePreferences(Schedule sched, ArrayList<Course> courses, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
+    private void generatePreferences(Schedule sched, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
         iw.preferencesLines.forEach((line) -> {
             String[] parts = line.split("\\s*,\\s*");
             String slotS = parts[0] + ", " + parts[1];
             String meetingS = parts[2];
             int penalty = Integer.parseInt(parts[3]);
 
-            System.out.println("Slot: "+slotS+", Meeting: "+meetingS+", Penalty: "+penalty);
-            
-            Meeting m = findMeeting(courses, meetingS);
+            //System.out.println("Slot: " + slotS + ", Meeting: " + meetingS + ", Penalty: " + penalty);
+
+            Meeting m = findMeeting(sched.getCourses(), meetingS);
             if (m == null) {
-                System.out.println("Meeting does not exist");
+                System.out.println("[!Preference - no such lecture or lab was found]");
             } else {
-                System.out.println("Meeting Exists");
+                //System.out.println("Meeting Exists");
                 Assignment assignment = null;
-                if(m.getAssignment()!= null)
+                if (m.getAssignment() != null) {
                     assignment = m.getAssignment();
-                
-                if(assignment == null){
-                    System.out.println("could not find the needed assignment");
+                }
+
+                if (assignment == null) {
+                    
                     return;
                 }
-                System.out.println("Assignment was found");
-                
+                //System.out.println("Assignment was found");
+
                 LectureSlot ls = null;
                 NonLectureSlot nls = null;
                 
                 if (m instanceof Lecture) {
-                    System.out.println("Meeting is a Lecture");
+                    //System.out.println("Meeting is a Lecture");
                     ls = findLectureSlot(lSlots, slotS);
-                    if(ls == null){
-                        System.out.println("could not find the lecture slot");
+                    if (ls == null) {
+                        System.out.println("[!Preference - no such lecture slot was found]");
                         return;
                     }
-                    if(!ls.isActive()){
-                        System.out.println("that lecture slot is inactive");
+                    if (!ls.isActive()) {
+                        System.out.println("[!Preference - no such active lecture slot was found]");
+                        //System.out.println("that lecture slot is inactive");
                         return;
                     }
-                    assignment.getM().addPreference(ls, penalty);
-                    System.out.println("Added the Lecture Slot Preference");
-                } else {
-                    System.out.println("Meeting is a NonLecture");
+                    Preference p = assignment.getM().addPreference(ls, penalty);
+                    System.out.println("[Preference - "+assignment.getM().toString()+" -> "+p.getSlot().toString()+" "+p.getValue()+"]");
+                } else if (m instanceof NonLecture){
+                    //System.out.println("Meeting is a NonLecture");
                     nls = findNonLectureSlot(nlSlots, slotS);
-                    if(nls == null){
-                        System.out.println("could not find the non lecture slot");
+                    if (nls == null) {
+                        System.out.println("[!Preference - no such lab slot was found]");
                         return;
                     }
-                    if(!nls.isActive()){
-                        System.out.println("that non lecture slot is inactive");
+                    if (!nls.isActive()) {
+                        System.out.println("[!Preference - no such active lab slot was found]");
+                        //System.out.println("that non lecture slot is inactive");
                         return;
                     }
-                    assignment.getM().addPreference(nls, penalty);
-                    System.out.println("Added the Non Lecture Slot Preference");
+                    Preference p = assignment.getM().addPreference(nls, penalty);
+                    System.out.println("[Preference - "+assignment.getM().toString()+" -> "+p.getSlot().toString()+" = "+p.getValue()+"]");
+                }
+                else{
+                    System.out.println("Wierd error, not a lecture or a non lecture");
                 }
 
             }
 
         });
     }
-    
-    private void generatePairs(){
-        
+
+    private void generatePairs(ArrayList<Course> courses) {
+        iw.pairLines.forEach((line) -> {
+            String parts[] = line.split("\\s*,\\s*");
+            Meeting l = findMeeting(courses, parts[0]);
+            Meeting r = findMeeting(courses, parts[1]);
+            
+            
+            if (l != null && r != null) { // if both are found
+                l.addPaired(r);
+                r.addPaired(l);
+                System.out.println("[Pair - "+ l.toString() + " === " + r.toString() +"]");
+            }else{
+                System.out.println("[!Pair - could not find at least one meeting]");
+            }
+        });
+
     }
 
 }
