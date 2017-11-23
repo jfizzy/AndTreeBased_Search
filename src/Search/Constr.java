@@ -137,9 +137,9 @@ public class Constr {
 		for (Assignment a : schedule.getAssignments()) {
 			
 			// skip if not a lecture or not assigned
-			if (a.getM().getClass() != Lecture.class
-					|| a.getS().getClass() != LectureSlot.class
-					|| a.getS() == null) 
+			if (a.getS() == null 
+					|| a.getM().getClass() != Lecture.class
+					|| a.getS().getClass() != LectureSlot.class) 
 				continue;
 			
 			// count how many others have the same slot
@@ -148,9 +148,9 @@ public class Constr {
 				if (a == b) continue;
 				
 				// skip if not a lecture or not assigned
-				if (b.getM().getClass() != Lecture.class
+				if (b.getS() == null || b.getM().getClass() != Lecture.class
 						|| b.getS().getClass() != LectureSlot.class
-						|| b.getS() == null)
+						)
 					continue;
 				
 				if (a.getS().equals(b.getS()))
@@ -178,9 +178,9 @@ public class Constr {
 		for (Assignment a : schedule.getAssignments()) {
 			
 			// skip if not nonlecture or not assigned
-			if (a.getM().getClass() == Lecture.class
+			if (a.getS() == null || a.getM().getClass() == Lecture.class
 					|| a.getS().getClass() == LectureSlot.class
-					|| a.getS() == null) 
+					) 
 				continue;
 			
 			// count how many others have the same slot
@@ -189,9 +189,9 @@ public class Constr {
 				if (a == b) continue;
 				
 				// skip if not nonlecture or not assigned
-				if (b.getM().getClass() == Lecture.class
+				if (b.getS() == null || b.getM().getClass() == Lecture.class
 						|| b.getS().getClass() == LectureSlot.class
-						|| b.getS() == null) 
+						) 
 					continue;
 				
 				if (a.getS().equals(b.getS()))
@@ -219,9 +219,9 @@ public class Constr {
 		for (Assignment a : schedule.getAssignments()) {
 			
 			// skip if not a nonlecture or not assigned
-			if (a.getM().getClass() == Lecture.class
+			if (a.getS() == null || a.getM().getClass() == Lecture.class
 					|| a.getS().getClass() == LectureSlot.class
-					|| a.getS() == null) 
+					) 
 				continue;
 			
 			// for each other assignment
@@ -270,7 +270,7 @@ public class Constr {
 					if (b.getM() != m) continue;
 					
 					// return false if slots match
-					if (a.getS().overlaps(b.getS()))
+					if (a.getS() != null && a.getS().overlaps(b.getS()))
 						return false;
 				}
 			}
@@ -318,7 +318,7 @@ public class Constr {
 			for (Slot s : a.getM().getUnwanted()) {
 				
 				// return false if slot matches
-				if (a.getS().equals(s))
+				if (a.getS() != null && a.getS().equals(s))
 					return false;
 			}
 		}
@@ -358,7 +358,7 @@ public class Constr {
 			if (snum.substring(0, 1).equals("9")) {
 				
 				// return false if not scheduled in the evening
-				if (a.getS().getHour() < 18)
+				if (a.getS() != null && a.getS().getHour() < 18)
 					return false;
 			}
 		}
@@ -379,9 +379,9 @@ public class Constr {
 		for (Assignment a : schedule.getAssignments()) {
 			
 			// skip if not a lecture or not assigned
-			if (a.getM().getClass() != Lecture.class
+			if (a.getS() == null || a.getM().getClass() != Lecture.class
 					|| a.getS().getClass() != LectureSlot.class
-					|| a.getS() == null) 
+					) 
 				continue;
 			
 			// skip if course number < 500
@@ -394,9 +394,8 @@ public class Constr {
 				if (a == b) continue;
 				
 				// skip if not a lecture or slot is different
-				if (b.getM().getClass() != Lecture.class
+				if (b.getS() == null || b.getM().getClass() != Lecture.class
 						|| b.getS().getClass() != LectureSlot.class
-						|| b.getS() == null
 						|| !a.getS().overlaps(b.getS())) 
 					continue;
 				
@@ -429,7 +428,7 @@ public class Constr {
 			if (a.getM().getClass() != Lecture.class) continue;
 			
 			// return false if slot is Tuesday at 11:00
-			if (a.getS().getDay().equals("TU") && a.getS().getHour() == 11)
+			if (a.getS() != null && a.getS().getDay().equals("TU") && a.getS().getHour() == 11)
 				return false;
 		}
 		

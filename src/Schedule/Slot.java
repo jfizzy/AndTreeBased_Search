@@ -66,6 +66,8 @@ public abstract class Slot {
      * @return True if times of this slot overlaps with slot s.
      */
     public boolean overlaps(Slot s) {
+    	
+    	if (s == null) return false;
 
         // return false if days don't match
     	if ((day.equals("MO") || day.equals("WE") || day.equals("FR")) 
