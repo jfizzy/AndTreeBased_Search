@@ -177,7 +177,7 @@ public class Eval {
     		int count = 0;
         	for (Assignment a : schedule.getAssignments()) {
         		if (a.getM().getClass() != Lecture.class) continue;
-        		if (a.getS().equals(ls))
+        		if (a.getS() != null && a.getS().equals(ls))
         			count++;
         	}
         	
@@ -237,7 +237,7 @@ public class Eval {
 			for (Preference p : a.getM().getPreferences()) {
 				
 				// add preference value to penalty if slot doesn't match
-				if (!a.getS().equals(p.getSlot()))
+				if (a.getS() != null && !a.getS().equals(p.getSlot()))
 					result += p.getValue();
 			}
 		}
@@ -269,7 +269,7 @@ public class Eval {
 					if (b.getM() != m) continue;
 					
 					// add penalty if slot doesn't match
-					if (!a.getS().equals(b.getS()))
+					if (a.getS() != null && !a.getS().equals(b.getS()))
 						result += pen_notpaired;
 				}
 			}
@@ -321,7 +321,7 @@ public class Eval {
 							if (b.getM() != l2) continue;
 							
 							// add penalty if slots match
-							if (a.getS().equals(b.getS()))
+							if (a.getS() != null && a.getS().equals(b.getS()))
 								result += pen_section;
 						}
 					}

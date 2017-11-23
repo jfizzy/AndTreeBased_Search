@@ -48,6 +48,7 @@ public abstract class Slot {
      * @return True if slots are equal
      */
     public boolean equals(Slot s) {
+    	if (s == null) return false;
         if (day == s.getDay() && hour == s.getHour() && minute == s.getMinute()
                 && endhour == s.getEndHour() && endminute == s.getEndMinute()) {
             return true;
