@@ -201,7 +201,7 @@ public class Eval {
     	double result = 0.0;
     	
     	// for each nonlecture slot in schedule
-    	for (NonLectureSlot nls : schedule.getLabSlots()) {
+    	for (NonLectureSlot nls : schedule.getNonLectureSlots()) {
     		
         	// count how many nonlecture assignments have that slot
     		int count = 0;
