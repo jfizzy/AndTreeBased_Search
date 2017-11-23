@@ -108,7 +108,7 @@ public class FileExaminer {
 
                 if (msec.find()) { // section
                     // check which section is being read next
-                    System.out.println("section line");
+                    //System.out.println("section line");
                     this.inSec = true;
                     if (courseSlotSec | labSlotSec | lectureSec | nonlectureSec | notCompatibleSec | unwantedSec | preferencesSec | pairSec | partialAssignmentSec) {
                         return false;
@@ -151,48 +151,48 @@ public class FileExaminer {
                             return false; // had an unrecognized section
                     }
                 } else if (mdpt.find() && inSec) { // department
-                    System.out.println("test name line");
+                    //System.out.println("test name line");
                 } else if (mslt.find() && inSec && (courseSlotSec || labSlotSec)) { // slot
                     // we know that anything in here matches the generic 'slot regex'
                     // tricky part is differentiating between lecture and nonlecture slots
                     // do this with the flags, and make sure no slot with FR is being 
                     // accepted as a lecture as this is invalid
                     if (labSlotSec) {
-                        System.out.println("non lecture slot line");
+                        //System.out.println("non lecture slot line");
                         iw.nonlectureSlotLines.add(line);
                     } else if (courseSlotSec && !line.startsWith("\\s*FR")) {
-                        System.out.println("lecture slot line");
+                        //System.out.println("lecture slot line");
                         iw.lectureSlotLines.add(line);
                     } else {
-                        System.out.println("found an invalid slot definition");
+                        //System.out.println("found an invalid slot definition");
                     }
                 } else if (mlec.find() && inSec) { // lecture
-                    System.out.println("lecture line");
+                    //System.out.println("lecture line");
                     iw.lectureLines.add(line);
                 } else if (mnle.find() && inSec) { // lecture
-                    System.out.println("non lecture line");
+                    //System.out.println("non lecture line");
                     iw.nonlectureLines.add(line);
                 } else if (mncp.find() && inSec) { // check
                     if (notCompatibleSec) {
-                        System.out.println("not compatible line");
+                        //System.out.println("not compatible line");
                         iw.notCompatibleLines.add(line);
                     } else {
-                        System.out.println("pair line");
+                        //System.out.println("pair line");
                         iw.pairLines.add(line);
                     }
                 } else if (muwt.find() && inSec) {
                     if (unwantedSec) {
-                        System.out.println("unwanted line");
+                        //System.out.println("unwanted line");
                         iw.unwantedLines.add(line);
                     } else {
-                        System.out.println("partial assignments line");
+                        //System.out.println("partial assignments line");
                         iw.partialAssignmentLines.add(line);
                     }
                 } else if (mpre.find() && inSec) {
-                    System.out.println("preferences line");
+                    //System.out.println("preferences line");
                     iw.preferencesLines.add(line);
                 } else if (mbrk.find() && inSec) { // break
-                    System.out.println("break line");
+                    //System.out.println("break line");
                     // skip and prepare for new section
                     if (courseSlotSec) {
                         courseSlotSec = false;
@@ -214,7 +214,7 @@ public class FileExaminer {
                         partialAssignmentSec = false;
                     }
                 } else { //not one of our line formats
-                    System.out.println("unusable line");
+                    //System.out.println("unusable line");
                     /*System.out.println("Poorly formatted input file");
                     return false;*/
                 }

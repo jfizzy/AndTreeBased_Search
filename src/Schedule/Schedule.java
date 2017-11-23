@@ -78,7 +78,7 @@ public class Schedule {
      */
     public Schedule(Assignment a, Schedule orig) {
         lslots = orig.getLectureSlots();
-        nlslots = orig.getLabSlots();
+        nlslots = orig.getNonLectureSlots();
         courses = orig.getCourses();
         lectures = orig.getLectures();
         labs = orig.getLabs();
@@ -291,7 +291,7 @@ public class Schedule {
         this.nlslots = labslots;
     }
 
-    public ArrayList<NonLectureSlot> getLabSlots() {
+    public ArrayList<NonLectureSlot> getNonLectureSlots() {
         return this.nlslots;
     }
 
@@ -331,14 +331,6 @@ public class Schedule {
             nonLectures.add(t);
         });
         return nonLectures;
-    }
-
-    public ArrayList<LectureSlot> getLslots() {
-        return lslots;
-    }
-
-    public ArrayList<NonLectureSlot> getNlslots() {
-        return nlslots;
     }
 
 }

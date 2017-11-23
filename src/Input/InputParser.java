@@ -53,35 +53,62 @@ public class InputParser {
         generatePreferences(schedule, lecSlots, nonlecSlots);
         generatePairs(courses);
         // need to order the list of assignments
+        applyPartialAssignments(schedule);
         return schedule;
     }
 
-    private void generateUnwanted(ArrayList<Course> courses, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
-        iw.unwantedLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
-            Meeting m = ScheduleUtils.findMeeting(courses, parts[0]);
-            Slot s = null;
+    private void applyPartialAssignments(Schedule schedule) {
+        iw.partialAssignmentLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
+            Meeting m = ScheduleUtils.findMeeting(schedule.getCourses(), parts[0]);
+            if (m == null) {
+                System.out.println("[!Partial assignment - could not find the specified meeting]");
+                return;
+            }
+            String slotString = parts[1] + ", " + parts[2];
+
+            LectureSlot ls = null;
+            NonLectureSlot nls = null;
+
             if (m instanceof Lecture) {
-                LectureSlot l = ScheduleUtils.findLectureSlot(lSlots, (parts[1] + ", " + parts[2]));
-                if (l.isActive()) {
-                    s = l;
+                ls = ScheduleUtils.findLectureSlot(schedule.getLectureSlots(), slotString);
+                if (ls == null) {
+                    System.out.println("[!Partial assignment - no such lecture slot was found]");
+                    return;
+                }else{
+                    //set assignment to this slot
+                    m.getAssignment().setS(ls);
+                    System.out.println("[Partial assignment - "+((Lecture) m).toString()+" <=> "+ls.toString()+"]");
+                    return;
                 }
             } else if (m instanceof NonLecture) {
-                NonLectureSlot nl = ScheduleUtils.findNonLectureSlot(nlSlots, (parts[1] + ", " + parts[2]));
-                if (nl.isActive()) {
-                    s = nl;
+                nls = ScheduleUtils.findNonLectureSlot(schedule.getNonLectureSlots(), slotString);
+                if (nls == null) {
+                    System.out.println("[!Partial assignment - no such non lecture slot was found]");
+                    return;
+                }else{
+                    // set assignment to this slot
+                    m.getAssignment().setS(nls);
+                    System.out.println("[Partial assignment - "+((NonLecture) m).toString()+" <=> "+nls.toString()+"]");
                 }
-            } else {
-                System.out.println("oddly enough, not a lec slot or nonlec slot");
-            }
-            if (s == null) {
-                System.out.println("Did not find the specified slot as active");
-            } else if (m == null) {
-                System.out.println("Could not find the meeting");
-            } else {
-                m.addUnwanted(s); // set it
-                System.out.println("[Unwanted - " + m.toString() + " & " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + "]");
             }
         });
+    }
+
+    private void generatePairs(ArrayList<Course> courses) {
+        iw.pairLines.forEach((line) -> {
+            String parts[] = line.split("\\s*,\\s*");
+            Meeting l = ScheduleUtils.findMeeting(courses, parts[0]);
+            Meeting r = ScheduleUtils.findMeeting(courses, parts[1]);
+
+            if (l != null && r != null) { // if both are found
+                l.addPaired(r);
+                r.addPaired(l);
+                System.out.println("[Pair - " + l.toString() + " === " + r.toString() + "]");
+            } else {
+                System.out.println("[!Pair - could not find at least one meeting]");
+            }
+        });
+
     }
 
     private void generatePreferences(Schedule sched, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
@@ -148,21 +175,32 @@ public class InputParser {
         });
     }
 
-    private void generatePairs(ArrayList<Course> courses) {
-        iw.pairLines.forEach((line) -> {
-            String parts[] = line.split("\\s*,\\s*");
-            Meeting l = ScheduleUtils.findMeeting(courses, parts[0]);
-            Meeting r = ScheduleUtils.findMeeting(courses, parts[1]);
-
-            if (l != null && r != null) { // if both are found
-                l.addPaired(r);
-                r.addPaired(l);
-                System.out.println("[Pair - " + l.toString() + " === " + r.toString() + "]");
+    private void generateUnwanted(ArrayList<Course> courses, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
+        iw.unwantedLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
+            Meeting m = ScheduleUtils.findMeeting(courses, parts[0]);
+            Slot s = null;
+            if (m instanceof Lecture) {
+                LectureSlot l = ScheduleUtils.findLectureSlot(lSlots, (parts[1] + ", " + parts[2]));
+                if (l.isActive()) {
+                    s = l;
+                }
+            } else if (m instanceof NonLecture) {
+                NonLectureSlot nl = ScheduleUtils.findNonLectureSlot(nlSlots, (parts[1] + ", " + parts[2]));
+                if (nl.isActive()) {
+                    s = nl;
+                }
             } else {
-                System.out.println("[!Pair - could not find at least one meeting]");
+                System.out.println("oddly enough, not a lec slot or nonlec slot");
+            }
+            if (s == null) {
+                System.out.println("Did not find the specified slot as active");
+            } else if (m == null) {
+                System.out.println("Could not find the meeting");
+            } else {
+                m.addUnwanted(s); // set it
+                System.out.println("[Unwanted - " + m.toString() + " & " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + "]");
             }
         });
-
     }
 
     /**
