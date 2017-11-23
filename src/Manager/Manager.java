@@ -47,10 +47,14 @@ class Manager {
      * @param fp File path
      */
     private static void search(String fp){
+        System.out.println(">>> Reading input file ["+fp+"] and parsing ...");
         InputManager im = new InputManager();
         Schedule schedule = im.run(fp);
+        System.out.println(">>> Done");
+        System.out.println(">>> Finding optimal assignments ...");
         SearchManager sm = new SearchManager(schedule);
         sm.run();
+        System.out.println(">>> Done");
     }
     
     /**
