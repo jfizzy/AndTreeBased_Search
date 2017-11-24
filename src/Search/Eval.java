@@ -14,15 +14,7 @@
 
 package Search;
 
-import Schedule.Assignment;
-import Schedule.Course;
-import Schedule.Lecture;
-import Schedule.LectureSlot;
-import Schedule.NonLecture;
-import Schedule.NonLectureSlot;
-import Schedule.Preference;
-import Schedule.Schedule;
-import Schedule.Meeting;
+import Schedule.*;
 
 /**
  * Class for calculating how well a schedule fulfills soft constraints
@@ -63,10 +55,10 @@ public class Eval {
 	 */
 	
 	// penalties
-	private int pen_coursemin;
-	private int pen_labmin;
-	private int pen_notpaired;
-	private int pen_section;
+	private double pen_coursemin;
+	private double pen_labmin;
+	private double pen_notpaired;
+	private double pen_section;
 	
 	// weights
 	private double wMin;
@@ -99,8 +91,8 @@ public class Eval {
 		
 		pen_coursemin = 1;
 		pen_labmin = 1;
-		pen_notpaired = 1;
-		pen_section = 1;
+		pen_notpaired = 0.5; // these have to be 0.5 because they are double what the spec says
+		pen_section = 0.5;   // there may be a better solution but this works for now
 		
 		wMin = min;
 		wPref= pref;
@@ -176,7 +168,10 @@ public class Eval {
         	// count how many lecture assignments have that slot
     		int count = 0;
         	for (Assignment a : schedule.getAssignments()) {
+        		
+        		// skip if not a lecture
         		if (a.getM().getClass() != Lecture.class) continue;
+        		
         		if (a.getS() != null && a.getS().equals(ls))
         			count++;
         	}
@@ -206,8 +201,11 @@ public class Eval {
         	// count how many nonlecture assignments have that slot
     		int count = 0;
         	for (Assignment a : schedule.getAssignments()) {
-        		if (a.getM().getClass() != NonLecture.class) continue;
-        		if (a.getS().equals(nls))
+        		
+        		// skip if not a nonlecture
+        		if (a.getM().getClass() == Lecture.class) continue;
+        		
+        		if (a.getS() != null && a.getS().equals(nls))
         			count++;
         	}
         	
@@ -233,11 +231,14 @@ public class Eval {
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
 			
+			// skip if unassigned
+			if (a.getS() == null) continue;
+			
 			// for each preference entry of the assignment's meeting
 			for (Preference p : a.getM().getPreferences()) {
 				
 				// add preference value to penalty if slot doesn't match
-				if (a.getS() != null && !a.getS().equals(p.getSlot()))
+				if (!a.getS().equals(p.getSlot()))
 					result += p.getValue();
 			}
 		}
@@ -255,8 +256,13 @@ public class Eval {
 	public int getPairEval() {
 		double result = 0.0;
 		
+		// TODO: the values are double what the spec says
+		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
+			
+			// skip if unassigned
+			if (a.getS() == null) continue;
 			
 			// for each pair entry of the assignment's meeting
 			for (Meeting m : a.getM().getPaired()) {
@@ -265,12 +271,14 @@ public class Eval {
 				for (Assignment b : schedule.getAssignments()) {
 					if (a == b) continue;
 					
-					// skip if meeting doesn't match
-					if (b.getM() != m) continue;
+					// skip if unassigned or meeting doesn't match
+					if (b.getS() == null || b.getM() != m) continue;
 					
 					// add penalty if slot doesn't match
-					if (a.getS() != null && !a.getS().equals(b.getS()))
+					if (!a.getS().equals(b.getS())) {
 						result += pen_notpaired;
+						//System.out.println(a.getM().toString() + "   " + b.getM().toString());
+					}
 				}
 			}
 		}
@@ -289,6 +297,7 @@ public class Eval {
 		double result = 0.0;
 		
 		// TODO: there is definitely a cleaner/more efficient way to do this
+		// TODO: the values are double what the spec says
 		
 		// for each course in the schedule
 		for (Course c : schedule.getCourses()) {
@@ -310,18 +319,18 @@ public class Eval {
 					// for each assignment in the schedule
 					for (Assignment a : schedule.getAssignments()) {
 						
-						// skip if assignment 1 doesn't match
-						if (a.getM() != l1) continue;
+						// skip if unassigned or assignment 1 doesn't match
+						if (a.getS() == null || a.getM() != l1) continue;
 						
 						// for each other assignment
 						for (Assignment b : schedule.getAssignments()) {
 							if (a == b) continue;	// skip if same assignment
 							
-							// skip if assignment 2 doesn't match
-							if (b.getM() != l2) continue;
+							// skip if unassigned or assignment 2 doesn't match
+							if (b.getS() == null || b.getM() != l2) continue;
 							
 							// add penalty if slots match
-							if (a.getS() != null && a.getS().equals(b.getS()))
+							if (a.getS().equals(b.getS()))
 								result += pen_section;
 						}
 					}
