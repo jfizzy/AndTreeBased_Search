@@ -16,7 +16,7 @@ package Schedule;
 
 /**
  * Assignment: Class which, when instantiated, pairs a given meeting (lecture, lab, or tutorial), with a given slot.
- * @author jmaci
+ * @author
  */
 public class Assignment {
     
@@ -31,6 +31,7 @@ public class Assignment {
     public Assignment(Meeting m, Slot s){
         this.m = m;
         this.s = s;
+        m.setAssignment(this); // need this for backref
     }
     
     /*

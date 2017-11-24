@@ -48,6 +48,7 @@ public abstract class Slot {
      * @return True if slots are equal
      */
     public boolean equals(Slot s) {
+    	if (s == null) return false;
         if (day == s.getDay() && hour == s.getHour() && minute == s.getMinute()
                 && endhour == s.getEndHour() && endminute == s.getEndMinute()) {
             return true;
@@ -66,6 +67,8 @@ public abstract class Slot {
      * @return True if times of this slot overlaps with slot s.
      */
     public boolean overlaps(Slot s) {
+    	
+    	if (s == null) return false;
 
         // return false if days don't match
     	if ((day.equals("MO") || day.equals("WE") || day.equals("FR")) 
@@ -77,7 +80,7 @@ public abstract class Slot {
 
         // combine hours and minutes
         int begin = 60 * hour + minute;
-        int end = 60 * endhour - endminute;
+        int end = 60 * endhour + endminute;
         int sbegin = 60 * s.getHour() + s.getMinute();
         int send = 60 * s.getEndHour() + s.getEndMinute();
 
@@ -152,5 +155,10 @@ public abstract class Slot {
 
     public void setEndMinute(int minute) {
         this.endminute = minute;
+    }
+    
+    @Override
+    public String toString(){
+        return getDay()+" "+printHour()+":"+printMinute();
     }
 }

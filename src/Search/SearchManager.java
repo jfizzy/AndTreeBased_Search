@@ -1,13 +1,20 @@
+/* 
+ * CPSC 433 Fall 2017
+ * 
+ * And-Tree-Based Scheduling Problem Solver
+ * 
+ * Created by:
+ * 
+ * Evan Loughlin
+ * Geordie Tait
+ * James MacIsaac
+ * Luke Kissick
+ * Sidney Shane Dizon
+ */
+
 package Search;
 
-import Schedule.Assignment;
-import Schedule.Course;
-import Schedule.Lecture;
-import Schedule.LectureSlot;
-import Schedule.NonLecture;
-import Schedule.Schedule;
-import Schedule.Section;
-import Schedule.Slot;
+import Schedule.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -71,8 +78,9 @@ public class SearchManager {
 		//addRandomInput();
 		
 		// assign schedule randomly
-		assignRandom();
-		
+		//assignRandom(); 
+		// commented this out since the schedule is now being created
+                
 		// print the assignments
 		schedule.printAssignments();
 		
@@ -136,8 +144,8 @@ public class SearchManager {
 			for (int i=0; i < max; i++) {
 				
 				// make a random assignment for the nonlecture
-				int rand = ThreadLocalRandom.current().nextInt(0, schedule.getLabSlots().size());
-				Slot slot = schedule.getLabSlots().get(rand);
+				int rand = ThreadLocalRandom.current().nextInt(0, schedule.getNonLectureSlots().size());
+				Slot slot = schedule.getNonLectureSlots().get(rand);
 				Assignment a = new Assignment(nl, slot);
 				
 				// add the assignment, checking if it is valid
