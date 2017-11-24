@@ -32,6 +32,8 @@ public class Schedule {
     private ArrayList<Lecture> lectures;	// list of lectures (filled from courses)
     private ArrayList<Lab> labs;			// list of labs (filled from courses)
     private ArrayList<Tutorial> tuts;		// list of tutorials (filled from courses)
+    private ArrayList<MeetingPair> pairs;			// 
+    private ArrayList<MeetingPair> noncompatible;	// 
 
     /**
      * Default constructor
@@ -44,6 +46,8 @@ public class Schedule {
         lectures = new ArrayList<>();
         labs = new ArrayList<>();
         tuts = new ArrayList<>();
+        pairs = new ArrayList<>();
+        noncompatible = new ArrayList<>();
     }
 
     /**
@@ -61,9 +65,11 @@ public class Schedule {
         this.nlslots = nlslots;
         this.courses = courses;
         this.lectures = new ArrayList<>();
-        this.labs = new ArrayList<>();
-        this.tuts = new ArrayList<>();
-        this.assignments = new ArrayList<>();
+        labs = new ArrayList<>();
+        tuts = new ArrayList<>();
+        assignments = new ArrayList<>();
+        pairs = new ArrayList<>();
+        noncompatible = new ArrayList<>();
         
         // process the meetings into lists
         processLectures();
@@ -89,6 +95,8 @@ public class Schedule {
         lectures = orig.getLectures();
         labs = orig.getLabs();
         tuts = orig.getTuts();
+        pairs = orig.getPairs();
+        noncompatible = orig.getNoncompatible();
         
         // make a copy of assignments list and add the new one
         assignments = (ArrayList<Assignment>) orig.getAssignments().clone();
@@ -483,4 +491,59 @@ public class Schedule {
         return nonLectures;
     }
 
+    /**
+     * Get the list of paired courses
+     * 
+     * @return List of MeetingPair
+     */
+    public ArrayList<MeetingPair> getPairs() {
+    	return pairs;
+    }
+    
+    /**
+     * Add to the paired courses list
+     * 
+     * @param m1 First Meeting
+     * @param m2 Second Meeting
+     */
+    public void addPair(Meeting m1, Meeting m2) {
+    	pairs.add(new MeetingPair(m1, m2));
+    }
+    
+    /**
+     * Set paired courses list
+     * 
+     * @param pairs List of MeetingPair
+     */
+    public void setPairs(ArrayList<MeetingPair> pairs) {
+    	this.pairs = pairs;
+    }
+    
+    /**
+     * Get the list of non-compatible courses
+     * 
+     * @return List of MeetingPair
+     */
+    public ArrayList<MeetingPair> getNoncompatible() {
+    	return noncompatible;
+    }
+    
+    /**
+     * Add to the non-compatible courses list
+     * 
+     * @param m1 First Meeting
+     * @param m2 Second Meeting
+     */
+    public void addNoncompatible(Meeting m1, Meeting m2) {
+    	noncompatible.add(new MeetingPair(m1, m2));
+    }
+    
+    /**
+     * Set the noncompatible courses list
+     * 
+     * @param noncompatible List of MeetingPair
+     */
+    public void setNoncompatible(ArrayList<MeetingPair> noncompatible) {
+    	this.noncompatible = noncompatible;
+    }
 }

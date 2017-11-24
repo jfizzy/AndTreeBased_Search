@@ -91,7 +91,7 @@ public class Eval {
 		
 		pen_coursemin = 1;
 		pen_labmin = 1;
-		pen_notpaired = 0.5; // these have to be 0.5 because they are double what the spec says
+		pen_notpaired = 1; // these have to be 0.5 because they are double what the spec says
 		pen_section = 0.5;   // there may be a better solution but this works for now
 		
 		wMin = min;
@@ -257,7 +257,7 @@ public class Eval {
 		double result = 0.0;
 		
 		// TODO: the values are double what the spec says
-		
+		/*
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
 			
@@ -282,6 +282,33 @@ public class Eval {
 				}
 			}
 		}
+		*/
+		// TODO delete above
+		
+		// for each pair in the pairs list
+		for (MeetingPair mp : schedule.getPairs()) {
+			
+			// for each assignment
+			for (Assignment a : schedule.getAssignments()) {
+				
+				// skip if slot unassigned or meeting doesn't match first
+				if (a.getS() == null || a.getM() != mp.getFirst())
+					continue;
+				
+				// for each other assignment
+				for (Assignment b : schedule.getAssignments()) {
+					if (a == b) continue; // skip if same
+					
+					// skip if slot unassigned or meeting doesn't match second
+					if (b.getS() == null || b.getM() != mp.getSecond())
+						continue;
+					
+					// add penalty if slots are not equal
+					if (!a.getS().equals(b.getS()))
+						result += pen_notpaired;
+				}
+			}
+		}
     	
     	// return weighted result
 		return (int) (wPair*result);
@@ -290,6 +317,7 @@ public class Eval {
 	/**
 	 * Get section difference eval component
 	 * (penalty if courses of the same section are assigned to the same slot)
+	 * (department constraint)
 	 * 
 	 * @return Penalty for violating section difference
 	 */
