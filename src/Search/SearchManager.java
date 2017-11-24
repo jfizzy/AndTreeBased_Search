@@ -26,9 +26,9 @@ public class SearchManager {
 	//----------------------------------------------------------------
 	// TODO for the actual search:
 	
-	// create tree/node classes, data structures
+	// create tree/node classes, data structures, done, AndSearchTreeNode
 	
-	// create functions for adding/removing nodes, traversing tree
+	// create functions for adding/removing nodes, traversing tree, in AndSearchTreeNode
 	
 	// implement a way to tell if the goal condition is met
 	

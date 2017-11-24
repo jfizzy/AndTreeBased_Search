@@ -166,6 +166,19 @@ public class Schedule {
     }
 
     /**
+     * @return true if all courses have an assignment, false if there is work left to do
+     */
+    public boolean isComplete() {
+    	
+    		for (Assignment item: this.assignments) {
+    			if (item.getS() == null) {
+    				return false;
+    			}
+    		}
+    		return true;
+    }
+    
+    /**
      * Checks if the schedule meets all hard constraints
      *
      * @return True if all hard constraints are met
