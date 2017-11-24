@@ -91,8 +91,8 @@ public class Eval {
 		
 		pen_coursemin = 1;
 		pen_labmin = 1;
-		pen_notpaired = 0.5; // these have to be 0.5 because they are double what the spec says
-		pen_section = 0.5;   // there may be a better solution but this works for now
+		pen_notpaired = 1;
+		pen_section = 1;
 		
 		wMin = min;
 		wPref= pref;
@@ -169,17 +169,18 @@ public class Eval {
     		int count = 0;
         	for (Assignment a : schedule.getAssignments()) {
         		
-        		// skip if not a lecture
-        		if (a.getM().getClass() != Lecture.class) continue;
+        		// skip if unassigned or not a lecture
+        		if (a.getS() == null || a.getM().getClass() != Lecture.class) 
+        			continue;
         		
-        		if (a.getS() != null && a.getS().equals(ls))
+        		// increment count if slot is equal
+        		if (a.getS().equals(ls))
         			count++;
         	}
         	
         	// add penalty for each course less than coursemin
-    		if (count < ls.getCourseMin()) {
+    		if (count < ls.getCourseMin())
     			result += (ls.getCourseMin() - count) * pen_coursemin;
-    		}
     	}
     	
     	// return weighted result
@@ -202,17 +203,17 @@ public class Eval {
     		int count = 0;
         	for (Assignment a : schedule.getAssignments()) {
         		
-        		// skip if not a nonlecture
-        		if (a.getM().getClass() == Lecture.class) continue;
+        		// skip if unassigned or not a nonlecture
+        		if (a.getS() == null || a.getM().getClass() == Lecture.class) continue;
         		
-        		if (a.getS() != null && a.getS().equals(nls))
+        		// increment count if slots equal
+        		if (a.getS().equals(nls))
         			count++;
         	}
         	
         	// add penalty for each nonlecture less than labmin
-    		if (count < nls.getLabMin()) {
+    		if (count < nls.getLabMin())
     			result += (nls.getLabMin() - count) * pen_labmin;
-    		}
     	}
     	
     	// return weighted result
@@ -257,7 +258,7 @@ public class Eval {
 		double result = 0.0;
 		
 		// TODO: the values are double what the spec says
-		
+		/*
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
 			
@@ -282,6 +283,33 @@ public class Eval {
 				}
 			}
 		}
+		*/
+		// TODO delete above
+		
+		// for each pair in the pairs list
+		for (MeetingPair mp : schedule.getPairs()) {
+			
+			// for each assignment
+			for (Assignment a : schedule.getAssignments()) {
+				
+				// skip if slot unassigned or meeting doesn't match first
+				if (a.getS() == null || a.getM() != mp.getFirst())
+					continue;
+				
+				// for each other assignment
+				for (Assignment b : schedule.getAssignments()) {
+					if (a == b) continue; // skip if same
+					
+					// skip if slot unassigned or meeting doesn't match second
+					if (b.getS() == null || b.getM() != mp.getSecond())
+						continue;
+					
+					// add penalty if slots are not equal
+					if (!a.getS().equals(b.getS()))
+						result += pen_notpaired;
+				}
+			}
+		}
     	
     	// return weighted result
 		return (int) (wPair*result);
@@ -290,14 +318,12 @@ public class Eval {
 	/**
 	 * Get section difference eval component
 	 * (penalty if courses of the same section are assigned to the same slot)
+	 * (department constraint)
 	 * 
 	 * @return Penalty for violating section difference
 	 */
 	public int getSecDiffEval() {
 		double result = 0.0;
-		
-		// TODO: there is definitely a cleaner/more efficient way to do this
-		// TODO: the values are double what the spec says
 		
 		// for each course in the schedule
 		for (Course c : schedule.getCourses()) {
@@ -311,9 +337,9 @@ public class Eval {
 				Lecture l1 = c.getSections().get(i).getLecture();
 				
 				// for each other section in the course
-				for (int j = 0; j < nsections; j++) {
+				for (int j = i+1; j < nsections; j++) {
 					
-					if (i == j) continue;	// skip if same section
+					//if (i == j) continue;	// skip if same section
 					Lecture l2 = c.getSections().get(j).getLecture();
 				
 					// for each assignment in the schedule
@@ -338,26 +364,47 @@ public class Eval {
 			}
 		}
 		
+		// return weighted result
 		return (int) (wSecDiff*result);
 	}
 	
     /*
-     * getters, setters, adders
+     * Getters, setters, adders
      * 
      */
 	
+	/**
+	 * Set weight for coursemin/labmin
+	 * 
+	 * @param weight Weight value
+	 */
 	public void setMinWeight(double weight) {
 		wMin = weight;
 	}
 	
+	/**
+	 * Set weight for preferences
+	 * 
+	 * @param weight Weight value
+	 */
 	public void setPrefWeight(double weight) {
 		wPref = weight;
 	}
 	
+	/**
+	 * Set weight for pairs
+	 * 
+	 * @param weight Weight value
+	 */
 	public void setPairWeight(double weight) {
 		wPair = weight;
 	}
 	
+	/**
+	 * Set weight for section difference
+	 * 
+	 * @param weight Weight value
+	 */
 	public void setSecDiffWeight(double weight) {
 		wSecDiff = weight;
 	}

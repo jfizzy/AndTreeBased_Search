@@ -57,6 +57,14 @@ public class NonLectureSlot extends Slot {
     	return this.labmax;
     }
     
+    public void setLabMin(int lmin) {
+    	this.labmin = lmin;
+    }
+    
+    public void setLabMax(int lmax) {
+    	this.labmax = lmax;
+    }
+    
     public boolean isActive(){
         return (this.labmax > 0);
     }
