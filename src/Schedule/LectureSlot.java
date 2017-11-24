@@ -59,6 +59,14 @@ public class LectureSlot extends Slot {
     	return this.coursemax;
     }
     
+    public void setCourseMin(int cmin) {
+    	this.coursemin = cmin;
+    }
+    
+    public void setCourseMax(int cmax) {
+    	this.coursemax = cmax;
+    }
+    
     public boolean isActive(){
         return (this.coursemax > 0);
     }

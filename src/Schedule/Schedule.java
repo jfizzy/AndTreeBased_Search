@@ -25,13 +25,13 @@ import Search.Eval;
  */
 public class Schedule {
 
-    private ArrayList<Assignment> assignments;	// the list of assignments
-    private ArrayList<LectureSlot> lslots;		// lecture slots
-    private ArrayList<NonLectureSlot> nlslots;	// nonlecture slots
-    private ArrayList<Course> courses;			// courses
-    private ArrayList<Lecture> lectures;		// lectures
-    private ArrayList<Lab> labs;
-    private ArrayList<Tutorial> tuts;
+    private ArrayList<Assignment> assignments;	// list of assignments
+    private ArrayList<LectureSlot> lslots;		// list of lecture slots
+    private ArrayList<NonLectureSlot> nlslots;	// list of nonlecture slots
+    private ArrayList<Course> courses;		// list of courses
+    private ArrayList<Lecture> lectures;	// list of lectures (filled from courses)
+    private ArrayList<Lab> labs;			// list of labs (filled from courses)
+    private ArrayList<Tutorial> tuts;		// list of tutorials (filled from courses)
 
     /**
      * Default constructor
@@ -57,16 +57,20 @@ public class Schedule {
             ArrayList<NonLectureSlot> nlslots,
             ArrayList<Course> courses) {
 
-        this.assignments = new ArrayList<>();
         this.lslots = lslots;
         this.nlslots = nlslots;
         this.courses = courses;
         this.lectures = new ArrayList<>();
         this.labs = new ArrayList<>();
         this.tuts = new ArrayList<>();
+        this.assignments = new ArrayList<>();
+        
+        // process the meetings into lists
         processLectures();
-        processLabs(); // process the things into lists
+        processLabs();
         processTuts();
+        
+        // create assignments list with null slots
         generateAssignments();
     }
 
@@ -77,12 +81,16 @@ public class Schedule {
      * @param orig
      */
     public Schedule(Assignment a, Schedule orig) {
+    	
+    	// keep original lists
         lslots = orig.getLectureSlots();
         nlslots = orig.getNonLectureSlots();
         courses = orig.getCourses();
         lectures = orig.getLectures();
         labs = orig.getLabs();
         tuts = orig.getTuts();
+        
+        // make a copy of assignments list and add the new one
         assignments = (ArrayList<Assignment>) orig.getAssignments().clone();
         assignments.add(a);
     }
@@ -264,16 +272,36 @@ public class Schedule {
     /*
      *  Getters and setters
      */
-    // assignments
+    
+    /**
+     * Get assignments list
+     * 
+     * @return Assignments list
+     */
     public ArrayList<Assignment> getAssignments() {
         return assignments;
     }
 
+    /**
+     * Add an assignment to the list
+     * 
+     * @param a The assignment
+     */
     public void addAssignment(Assignment a) {
         assignments.add(a);
     }
     
+    /**
+     * Update the assignment for a given meeting
+     * 
+     * @param m The meeting
+     * @param s The slot to assign it to
+     */
     public void updateAssignment(Meeting m, Slot s) {
+    	
+    	// don't assign if slot is not in list and not null
+    	if (s != null && !lslots.contains(s) && !nlslots.contains(s))
+    		return;
     	
     	// for each assignment
     	for (Assignment a : assignments) {
@@ -291,55 +319,159 @@ public class Schedule {
     	assignments.add(new Assignment(m, s));
     }
 
+    /**
+     * Clear the assignments list
+     */
     public void clearAssignments() {
         assignments.clear();
     }
 
-    // lecture slots
+    /**
+     * Set the lecture slots list
+     * 
+     * @param lecslots LectureSlot list
+     */
     public void setLectureSlots(ArrayList<LectureSlot> lecslots) {
         this.lslots = lecslots;
     }
 
+    /**
+     * Get the lecture slots list
+     * 
+     * @return LectureSlot list
+     */
     public ArrayList<LectureSlot> getLectureSlots() {
         return this.lslots;
     }
+    
+    /**
+     * Returns a lecture slot in the list that matches the day/time
+     * 
+     * @param day The day
+     * @param hour The start hour
+     * @param min The start minute
+     * @return The LectureSlot
+     */
+    public LectureSlot findLectureSlot(String day, int hour, int min) {
+    	LectureSlot result = null;
+    	
+    	// for each LectureSlot
+    	for (LectureSlot ls : lslots) {
+    		
+    		// skip if doesn't match
+    		if (!day.equals(ls.getDay()) || hour != ls.getHour() || min != ls.getMinute())
+    			continue;
+    		
+    		result = ls;
+    		break;
+    	}
+    	
+    	return result;
+    }
 
-    // nonlecture slots
+    /**
+     * Set the nonlecture slots list
+     * 
+     * @param labslots NonLectureSlot list
+     */
     public void setLabSlots(ArrayList<NonLectureSlot> labslots) {
         this.nlslots = labslots;
     }
 
+    /**
+     * Get the nonlecture slots list
+     * 
+     * @return NonLectureSlot list
+     */
     public ArrayList<NonLectureSlot> getNonLectureSlots() {
         return this.nlslots;
     }
+    
+    /**
+     * Returns a nonlecture slot in the list that matches the day/time
+     * 
+     * @param day The day
+     * @param hour The start hour
+     * @param min The start minute
+     * @return The NonLectureSlot
+     */
+    public NonLectureSlot findNonLectureSlot(String day, int hour, int min) {
+    	NonLectureSlot result = null;
+    	
+    	// for each LectureSlot
+    	for (NonLectureSlot nls : nlslots) {
+    		
+    		// skip if doesn't match
+    		if (!day.equals(nls.getDay()) || hour != nls.getHour() || min != nls.getMinute())
+    			continue;
+    		
+    		result = nls;
+    		break;
+    	}
+    	
+    	return result;
+    }
 
-    // courses
+    /**
+     * Set the courses list
+     * 
+     * @param cs Course list
+     */
     public void setCourses(ArrayList<Course> cs) {
         this.courses = cs;
         processLectures(); // fill the lectures list using the courses list
     }
 
+    /**
+     * Get the courses list
+     * 
+     * @return Course list
+     */
     public ArrayList<Course> getCourses() {
         return this.courses;
     }
 
-    // lectures
+    /**
+     * Set the lectures list
+     * 
+     * @param lecs Lecture list
+     */
     public void setLectures(ArrayList<Lecture> lecs) {
         this.lectures = lecs;
     }
 
+    /**
+     * Get the lectures list
+     * 
+     * @return Lecture list
+     */
     public ArrayList<Lecture> getLectures() {
         return this.lectures;
     }
 
+    /**
+     * Get labs list
+     * 
+     * @return Lab list
+     */
     public ArrayList<Lab> getLabs() {
         return labs;
     }
 
+    /**
+     * Get tutorials list
+     * 
+     * @return Tutorial list
+     */
     public ArrayList<Tutorial> getTuts() {
         return tuts;
     }
 
+    /**
+     * Get nonlectures list
+     * 
+     * @return NonLecture list
+     */
     public ArrayList<NonLecture> getNonLectures() {
         ArrayList<NonLecture> nonLectures = new ArrayList<>();
         this.labs.forEach((l) -> {
