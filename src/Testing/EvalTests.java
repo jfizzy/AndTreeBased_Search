@@ -316,6 +316,8 @@ public class EvalTests {
 		schedule.updateAssignment(l2, lslot1);
 		schedule.updateAssignment(b1, nlslot1);
 		schedule.updateAssignment(b2, nlslot1);
+		schedule.addPair(l1, l2);
+		schedule.addPair(b1, b2);
 		
 		Eval e = new Eval(schedule);
 		assertEquals(e.getPairEval(), 0);
@@ -326,6 +328,8 @@ public class EvalTests {
 		schedule.updateAssignment(l2, lslot2);
 		schedule.updateAssignment(b1, nlslot1);
 		schedule.updateAssignment(b2, nlslot1);
+		schedule.addPair(l1, l2);
+		schedule.addPair(b1, b2);
 		
 		e = new Eval(schedule);
 		assertEquals(e.getPairEval(), 1);
@@ -336,6 +340,8 @@ public class EvalTests {
 		schedule.updateAssignment(l2, lslot2);
 		schedule.updateAssignment(b1, nlslot2);
 		schedule.updateAssignment(b2, nlslot1);
+		schedule.addPair(l1, l2);
+		schedule.addPair(b1, b2);
 		
 		e = new Eval(schedule);
 		assertEquals(e.getPairEval(), 1);
@@ -346,6 +352,8 @@ public class EvalTests {
 		schedule.updateAssignment(l2, lslot1);
 		schedule.updateAssignment(b1, nlslot2);
 		schedule.updateAssignment(b2, nlslot1);
+		schedule.addPair(l1, l2);
+		schedule.addPair(b1, b2);
 		
 		e = new Eval(schedule);
 		assertEquals(e.getPairEval(), 2);

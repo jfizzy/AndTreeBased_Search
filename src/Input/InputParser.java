@@ -13,20 +13,7 @@
  */
 package Input;
 
-import Schedule.Assignment;
-import Schedule.Course;
-import Schedule.Lab;
-import Schedule.Lecture;
-import Schedule.LectureSlot;
-import Schedule.Meeting;
-import Schedule.NonLecture;
-import Schedule.NonLectureSlot;
-import Schedule.Preference;
-import Schedule.Schedule;
-import Schedule.ScheduleUtils;
-import Schedule.Section;
-import Schedule.Slot;
-import Schedule.Tutorial;
+import Schedule.*;
 import java.util.ArrayList;
 
 /**
@@ -47,11 +34,11 @@ public class InputParser {
         ArrayList<NonLectureSlot> nonlecSlots = activateNonLectureSlots();
         ArrayList<Course> courses = generateSections();
         generateNonLectures(courses);
-        generateIncompatibilities(courses);
         generateUnwanted(courses, lecSlots, nonlecSlots);
         Schedule schedule = new Schedule(lecSlots, nonlecSlots, courses);
         generatePreferences(schedule, lecSlots, nonlecSlots);
-        generatePairs(courses);
+        schedule.setNoncompatible(generateIncompatibilities(courses));
+        schedule.setPairs(generatePairs(courses));
         // need to order the list of assignments
         applyPartialAssignments(schedule);
         return schedule;
@@ -94,7 +81,9 @@ public class InputParser {
         });
     }
 
-    private void generatePairs(ArrayList<Course> courses) {
+    private ArrayList<MeetingPair> generatePairs(ArrayList<Course> courses) {
+    	ArrayList<MeetingPair> result = new ArrayList<>();
+    	
         iw.pairLines.forEach((line) -> {
             String parts[] = line.split("\\s*,\\s*");
             Meeting l = ScheduleUtils.findMeeting(courses, parts[0]);
@@ -103,12 +92,14 @@ public class InputParser {
             if (l != null && r != null) { // if both are found
                 l.addPaired(r);
                 r.addPaired(l);
+                result.add(new MeetingPair(l, r));
                 System.out.println("[Pair - " + l.toString() + " === " + r.toString() + "]");
             } else {
                 System.out.println("[!Pair - could not find at least one meeting]");
             }
         });
-
+        
+        return result;
     }
 
     private void generatePreferences(Schedule sched, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
@@ -211,7 +202,9 @@ public class InputParser {
      *
      * @param courses
      */
-    private void generateIncompatibilities(ArrayList<Course> courses) {
+    private ArrayList<MeetingPair> generateIncompatibilities(ArrayList<Course> courses) {
+    	ArrayList<MeetingPair> result = new ArrayList<>();
+    	
         iw.notCompatibleLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((halves) -> {
             String left = halves[0];
             String right = halves[1];
@@ -224,12 +217,14 @@ public class InputParser {
             if (l != null && r != null) { // if both are found
                 l.addIncompatibility(r); // give them 
                 r.addIncompatibility(l); // the same incompatibility
+                result.add(new MeetingPair(l, r));
                 System.out.println("[Not compatible - " + l.toString() + " =/= " + r.toString() + "]");
             } else {
                 System.out.println("[!Not compatible - could not find at least one meeting]");
             }
         });
 
+        return result;
     }
 
     /**

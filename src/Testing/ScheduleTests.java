@@ -90,19 +90,30 @@ public class ScheduleTests {
 		Section s2 = c2.getSections().get(0);
 		Lecture l2 = s2.getLecture();
 		Lab b2 = new Lab("01", s2, false);
-		s1.addLab(b2);
+		s2.addLab(b2);
 		Tutorial t2 = new Tutorial("02", s2, false);
-		s1.addTutorial(t2);
+		s2.addTutorial(t2);
 		cs.add(c2);
+		
+		l1.addPreference(ls2, 10);
+		l2.addPreference(ls1, 11);
+		b1.addPreference(nls1, 12);
+		b1.addPreference(nls2, 13);
+		l1.addUnwanted(ls1);
+		b2.addUnwanted(nls2);
 		
 		// make schedule
 		Schedule schedule = new Schedule(ls, nls, cs);
+		
 		schedule.updateAssignment(l1, ls1);
 		schedule.updateAssignment(l2, ls2);
 		schedule.updateAssignment(b1, nls1);
 		schedule.updateAssignment(b2, nls2);
 		schedule.updateAssignment(t1, nls3);
 		schedule.updateAssignment(t2, nls4);
+		
+		schedule.addNoncompatible(b1, b2);
+		schedule.addPair(l1, l2);
 		
 		// test lecture slots
 		assertEquals(schedule.getLectureSlots().size(), 4);
@@ -112,6 +123,15 @@ public class ScheduleTests {
 		
 		// test courses
 		assertEquals(schedule.getCourses().size(), 2);
+		
+		assertEquals(schedule.getCourses().get(0).getCourseLabs().size(), 1);
+		assertEquals(schedule.getCourses().get(0).getCourseTuts().size(), 1);
+		assertEquals(schedule.getCourses().get(1).getCourseLabs().size(), 1);
+		assertEquals(schedule.getCourses().get(1).getCourseTuts().size(), 1);
+		
+		// test sections
+		assertEquals(schedule.getCourses().get(0).getSections().size(), 1);
+		assertEquals(schedule.getCourses().get(1).getSections().size(), 1);
 		
 		// test lectures		
 		assertEquals(schedule.getLectures().size(), 2);
@@ -124,5 +144,35 @@ public class ScheduleTests {
 		
 		// test assignments
 		assertEquals(schedule.getAssignments().size(), 6);
+		
+		// test preference
+		int count = 0;
+		for (Lecture l : schedule.getLectures()) {
+			for (Preference p : l.getPreferences())
+				count++;
+		}
+		for (NonLecture nl : schedule.getNonLectures()) {
+			for (Preference p : nl.getPreferences())
+				count++;
+		}
+		assertEquals(count, 4);
+		
+		// test unwanted
+		count = 0;
+		for (Lecture l : schedule.getLectures()) {
+			for (Slot s : l.getUnwanted())
+				count++;
+		}
+		for (NonLecture nl : schedule.getNonLectures()) {
+			for (Slot s : nl.getUnwanted())
+				count++;
+		}
+		assertEquals(count, 2);
+		
+		// test noncompatible
+		assertEquals(schedule.getNoncompatible().size(), 1);
+		
+		// test pair
+		assertEquals(schedule.getPairs().size(), 1);
 	}
 }
