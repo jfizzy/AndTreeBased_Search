@@ -14,16 +14,7 @@
 
 package Search;
 
-import Schedule.Assignment;
-import Schedule.Lab;
-import Schedule.Tutorial;
-import Schedule.Lecture;
-import Schedule.LectureSlot;
-import Schedule.Meeting;
-import Schedule.NonLecture;
-import Schedule.NonLectureSlot;
-import Schedule.Schedule;
-import Schedule.Slot;
+import Schedule.*;
 
 /**
  * Class for determining whether a schedule satisfies hard constraints
@@ -91,6 +82,7 @@ public class Constr {
 	 * @return True if all hard constraints are satisfied
 	 */
 	public boolean check() {
+		// TODO reorder by most likely to be violated
 		return checkCourseMax() && checkLabMax() && checkLabsDifferent() && checkNoncompatible() 
 				&& checkPartassign() && checkUnwanted() && checkEveningClasses()
 				&& checkOver500Classes() && checkSpecificTimes() && checkSpecialClasses();
@@ -145,14 +137,15 @@ public class Constr {
 			// count how many others have the same slot
 			int count = 1;
 			for (Assignment b : schedule.getAssignments()) {
-				if (a == b) continue;
+				if (a == b) continue; // skip if same
 				
 				// skip if not a lecture or not assigned
-				if (b.getS() == null || b.getM().getClass() != Lecture.class
-						|| b.getS().getClass() != LectureSlot.class
-						)
+				if (b.getS() == null 
+						|| b.getM().getClass() != Lecture.class
+						|| b.getS().getClass() != LectureSlot.class)
 					continue;
 				
+				// increment count if slots match
 				if (a.getS().equals(b.getS()))
 					count++;
 			}
@@ -178,22 +171,23 @@ public class Constr {
 		for (Assignment a : schedule.getAssignments()) {
 			
 			// skip if not nonlecture or not assigned
-			if (a.getS() == null || a.getM().getClass() == Lecture.class
-					|| a.getS().getClass() == LectureSlot.class
-					) 
+			if (a.getS() == null 
+					|| a.getM().getClass() == Lecture.class
+					|| a.getS().getClass() == LectureSlot.class) 
 				continue;
 			
 			// count how many others have the same slot
 			int count = 1;
 			for (Assignment b : schedule.getAssignments()) {
-				if (a == b) continue;
+				if (a == b) continue; // skip if same
 				
 				// skip if not nonlecture or not assigned
-				if (b.getS() == null || b.getM().getClass() == Lecture.class
-						|| b.getS().getClass() == LectureSlot.class
-						) 
+				if (b.getS() == null 
+						|| b.getM().getClass() == Lecture.class
+						|| b.getS().getClass() == LectureSlot.class) 
 					continue;
 				
+				// increment count if slots match
 				if (a.getS().equals(b.getS()))
 					count++;
 			}
@@ -219,17 +213,18 @@ public class Constr {
 		for (Assignment a : schedule.getAssignments()) {
 			
 			// skip if not a nonlecture or not assigned
-			if (a.getS() == null || a.getM().getClass() == Lecture.class
-					|| a.getS().getClass() == LectureSlot.class
-					) 
+			if (a.getS() == null 
+					|| a.getM().getClass() == Lecture.class
+					|| a.getS().getClass() == LectureSlot.class) 
 				continue;
 			
 			// for each other assignment
 			for (Assignment b : schedule.getAssignments()) {
-				if (a == b) continue;
+				if (a == b) continue; // skip if same
 				
-				// skip if not a lecture or slot is different
-				if (b.getS() == null || b.getM().getClass() != Lecture.class
+				// skip if unassigned, not a lecture or slot is different
+				if (b.getS() == null 
+						|| b.getM().getClass() != Lecture.class
 						|| b.getS().getClass() != LectureSlot.class
 						|| !a.getS().overlaps(b.getS())) 
 					continue;
@@ -237,7 +232,6 @@ public class Constr {
 				// return false if section is the same
 				Lecture l = (Lecture) b.getM();
 				NonLecture nl = (NonLecture) a.getM();
-				
 				if (l.getParentSection().equals(nl.getParentSection()));
 					return false;
 			}
@@ -254,7 +248,7 @@ public class Constr {
 	 * @return True if non-compatible constraint is met
 	 */
 	public boolean checkNoncompatible() {
-		
+		/*
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
 			
@@ -263,13 +257,44 @@ public class Constr {
 				
 				// for each other assignment
 				for (Assignment b : schedule.getAssignments()) {
-					if (a == b) continue;
+					if (a == b) continue; // skip if same
 					
 					// skip if meeting doesn't match
 					if (b.getM() != m) continue;
 					
 					// return false if slots match
 					if (a.getS() != null && a.getS().overlaps(b.getS()))
+						return false;
+				}
+			}
+		}
+		*/
+		// TODO delete above
+		
+		// for each pair in the noncompatible list
+		for (MeetingPair mp : schedule.getNoncompatible()) {
+			
+			// for each assignment
+			for (Assignment a : schedule.getAssignments()) {
+				
+				// skip if slot unassigned or meeting doesn't match 
+				if (a.getS() == null 
+						|| (a.getM() != mp.getFirst() 
+						&& a.getM() != mp.getSecond()))
+					continue;
+				
+				// for each other assignment
+				for (Assignment b : schedule.getAssignments()) {
+					if (a == b) continue; // skip if same
+					
+					// skip if slot unassigned or meeting doesn't match 
+					if (b.getS() == null 
+							|| (b.getM() != mp.getFirst() 
+							&& b.getM() != mp.getSecond()))
+						continue;
+					
+					// return false if slots overlap
+					if (a.getS().overlaps(b.getS()))
 						return false;
 				}
 			}
@@ -289,12 +314,13 @@ public class Constr {
 		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
+			Slot partassign = a.getM().getPartassign();
 			
-			// skip if partassign is not set
-			if (a.getM().getPartassign() == null) continue;
+			// skip if unassigned or partassign is not set
+			if (a.getS() == null || partassign == null) continue;
 			
 			// return false if slot doesn't match
-			if (!a.getS().equals(a.getM().getPartassign()))
+			if (!a.getS().equals(partassign))
 				return false;
 		}
 		
@@ -312,6 +338,9 @@ public class Constr {
 		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
+			
+			// skip if unassigned
+			if (a.getS() == null) continue;
 			
 			// for each unwanted entry of the assignment's meeting
 			for (Slot s : a.getM().getUnwanted()) {
@@ -337,6 +366,9 @@ public class Constr {
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
 			
+			// skip if unassigned
+			if (a.getS() == null) continue;
+			
 			// get section number
 			String snum = null;
 			if (a.getM().getClass() == Lecture.class) {
@@ -357,7 +389,7 @@ public class Constr {
 			if (snum.substring(0, 1).equals("9")) {
 				
 				// return false if not scheduled in the evening
-				if (a.getS() != null && a.getS().getHour() < 18)
+				if (a.getS().getHour() < 18)
 					return false;
 			}
 		}
@@ -377,23 +409,24 @@ public class Constr {
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
 			
-			// skip if not a lecture or not assigned
-			if (a.getS() == null || a.getM().getClass() != Lecture.class
-					|| a.getS().getClass() != LectureSlot.class
-					) 
+			// skip if unassigned or not a lecture
+			if (a.getS() == null 
+					|| a.getM().getClass() != Lecture.class
+					|| a.getS().getClass() != LectureSlot.class) 
 				continue;
 			
 			// skip if course number < 500
 			Lecture l1 = (Lecture) a.getM();
 			int cnum1 = Integer.parseInt(l1.getParentSection().getParentCourse().getNumber());
-			if (cnum1 < 500) continue;
+			if (cnum1 < 500 || cnum1 > 599) continue;
 			
 			// for each other assignment
 			for (Assignment b : schedule.getAssignments()) {
 				if (a == b) continue;
 				
-				// skip if not a lecture or slot is different
-				if (b.getS() == null || b.getM().getClass() != Lecture.class
+				// skip if unassigned, not a lecture or slot is different
+				if (b.getS() == null 
+						|| b.getM().getClass() != Lecture.class
 						|| b.getS().getClass() != LectureSlot.class
 						|| !a.getS().overlaps(b.getS())) 
 					continue;
@@ -401,7 +434,7 @@ public class Constr {
 				// skip if course number < 500
 				Lecture l2 = (Lecture) b.getM();
 				int cnum2 = Integer.parseInt(l2.getParentSection().getParentCourse().getNumber());
-				if (cnum2 < 500) continue;
+				if (cnum2 < 500 || cnum2 > 599) continue;
 				
 				// if this is reached classes >500 have overlap
 				return false;
@@ -423,11 +456,12 @@ public class Constr {
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
 			
-			// skip if not a lecture
-			if (a.getM().getClass() != Lecture.class) continue;
+			// skip if unassigned or not a lecture
+			if (a.getS() == null || a.getM().getClass() != Lecture.class) 
+				continue;
 			
 			// return false if slot is Tuesday at 11:00
-			if (a.getS() != null && a.getS().getDay().equals("TU") && a.getS().getHour() == 11)
+			if (a.getS().getDay().equals("TU") && a.getS().getHour() == 11)
 				return false;
 		}
 		
@@ -447,6 +481,9 @@ public class Constr {
 		for (Assignment a : schedule.getAssignments()) {
 			String first = "";
 			String second = "";
+			
+			// skip if unassigned
+			if (a.getS() == null) continue;
 			
 			// get course number
 			if (a.getM().getClass() == Lecture.class) {	// if lecture
@@ -469,7 +506,7 @@ public class Constr {
 				continue;
 			
 			// return false if not scheduled TuTh 18:00
-			if (!a.getS().getDay().equals("TU") || a.getS().getHour() != 18 || a.getS().getMinute() != 0)
+			if ((!a.getS().getDay().equals("TU") || a.getS().getHour() != 18 || a.getS().getMinute() != 0))
 				return false;
 			
 			// cpsc 813 not allowed to overlap any sections/tuts of 313 or other courses not allowed to overlap 313
@@ -478,6 +515,9 @@ public class Constr {
 			// for each other assignment
 			for (Assignment b : schedule.getAssignments()) {
 				if (a == b) continue;
+				
+				// skip if unassigned
+				if (b.getS() == null) continue;
 				
 				// get course number
 				if (b.getM().getClass() == Lecture.class) { // if lecture
@@ -520,8 +560,8 @@ public class Constr {
 						for (Assignment c : schedule.getAssignments()) {
 							if (c == a || c == b) continue;
 							
-							// skip if meeting doesn't match
-							if (c.getM() != m) continue;
+							// skip if unassigned or meeting doesn't match
+							if (c.getS() == null || c.getM() != m) continue;
 							
 							// return false if slots overlap
 							if (a.getS().overlaps(c.getS()))
@@ -540,8 +580,8 @@ public class Constr {
 						for (Assignment c : schedule.getAssignments()) {
 							if (c == a || c == b) continue;
 							
-							// skip if meeting doesn't match
-							if (c.getM() != m) continue;
+							// skip if unassigned or meeting doesn't match
+							if (c.getS() == null || c.getM() != m) continue;
 							
 							// return false if slots overlap
 							if (a.getS().overlaps(c.getS()))

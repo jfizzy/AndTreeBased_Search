@@ -18,27 +18,30 @@ import java.util.ArrayList;
 
 import Schedule.Schedule;
 
-public class AndSearchTree {
+public class AndSearchTreeNode {
 	//A search tree is composed of a state, and it's sub tree, these need to be parameters
 	//Additionally, there is a parent to the tree, and root should have a null parent
 	
 	private Schedule state;
-	private AndSearchTree parent;
-	private ArrayList<AndSearchTree> subTree;
+	private AndSearchTreeNode parent;
+	private ArrayList<AndSearchTreeNode> subTree;
 	private int eValue = 1000000000;
+	private boolean isSolved;
 	
 	//Constructors
 
 	//This constructor will be used for the root node.
-	public AndSearchTree(Schedule s) {
+	public AndSearchTreeNode(Schedule s) {
 		state = s;
 		parent = null;
+		isSolved = false;
 		//TO-DO (maybe?) add child trees to array list?
 	}
 	
-	public AndSearchTree(Schedule s, AndSearchTree parent) {
+	private AndSearchTreeNode(Schedule s, AndSearchTreeNode parent) {
 		state = s;
 		this.parent = parent;
+		isSolved = false;
 	}
 	
 	//Operations
@@ -51,11 +54,11 @@ public class AndSearchTree {
 		return (this.subTree.isEmpty());
 	}
 	
-	public ArrayList<AndSearchTree> getSubTree() {
+	public ArrayList<AndSearchTreeNode> getSubTree() {
 		return this.subTree;
 	}
 	
-	public AndSearchTree getParent() {
+	public AndSearchTreeNode getParent() {
 		return this.parent;
 	}
 	
@@ -63,26 +66,14 @@ public class AndSearchTree {
 		return this.state;
 	}
 	
-	public void addChild(AndSearchTree child) {
+	public void addChild(Schedule state) {
+		AndSearchTreeNode child = new AndSearchTreeNode(state, this);
 		this.subTree.add(child);
 	}
 
-	//To bound the tree call this function
-	//returns the parent node
-	public AndSearchTree cullBranch() {
-		//clear the subtree of this tree first
-		this.subTree.clear();
-		//set up a reference to the parent to return
-		 AndSearchTree parentTree = this.parent;
-		//remove the reference to this tree in the parent
-		this.parent.subTree.remove(this);
-		return parentTree;
+	//To bound the branch call this function
+	//changes the sol entry to true
+	public void solved() {
+		isSolved = true;
 	}
-	
-	public boolean isSolution() {
-		//To-do
-		return true;
-	}
-	
-
 }
