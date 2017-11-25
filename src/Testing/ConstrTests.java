@@ -514,9 +514,16 @@ public class ConstrTests {
 		LectureSlot lslot2 = new LectureSlot("TU", 8, 0, 9, 30, 5, 0, false);
 		ls.add(lslot2);
 
-		// make lectures
-		Lecture l1 = new Lecture(new Section(new Course("CPSC", "500", "01", false), "01", false));
-		Lecture l2 = new Lecture(new Section(new Course("CPSC", "501", "01", false), "01", false));
+		// make courses
+		Course c1 = new Course("CPSC", "500", "01", false);
+		Section s1 = new Section(c1, "01", false);
+		Lecture l1 = s1.getLecture();
+		courses.add(c1);
+		
+		Course c2 = new Course("CPSC", "501", "01", false);
+		Section s2 = new Section(c2, "01", false);
+		Lecture l2 = s2.getLecture();
+		courses.add(c2);
 		
 		// true
 		Schedule schedule = new Schedule(ls, nls, courses);
