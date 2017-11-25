@@ -84,16 +84,16 @@ public class EvalTests {
 		ls.add(slot);
 		
 		// make course
-		Course c = new Course("ABCD", "01", "01");
+		Course c = new Course("ABCD", "01", "01", false);
 		Section s1 = c.getSections().get(0);
 		Lecture l1 = s1.getLecture();
-		Section s2 = new Section(c, "02");
+		Section s2 = new Section(c, "02", false);
 		c.addSection(s2);
 		Lecture l2 = s2.getLecture();
-		Section s3 = new Section(c, "03");
+		Section s3 = new Section(c, "03", false);
 		c.addSection(s3);
 		Lecture l3 = s3.getLecture();
-		Section s4 = new Section(c, "04");
+		Section s4 = new Section(c, "04", false);
 		c.addSection(s4);
 		Lecture l4 = s4.getLecture();
 		courses.add(c);
@@ -152,20 +152,20 @@ public class EvalTests {
 		nls.add(slot);
 		
 		// make course
-		Course c = new Course("ABCD", "01", "01");
-		Section s1 = new Section(c, "01");
+		Course c = new Course("ABCD", "01", "01", false);
+		Section s1 = new Section(c, "01", false);
 		c.addSection(s1);
 		Lab b1 = new Lab("01", s1, false);
 		s1.addLab(b1);
-		Section s2 = new Section(c, "02");
+		Section s2 = new Section(c, "02", false);
 		c.addSection(s2);
 		Lab b2 = new Lab("02", s2, false);
 		s1.addLab(b2);
-		Section s3 = new Section(c, "03");
+		Section s3 = new Section(c, "03", false);
 		c.addSection(s3);
 		Lab b3 = new Lab("03", s3, false);
 		s1.addLab(b3);
-		Section s4 = new Section(c, "04");
+		Section s4 = new Section(c, "04", false);
 		c.addSection(s4);
 		Lab b4 = new Lab("04", s4, false);
 		s1.addLab(b4);
@@ -230,8 +230,8 @@ public class EvalTests {
 		nls.add(nlslot2);
 		
 		// make course
-		Course c = new Course("ABCD", "01", "01");
-		Section s1 = new Section(c, "01");
+		Course c = new Course("ABCD", "01", "01", false);
+		Section s1 = new Section(c, "01", false);
 		c.addSection(s1);
 		Lecture l1 = s1.getLecture();
 		l1.addPreference(lslot2, 100);
@@ -291,12 +291,12 @@ public class EvalTests {
 		nls.add(nlslot2);
 		
 		// make course
-		Course c1 = new Course("ABCD", "01", "01");
-		Section s1 = new Section(c1, "01");
+		Course c1 = new Course("ABCD", "01", "01", false);
+		Section s1 = new Section(c1, "01", false);
 		Lecture l1 = s1.getLecture();
 		c1.addSection(s1);
-		Course c2 = new Course("EFGH", "01", "01");
-		Section s2 = new Section(c2, "01");
+		Course c2 = new Course("EFGH", "01", "01", false);
+		Section s2 = new Section(c2, "01", false);
 		Lecture l2 = s2.getLecture();
 		c2.addSection(s2);
 		l1.addPaired(l2);
@@ -375,14 +375,14 @@ public class EvalTests {
 		ls.add(lslot3);
 		
 		// make course
-		Course c1 = new Course("ABCD", "01", "01");
-		Section s1 = new Section(c1, "01");
+		Course c1 = new Course("ABCD", "01", "01", false);
+		Section s1 = new Section(c1, "01", false);
 		Lecture l1 = s1.getLecture();
 		c1.addSection(s1);
-		Section s2 = new Section(c1, "02");
+		Section s2 = new Section(c1, "02", false);
 		Lecture l2 = s2.getLecture();
 		c1.addSection(s2);
-		Section s3 = new Section(c1, "03");
+		Section s3 = new Section(c1, "03", false);
 		Lecture l3 = s3.getLecture();
 		c1.addSection(s3);
 		courses.add(c1);
