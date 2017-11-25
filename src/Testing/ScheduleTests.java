@@ -77,7 +77,7 @@ public class ScheduleTests {
 		nls.add(nls4);
 		
 		// make courses
-		Course c1 = new Course("CPSC", "201", "01");
+		Course c1 = new Course("CPSC", "201", "01", false);
 		Section s1 = c1.getSections().get(0);
 		Lecture l1 = s1.getLecture();
 		Lab b1 = new Lab("01", s1, false);
@@ -86,7 +86,7 @@ public class ScheduleTests {
 		s1.addTutorial(t1);
 		cs.add(c1);
 		
-		Course c2 = new Course("SENG", "301", "01");
+		Course c2 = new Course("SENG", "301", "01", false);
 		Section s2 = c2.getSections().get(0);
 		Lecture l2 = s2.getLecture();
 		Lab b2 = new Lab("01", s2, false);

@@ -76,8 +76,8 @@ public class ConstrTests {
 		ls.add(slot);
 		
 		// true
-		Course c = new Course("ABCD", "001", "01");
-		Section sect = new Section(c, "01");
+		Course c = new Course("ABCD", "001", "01", false);
+		Section sect = new Section(c, "01", false);
 		c.addSection(sect);
 		courses.add(c);
 		
@@ -89,7 +89,7 @@ public class ConstrTests {
 		assertTrue(schedule.isValid());
 		
 		// true
-		sect = new Section(c, "02");
+		sect = new Section(c, "02", false);
 		courses.get(0).addSection(sect);
 		
 		schedule.setCourses(courses);
@@ -100,7 +100,7 @@ public class ConstrTests {
 		assertTrue(schedule.isValid());
 		
 		// false
-		sect = new Section(c, "03");
+		sect = new Section(c, "03", false);
 		courses.get(0).addSection(sect);
 		
 		schedule.setCourses(courses);
@@ -123,8 +123,8 @@ public class ConstrTests {
 		nls.add(slot);
 		
 		// true
-		Course c = new Course("ABCD", "001", "01");
-		Section sect = new Section(c, "01");
+		Course c = new Course("ABCD", "001", "01", false);
+		Section sect = new Section(c, "01", false);
 		Lab lab1 = new Lab("01", sect, false);
 		sect.addLab(lab1);
 		c.addSection(sect);
@@ -180,8 +180,8 @@ public class ConstrTests {
 		nls.add(nlslot_good2);
 		
 		// true
-		Course c = new Course("ABCD", "001", "01");
-		Section sect = new Section(c, "01");
+		Course c = new Course("ABCD", "001", "01", false);
+		Section sect = new Section(c, "01", false);
 		Lab lab1 = new Lab("01", sect, false);
 		sect.addLab(lab1);
 		c.addSection(sect);
@@ -311,8 +311,8 @@ public class ConstrTests {
 		nls.add(nlslot2);
 		
 		// make course
-		Course c = new Course("ABCD", "01", "01");
-		Section s = new Section(c, "01");
+		Course c = new Course("ABCD", "01", "01", false);
+		Section s = new Section(c, "01", false);
 		Lecture l1 = s.getLecture();
 		l1.setPartassign(lslot1);
 		
@@ -378,8 +378,8 @@ public class ConstrTests {
 		nls.add(nlslot2);
 		
 		// make course
-		Course c = new Course("ABCD", "01", "01");
-		Section s = new Section(c, "01");
+		Course c = new Course("ABCD", "01", "01", false);
+		Section s = new Section(c, "01", false);
 		Lecture l1 = s.getLecture();
 		l1.addUnwanted(lslot2);
 		courses.add(c);
@@ -442,15 +442,15 @@ public class ConstrTests {
 		NonLectureSlot nlslot2 = new NonLectureSlot("TU", 18, 0, 19, 30, 2, 0, false);
 		nls.add(nlslot2);
 		
-		Course c1 = new Course("ABCD", "01", "99");
-		Section s1 = new Section(c1, "99");
+		Course c1 = new Course("ABCD", "01", "99", true);
+		Section s1 = new Section(c1, "99", true);
 		Lecture l1 = s1.getLecture();
 		Lab b1 = new Lab("99", s1, true);
 		s1.addLab(b1);
 		courses.add(c1);
 		
-		Course c2 = new Course("ABCD", "01", "01");
-		Section s2 = new Section(c2, "01");
+		Course c2 = new Course("ABCD", "01", "01", false);
+		Section s2 = new Section(c2, "01", false);
 		Lecture l2 = s2.getLecture();
 		Lab b2 = new Lab("01", s2, false);
 		s1.addLab(b2);
@@ -515,8 +515,8 @@ public class ConstrTests {
 		ls.add(lslot2);
 
 		// make lectures
-		Lecture l1 = new Lecture(new Section(new Course("CPSC", "500", "01"), "01"));
-		Lecture l2 = new Lecture(new Section(new Course("CPSC", "501", "01"), "01"));
+		Lecture l1 = new Lecture(new Section(new Course("CPSC", "500", "01", false), "01", false));
+		Lecture l2 = new Lecture(new Section(new Course("CPSC", "501", "01", false), "01", false));
 		
 		// true
 		Schedule schedule = new Schedule(ls, nls, courses);
@@ -569,8 +569,8 @@ public class ConstrTests {
 		ls.add(lslot2);
 		
 		// make course
-		Course c = new Course("ABCD", "01", "01");
-		Section s = new Section(c, "01");
+		Course c = new Course("ABCD", "01", "01", false);
+		Section s = new Section(c, "01", false);
 		Lecture l1 = s.getLecture();
 		
 		// true
@@ -608,8 +608,8 @@ public class ConstrTests {
 		nls.add(nlslot2);
 		
 		// make 313
-		Course c313 = new Course("CPSC", "313", "01");
-		Section s313 = new Section(c313, "01");
+		Course c313 = new Course("CPSC", "313", "01", false);
+		Section s313 = new Section(c313, "01", false);
 		Lecture l313 = s313.getLecture();
 		Lab b313 = new Lab("01", s313, false);
 		s313.addLab(b313);
@@ -618,8 +618,8 @@ public class ConstrTests {
 		courses.add(c313);
 		
 		// make 413
-		Course c413 = new Course("CPSC", "413", "01");
-		Section s413 = new Section(c413, "01");
+		Course c413 = new Course("CPSC", "413", "01", false);
+		Section s413 = new Section(c413, "01", false);
 		Lecture l413 = s413.getLecture();
 		Lab b413 = new Lab("01", s413, false);
 		s413.addLab(b413);
@@ -628,8 +628,8 @@ public class ConstrTests {
 		courses.add(c413);
 		
 		// make 813
-		Course c813 = new Course("CPSC", "813", "01");
-		Section s813 = new Section(c813, "01");
+		Course c813 = new Course("CPSC", "813", "01", false);
+		Section s813 = new Section(c813, "01", false);
 		Lecture l813 = s813.getLecture();
 		Lab b813 = new Lab("01", s813, false);
 		s813.addLab(b813);
@@ -638,8 +638,8 @@ public class ConstrTests {
 		courses.add(c813);
 		
 		// make 913
-		Course c913 = new Course("CPSC", "913", "01");
-		Section s913 = new Section(c913, "01");
+		Course c913 = new Course("CPSC", "913", "01", false);
+		Section s913 = new Section(c913, "01", false);
 		Lecture l913 = s913.getLecture();
 		Lab b913 = new Lab("01", s913, false);
 		s913.addLab(b913);

@@ -1,5 +1,6 @@
 package Search;
 
+import Schedule.Assignment;
 import Schedule.Meeting;
 import Schedule.Schedule;
 
@@ -53,7 +54,7 @@ public class SearchProcess {
 		//it is all garbage right now
 		for (Assignment next : state.getAssignments()) {
 			if(next.getS() == null) {
-				toAdd
+				//toAdd
 			}
 		}
 			
