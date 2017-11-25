@@ -86,7 +86,7 @@ public class FileExaminer {
      *
      * @return true if successful false if exception occurred
      */
-    public boolean parse() {
+    public boolean filter() {
         try {
             if (!br.ready()) {
                 return false;
