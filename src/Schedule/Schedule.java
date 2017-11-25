@@ -20,8 +20,6 @@ import Search.Eval;
 /**
  * Object representing a schedule of assigned meetings to slots
  *
- * @author
- *
  */
 public class Schedule {
 
@@ -51,7 +49,7 @@ public class Schedule {
     }
 
     /**
-     * Constructor
+     * Constructor with slots and courses lists
      *
      * @param lslots
      * @param nlslots
@@ -82,6 +80,7 @@ public class Schedule {
 
     /**
      * Constructor for Constr/Eval
+     * (makes new schedule from old with added assignment)
      *
      * @param a
      * @param orig

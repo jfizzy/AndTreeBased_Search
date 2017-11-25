@@ -16,8 +16,8 @@ package Input;
 import Schedule.Schedule;
 
 /**
- *
- * @author
+ * Class for managing parsing of input data from file
+ * 
  */
 public class InputManager {
 

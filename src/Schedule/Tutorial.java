@@ -36,12 +36,21 @@ public class Tutorial extends NonLecture {
     }
 
     /*
-     *  getters and setters
+     *  Getters and setters
+     */
+    
+    /**
+     * Get the tutorial number
+     * 
+     * @return Number string
      */
     public String getTutNum() {
         return tutNum;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         if (this.getParentSection() == null) {

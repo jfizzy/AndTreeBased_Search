@@ -15,7 +15,6 @@ package Schedule;
 
 /**
  * Object representing a lab to be scheduled
- * @author
  *
  */
 public class Lab extends NonLecture {
@@ -35,13 +34,18 @@ public class Lab extends NonLecture {
         this.evening = evening;
     }
     
-    /*
-     *  getters and setters
+    /**
+     * Get the lab number
+     * 
+     * @return The lab number string
      */
     public String getLabNum() {
         return labNum;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         if (this.getParentSection() == null) {
