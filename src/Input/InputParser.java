@@ -304,32 +304,63 @@ public class InputParser {
             String dept = parts[0];
             String courseNum = parts[1];
             // index two is of no use to us
-            String section = parts[3];
+            String sectionString = parts[3];
             boolean added = false;
             for (Course c : courses) {
                 if (dept.equals(c.getDepartment())) { // same dept
                     if (courseNum.equals(c.getNumber())) { // same num
                         for (Section s : c.getSections()) {
-                            if (section.equals(s.getSectionNum())) {
+                            if (sectionString.equals(s.getSectionNum())) {
                                 // we have two Lectures for same section
                                 // this means input file is invalid
                                 return null;
                             }
                         }
-                        c.addSection(new Section(c, section)); // add the new section
-                        System.out.println("[Added Course Section - " + dept + " " + courseNum + " LEC " + section + "]");
+                        
+                        // Check if lecture section is an Evening section
+                        if(sectionString.charAt(0) == '9')
+                        {
+                        	c.addSection(new Section(c, sectionString, true));
+                        }
+                        else {
+                        	c.addSection(new Section(c, sectionString, false));
+                        	 }
+                        System.out.println("[Added Course Section - " + dept + " " + courseNum + " LEC " + sectionString + "]");
                         added = true;
                         break;
                     }
-                    courses.add(new Course(c.getDepartment(), courseNum, section));
-                    System.out.println("[Added Course - " + dept + " " + courseNum + " LEC " + section + "]");
+                    
+                    // Checks if Course is an "evening" course, then instantiates the course.
+                    if(sectionString.charAt(0) == '9')
+                    {
+                    	// Instantiate a course that is an evening course.
+                    	courses.add(new Course(c.getDepartment(), courseNum, sectionString, true));
+                    }
+                    else
+                    {
+                    	//Instantiate a course that is NOT an evening course.
+                    	courses.add(new Course(c.getDepartment(), courseNum, sectionString, false));
+                    }
+                    
+                    	
+                    System.out.println("[Added Course - " + dept + " " + courseNum + " LEC " + sectionString + "]");
                     added = true;
                     break;
                 }
             }
+            // Check !added: True if there is no course sharing this department, and so a course needs to be created for it first. 
             if (!added) {
-                courses.add(new Course(dept, courseNum, section));
-                System.out.println("[Added Course and Dept - " + dept + " " + courseNum + " LEC " + section + "]");
+            	// Instantiate a course that is an evening course.
+                if(sectionString.charAt(0) == '9')
+                {
+                courses.add(new Course(dept, courseNum, sectionString, true));
+                }
+                // Instantiate a course that is NOT an evening course.
+                else
+                {
+                courses.add(new Course(dept, courseNum, sectionString, false));
+                }
+                System.out.println("[Added Course and Dept - " + dept + " " + courseNum + " LEC " + sectionString + "]");
             }
         }
         return courses;

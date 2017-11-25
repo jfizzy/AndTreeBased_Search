@@ -50,7 +50,7 @@ public class InputManager {
         iw = new InputWrapper();
         fe = new FileExaminer(fp, iw);
         fe.init();
-        fe.parse();
+        fe.filter();
         // sorted input file lines by type
         ip = new InputParser();
         Schedule schedule = ip.run(iw);

@@ -48,11 +48,11 @@ public class Course {
      * @param num Course number
      * @param sNum Section number
      */
-    public Course(String dept, String num, String sNum) {
+    public Course(String dept, String num, String sNum, boolean evening) {
         this.department = dept;
         this.number = num;
         this.sections = new ArrayList<>();
-        this.sections.add(new Section(this, sNum));
+        this.sections.add(new Section(this, sNum, evening));
         this.openLabs = new ArrayList<>();
         this.openTuts = new ArrayList<>();
     }
