@@ -274,30 +274,18 @@ public class Constr {
 		// for each pair in the noncompatible list
 		for (MeetingPair mp : schedule.getNoncompatible()) {
 			
-			// for each assignment
-			for (Assignment a : schedule.getAssignments()) {
-				
-				// skip if slot unassigned or meeting doesn't match 
-				if (a.getS() == null 
-						|| (a.getM() != mp.getFirst() 
-						&& a.getM() != mp.getSecond()))
-					continue;
-				
-				// for each other assignment
-				for (Assignment b : schedule.getAssignments()) {
-					if (a == b) continue; // skip if same
-					
-					// skip if slot unassigned or meeting doesn't match 
-					if (b.getS() == null 
-							|| (b.getM() != mp.getFirst() 
-							&& b.getM() != mp.getSecond()))
-						continue;
-					
-					// return false if slots overlap
-					if (a.getS().overlaps(b.getS()))
-						return false;
-				}
-			}
+			// skip if unassigned
+			if (mp.getFirst().getAssignment() == null
+					|| mp.getSecond().getAssignment() == null)
+				continue;
+			Slot s1 = mp.getFirst().getAssignment().getS();
+			Slot s2 = mp.getSecond().getAssignment().getS();
+			if (s1 == null || s2 == null)
+				continue;
+			
+			// return false if slots overlap
+			if (s1.overlaps(s2))
+				return false;
 		}
 		
 		// if this is reached the constraint is satisfied
@@ -346,7 +334,7 @@ public class Constr {
 			for (Slot s : a.getM().getUnwanted()) {
 				
 				// return false if slot matches
-				if (a.getS() != null && a.getS().equals(s))
+				if (a.getS().equals(s))
 					return false;
 			}
 		}

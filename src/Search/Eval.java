@@ -288,27 +288,19 @@ public class Eval {
 		
 		// for each pair in the pairs list
 		for (MeetingPair mp : schedule.getPairs()) {
+				
+			// skip if unassigned
+			if (mp.getFirst().getAssignment() == null
+					|| mp.getSecond().getAssignment() == null)
+				continue;
+			Slot s1 = mp.getFirst().getAssignment().getS();
+			Slot s2 = mp.getSecond().getAssignment().getS();
+			if (s1 == null || s2 == null)
+				continue;
 			
-			// for each assignment
-			for (Assignment a : schedule.getAssignments()) {
-				
-				// skip if slot unassigned or meeting doesn't match first
-				if (a.getS() == null || a.getM() != mp.getFirst())
-					continue;
-				
-				// for each other assignment
-				for (Assignment b : schedule.getAssignments()) {
-					if (a == b) continue; // skip if same
-					
-					// skip if slot unassigned or meeting doesn't match second
-					if (b.getS() == null || b.getM() != mp.getSecond())
-						continue;
-					
-					// add penalty if slots are not equal
-					if (!a.getS().equals(b.getS()))
-						result += pen_notpaired;
-				}
-			}
+			// return false if slots overlap
+			if (!s1.equals(s2))
+				result += pen_notpaired;
 		}
     	
     	// return weighted result
