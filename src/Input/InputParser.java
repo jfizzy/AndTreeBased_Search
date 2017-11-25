@@ -43,6 +43,70 @@ public class InputParser {
         applyPartialAssignments(schedule);
         return schedule;
     }
+    
+    /**
+     * orderAssignments - takes a schedule and orders its list of assignments
+     * @param s 
+     */
+    public void orderAssignments(Schedule s){
+        ArrayList<Assignment> orderedAssignments = new ArrayList<>();
+        //pseudo
+        ArrayList<Assignment> origAssignments = s.getAssignments();
+        ArrayList<Assignment> unAssigned = new ArrayList<>();
+        
+        // look for partial assignments first
+        origAssignments.forEach((a) -> {
+            if(a.getS()!= null){
+                // non-null slot - this is a partial assignment
+                // no need to order any of these at all
+                orderedAssignments.add(a);
+            }else{
+                // null slot
+                unAssigned.add(a);
+            }
+        });
+        
+        ArrayList<Assignment> orderedUnAssigned = prioritizeAssignments(unAssigned);
+        
+    }
+    
+    /**
+     * prioritizeAssignments - takes a list of assignments and orders them 
+     * based on restrictive priority
+     * @param assignments
+     * @return 
+     */
+    private ArrayList<Assignment> prioritizeAssignments(ArrayList<Assignment> assignments){
+        
+        /* priority list
+        -partial assignment
+	-evening meetings
+	-number of incompatibilities
+	-highest preference penalty
+	-number of unwanted
+	-number of pairs
+        -lectures
+        -labs
+        -tutorials
+        -course number
+        */
+        
+        ArrayList<Assignment> orderedAssignments = new ArrayList<>();
+        Assignment best = null;
+        int values[] = new int[orderedAssignments.size()];
+        assignments.forEach((a) -> {
+            if(a.getM() instanceof Lecture){ // 
+                Lecture lec = ((Lecture) a.getM());
+                
+            }else if(a.getM() instanceof Lab){
+                Lab lab = ((Lab) a.getM());
+            }else if(a.getM() instanceof Tutorial){
+                Tutorial tut = ((Tutorial) a.getM());
+            }
+        });
+        
+        return null;
+    }
 
     private void applyPartialAssignments(Schedule schedule) {
         iw.partialAssignmentLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
