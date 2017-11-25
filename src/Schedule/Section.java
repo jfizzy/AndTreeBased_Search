@@ -27,19 +27,25 @@ public class Section {
     private ArrayList<Tutorial> tuts;	// tutorials for the section
     private Lecture lecture;			// lecture for the section
     private final Course parentCourse;	// parent course of the section
+    private final boolean evening; 		// Whether or not the section is an evening section (defined by LEC 9x in input)
     
     /**
      * Constructor
      * @param c Course
      * @param sNum Section number
      */
-    public Section(Course c, String sNum) {
+    public Section(Course c, String sNum, boolean evening) {
         this.parentCourse = c;
         this.sectionNum = sNum;
         this.labs = new ArrayList<>();
         this.tuts = new ArrayList<>();
         this.lecture = new Lecture(this);
+        this.evening = evening;
+        
     }
+    
+    
+   
     
     /*
      *  getters and setters
@@ -84,6 +90,11 @@ public class Section {
 
     public void setLecture(Lecture lecture) {
         this.lecture = lecture;
+    }
+    
+    public boolean isEvening()
+    {
+    	return this.evening;
     }
     
 }
