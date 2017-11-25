@@ -229,10 +229,16 @@ public class Constr {
 						|| !a.getS().overlaps(b.getS())) 
 					continue;
 				
-				// return false if section is the same
+				// return false if section is the same, or open lab/tut matches first section
 				Lecture l = (Lecture) b.getM();
+				Section lsec = l.getParentSection();
 				NonLecture nl = (NonLecture) a.getM();
-				if (l.getParentSection().equals(nl.getParentSection()));
+				Section nlsec = nl.getParentSection();
+				if (lsec.equals(nlsec)
+						|| (lsec.getParentCourse().equals(nl.getParentCourse())
+								&& (lsec.getParentCourse().getOpenLabs().contains(a.getM())
+										|| lsec.getParentCourse().getOpenTuts().contains(a.getM()))
+								&& lsec.getSectionNum().equals("01")));
 					return false;
 			}
 		}

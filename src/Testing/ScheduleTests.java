@@ -89,10 +89,10 @@ public class ScheduleTests {
 		Course c2 = new Course("SENG", "301", "01", false);
 		Section s2 = c2.getSections().get(0);
 		Lecture l2 = s2.getLecture();
-		Lab b2 = new Lab("01", s2, false);
-		s2.addLab(b2);
-		Tutorial t2 = new Tutorial("02", s2, false);
-		s2.addTutorial(t2);
+		Lab b2 = new Lab("01", null, false);
+		c2.addOpenLab(b2);
+		Tutorial t2 = new Tutorial("02", null, false);
+		c2.addOpenTut(t2);
 		cs.add(c2);
 		
 		l1.addPreference(ls2, 10);
@@ -116,34 +116,50 @@ public class ScheduleTests {
 		schedule.addPair(l1, l2);
 		
 		// test lecture slots
-		assertEquals(schedule.getLectureSlots().size(), 4);
+		assertEquals(4, schedule.getLectureSlots().size());
+		for (int i = 0; i < schedule.getLectureSlots().size(); i++) {
+			assertTrue(schedule.getLectureSlots().get(i).isActive());
+		}
+		LectureSlot lstest = schedule.findLectureSlot("MO", 8, 0);
+		assertTrue(lstest == ls1);
 		
 		// test nonlecture slots
-		assertEquals(schedule.getNonLectureSlots().size(), 4);
+		assertEquals(4, schedule.getNonLectureSlots().size());
+		for (int i = 0; i < schedule.getNonLectureSlots().size(); i++) {
+			assertTrue(schedule.getNonLectureSlots().get(i).isActive());
+		}
+		NonLectureSlot nlstest = schedule.findNonLectureSlot("MO", 8, 0);
+		assertTrue(nlstest == nls1);
 		
 		// test courses
-		assertEquals(schedule.getCourses().size(), 2);
-		
-		assertEquals(schedule.getCourses().get(0).getCourseLabs().size(), 1);
-		assertEquals(schedule.getCourses().get(0).getCourseTuts().size(), 1);
-		assertEquals(schedule.getCourses().get(1).getCourseLabs().size(), 1);
-		assertEquals(schedule.getCourses().get(1).getCourseTuts().size(), 1);
+		assertEquals(2, schedule.getCourses().size());
 		
 		// test sections
-		assertEquals(schedule.getCourses().get(0).getSections().size(), 1);
-		assertEquals(schedule.getCourses().get(1).getSections().size(), 1);
+		assertEquals(1, schedule.getCourses().get(0).getSections().size());
+		assertEquals(1, schedule.getCourses().get(1).getSections().size());
 		
 		// test lectures		
-		assertEquals(schedule.getLectures().size(), 2);
+		assertEquals(2, schedule.getLectures().size());
+		
+		// test nonlectures
+		assertEquals(4, schedule.getNonLectures().size());
 		
 		// test labs		
-		assertEquals(schedule.getLabs().size(), 2);
+		assertEquals(2, schedule.getLabs().size());
+		assertEquals(0, schedule.getCourses().get(0).getOpenLabs().size());
+		assertEquals(1, schedule.getCourses().get(0).getCourseLabs().size());
+		assertEquals(1, schedule.getCourses().get(1).getOpenLabs().size());
+		assertEquals(1, schedule.getCourses().get(1).getCourseLabs().size());
 		
 		// test tutorials		
-		assertEquals(schedule.getTuts().size(), 2);
+		assertEquals(2, schedule.getTuts().size());
+		assertEquals(0, schedule.getCourses().get(0).getOpenTuts().size());
+		assertEquals(1, schedule.getCourses().get(0).getCourseTuts().size());
+		assertEquals(1, schedule.getCourses().get(1).getOpenTuts().size());
+		assertEquals(1, schedule.getCourses().get(1).getCourseTuts().size());
 		
 		// test assignments
-		assertEquals(schedule.getAssignments().size(), 6);
+		assertEquals(6, schedule.getAssignments().size());
 		
 		// test preference
 		int count = 0;
@@ -155,7 +171,7 @@ public class ScheduleTests {
 			for (Preference p : nl.getPreferences())
 				count++;
 		}
-		assertEquals(count, 4);
+		assertEquals(4, count);
 		
 		// test unwanted
 		count = 0;
@@ -167,12 +183,15 @@ public class ScheduleTests {
 			for (Slot s : nl.getUnwanted())
 				count++;
 		}
-		assertEquals(count, 2);
+		assertEquals(2, count);
 		
 		// test noncompatible
-		assertEquals(schedule.getNoncompatible().size(), 1);
+		assertEquals(1, schedule.getNoncompatible().size());
 		
 		// test pair
-		assertEquals(schedule.getPairs().size(), 1);
+		assertEquals(1, schedule.getPairs().size());
+		
+		// test complete
+		assertTrue(schedule.isComplete());
 	}
 }
