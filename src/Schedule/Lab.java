@@ -31,7 +31,7 @@ public class Lab extends NonLecture {
      */
     public Lab(String num, Section s, boolean evening){
         this.labNum = num;
-        this.parentSection = s;
+        this.setParentSection(s);
         this.evening = evening;
     }
     
@@ -44,14 +44,14 @@ public class Lab extends NonLecture {
 
     @Override
     public String toString() {
-        if (this.parentSection == null) {
+        if (this.getParentSection() == null) {
             String dept = this.getParentCourse().getDepartment();
             String cNum = this.getParentCourse().getNumber();
             return (dept + " " + cNum + " LAB " + this.labNum);
         } else {
-            String dept = this.parentSection.getParentCourse().getDepartment();
-            String cNum = this.parentSection.getParentCourse().getNumber();
-            String sec = this.parentSection.getSectionNum();
+            String dept = this.getParentSection().getParentCourse().getDepartment();
+            String cNum = this.getParentSection().getParentCourse().getNumber();
+            String sec = this.getParentSection().getSectionNum();
             return (dept + " " + cNum + " LEC " + sec + " LAB " + this.labNum);
         }
 

@@ -40,6 +40,7 @@ public class Section {
         this.labs = new ArrayList<>();
         this.tuts = new ArrayList<>();
         this.lecture = new Lecture(this);
+        this.lecture.setParentSection(this);
         this.evening = evening;
         
     }
