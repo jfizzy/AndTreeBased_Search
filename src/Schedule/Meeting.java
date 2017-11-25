@@ -29,6 +29,7 @@ public abstract class Meeting {
     private Slot partassign;
     private final ArrayList<Preference> preferences;
     private Assignment assignment;
+    private Section parentSection;
     
     /**
      * Constructor
@@ -39,6 +40,7 @@ public abstract class Meeting {
         unwanted = new ArrayList<>();
         preferences = new ArrayList<>();
         assignment = null;
+        parentSection = null;
     }
     
     /*
@@ -98,5 +100,13 @@ public abstract class Meeting {
     	Preference p = new Preference(s, value);
         this.preferences.add(p);
         return p;
+    }
+
+    public Section getParentSection() {
+        return parentSection;
+    }
+
+    public void setParentSection(Section parentSection) {
+        this.parentSection = parentSection;
     }
 }

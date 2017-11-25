@@ -21,7 +21,6 @@ package Schedule;
 public abstract class NonLecture extends Meeting {
 
     private Course parentCourse;
-    protected Section parentSection;	// nonlecture's parent section
     protected boolean evening;			// whether it is an evening class
     
     /**TODO:    figure out if evening Course means all labs and 
@@ -33,7 +32,6 @@ public abstract class NonLecture extends Meeting {
     public NonLecture(){
         super();
         this.parentCourse = null;
-        this.parentSection = null;
         this.evening = false;
     }
     
@@ -48,25 +46,21 @@ public abstract class NonLecture extends Meeting {
     public void setParentCourse(Course c){
         this.parentCourse = c;
     }
-    
-    public Section getParentSection() {
-        return parentSection;
-    }
 
     public boolean isEvening() {
         return evening;
     }
     
     public String getDept(){
-        return parentSection.getParentCourse().getDepartment();
+        return this.getParentSection().getParentCourse().getDepartment();
     }
     
     public String getCourseNum(){
-        return parentSection.getParentCourse().getNumber();
+        return this.getParentSection().getParentCourse().getNumber();
     }
     
     public String getSectionNum(){
-        return parentSection.getSectionNum();
+        return this.getParentSection().getSectionNum();
     }
     
 }
