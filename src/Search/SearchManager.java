@@ -30,31 +30,9 @@ public class SearchManager {
 	
 	// create functions for adding/removing nodes, traversing tree, in AndSearchTreeNode
 	
-	// implement a way to tell if the goal condition is met
+	// implement a way to tell if the goal condition is met, done, in Schedule
 	
-	// implement and-tree search (branch and bound):
 	
-		// start at the root node with no assignments
-		
-		// generate all possible branches - each represents one added assignment
-		//     (branches must satisfy Constr)
-		
-		// do a depth-first search to determine the bound value
-		//     (find the first valid solution quickly, then set bound to its Eval value)
-		
-		// go back to the root node
-		
-		// take branch with the lowest Eval
-		//     (close off branches if Eval greater than bound)
-		
-		// generate all possible branches for the new node
-		
-		// repeat until a solution is found, backtracking if necessary
-		
-		// if solution Eval < bound, set bound to new Eval value
-		
-		// return to root node, evaluate all possible solutions with Eval < bound
-		//     (final solution = lowest Eval leaf)
 	
 	//----------------------------------------------------------------
 	
