@@ -14,10 +14,11 @@
 package Input;
 
 import Schedule.Schedule;
+import java.io.FileNotFoundException;
 
 /**
  * Class for managing parsing of input data from file
- * 
+ *
  */
 public class InputManager {
 
@@ -44,18 +45,22 @@ public class InputManager {
      *
      * @param fp
      * @return search data nlType
+     * @throws java.io.FileNotFoundException
      */
-    public Schedule run(String fp) {
+    public Schedule run(String fp) throws FileNotFoundException {
+        try {
+            iw = new InputWrapper();
+            fe = new FileExaminer(fp, iw);
+            fe.init();
+            fe.filter();
+            // sorted input file lines by type
+            ip = new InputParser();
+            Schedule schedule = ip.run(iw);
 
-        iw = new InputWrapper();
-        fe = new FileExaminer(fp, iw);
-        fe.init();
-        fe.filter();
-        // sorted input file lines by type
-        ip = new InputParser();
-        Schedule schedule = ip.run(iw);
-
-        // Just added this to test new input line functions
-        return schedule;
+            // Just added this to test new input line functions
+            return schedule;
+        } catch (FileNotFoundException e) {
+            throw e;
+        }
     }
 }

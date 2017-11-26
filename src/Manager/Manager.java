@@ -18,64 +18,74 @@ import java.io.File;
 import Input.InputManager;
 import Schedule.Schedule;
 import Search.SearchManager;
+import java.io.FileNotFoundException;
 
 /**
  * Coordinates program flow
- * 
+ *
  */
 class Manager {
-    
+
     /**
      * Main program function (entry point)
+     *
      * @param args Command line arguments
      */
-    public static void main(String[] args){
-    	
-    	// one argument or 5
-        if (args.length == 1 || args.length == 6) {
-        	
-        	// parse input file arg
-            File f = new File(args[0]);
-            if (!f.exists()) 
-            	usage();
-            
-            // parse weights if applicable
-            double w1 = 1;
-            double w2 = 1;
-            double w3 = 1;
-            double w4 = 1;
-            double w5 = 1;
-            if (args.length == 6) {
-            	try {
-            		w1 = Double.parseDouble(args[1]);
-            		w2 = Double.parseDouble(args[2]);
-            		w3 = Double.parseDouble(args[3]);
-            		w4 = Double.parseDouble(args[4]);
-            		w5 = Double.parseDouble(args[5]);
-            	}
-            	catch(NumberFormatException e) {
-            		// TODO
-            		usage();
-            	}
+    public static void main(String[] args) {
+
+        // one argument or 5
+        try {
+            if (args.length == 1 || args.length == 6) {
+
+                // parse input file arg
+                File f = new File(args[0]);
+                if (!f.exists()) {
+                    usage();
+                }
+
+                // parse weights if applicable
+                double w1 = 1;
+                double w2 = 1;
+                double w3 = 1;
+                double w4 = 1;
+                double w5 = 1;
+                if (args.length == 6) {
+                    try {
+                        w1 = Double.parseDouble(args[1]);
+                        w2 = Double.parseDouble(args[2]);
+                        w3 = Double.parseDouble(args[3]);
+                        w4 = Double.parseDouble(args[4]);
+                        w5 = Double.parseDouble(args[5]);
+                    } catch (NumberFormatException e) {
+                        // TODO
+                        usage();
+                    }
+                }
+
+                // run the search
+                search(args[0], w1, w2, w3, w4, w5);
+            } else {
+                usage();
             }
-            
-            // run the search
-            search(args[0], w1, w2, w3, w4, w5);
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit();
         }
-        else usage();
     }
-    
+
     private static void usage() { // TODO make this clearer
-    	System.out.println("Acceptable args are: inputfile [weight] [weight] [weight] [weight]");
-    	exit();
+        System.out.println("Acceptable args are: inputfile [weight] [weight] [weight] [weight]");
+        exit();
     }
-    
+
     /**
      * Perform a search using an input file
+     *
      * @param fp File path
      */
-    private static void search(String fp, double w1, double w2, double w3, double w4, double w5){
-        System.out.println(">>> Reading input file ["+fp+"] and parsing ...");
+    private static void search(String fp, double w1, double w2, double w3, double w4, double w5) throws FileNotFoundException {
+        System.out.println(">>> Reading input file [" + fp + "] and parsing ...");
+        try{
         InputManager im = new InputManager();
         Schedule schedule = im.run(fp);
         schedule.getEvalObject().setWeights(w1, w2, w3, w4, w5);
@@ -83,13 +93,16 @@ class Manager {
         System.out.println(">>> Finding optimal assignments ...");
         SearchManager sm = new SearchManager(schedule);
         sm.run();
+        } catch(FileNotFoundException e){
+            throw e;
+        }
         System.out.println(">>> Done");
     }
-    
+
     /**
      * Exit the program
      */
-    private static void exit(){
+    private static void exit() {
         System.out.println("Exiting...");
         System.exit(0);
     }
