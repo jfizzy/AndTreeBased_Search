@@ -49,13 +49,13 @@ public abstract class Slot {
      * @return True if slots are equal
      */
     public boolean equals(Slot s) {
+    	
     	if (s == null) return false;
-        if (day == s.getDay() && hour == s.getHour() && minute == s.getMinute()
-                && endhour == s.getEndHour() && endminute == s.getEndMinute()) {
+    	else if (this == s) return true;
+    	else if (day == s.getDay() && hour == s.getHour() && minute == s.getMinute()
+                && endhour == s.getEndHour() && endminute == s.getEndMinute())
             return true;
-        } else {
-            return false;
-        }
+        else return false;
     }
     
     /**
@@ -66,6 +66,7 @@ public abstract class Slot {
     public boolean overlaps(Slot s) {
     	
     	if (s == null) return false;
+    	if (this == s) return true;
 
         // return false if days don't match
     	if ((day.equals("MO") || day.equals("WE") || day.equals("FR")) 
