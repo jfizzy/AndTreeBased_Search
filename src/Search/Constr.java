@@ -237,8 +237,7 @@ public class Constr {
 				if (lsec.equals(nlsec)
 						|| (lsec.getParentCourse().equals(nl.getParentCourse())
 								&& (lsec.getParentCourse().getOpenLabs().contains(a.getM())
-										|| lsec.getParentCourse().getOpenTuts().contains(a.getM()))
-								&& lsec.getSectionNum().equals("01")));
+										|| lsec.getParentCourse().getOpenTuts().contains(a.getM()))));
 					return false;
 			}
 		}
