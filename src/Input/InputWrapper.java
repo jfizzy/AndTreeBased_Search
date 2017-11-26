@@ -16,7 +16,7 @@ package Input;
 import java.util.ArrayList;
 
 /**
- * @author 
+ * Class for holding parsed lines of input
  *
  */
 public class InputWrapper {
@@ -31,7 +31,7 @@ public class InputWrapper {
     ArrayList<String> partialAssignmentLines;
     
     /**
-     * constructor
+     * Constructor
      */
     public InputWrapper(){
         lectureSlotLines = new ArrayList<>();

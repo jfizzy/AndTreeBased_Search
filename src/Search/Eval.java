@@ -61,7 +61,8 @@ public class Eval {
 	private double pen_section;
 	
 	// weights
-	private double wMin;
+	private double wCMin;
+	private double wLMin;
 	private double wPref;
 	private double wPair;
 	private double wSecDiff;
@@ -75,7 +76,7 @@ public class Eval {
 	 * @param schedule Schedule data
 	 */
 	public Eval(Schedule schedule) {
-		this(schedule,1,1,1,1);
+		this(schedule,1,1,1,1,1);
 	}
 	
 	/**
@@ -87,14 +88,15 @@ public class Eval {
 	 * @param pair Weight for pair
 	 * @param secD Weight for section diff
 	 */
-	public Eval(Schedule schedule, double min, double pref, double pair, double secD) {
+	public Eval(Schedule schedule, double cmin, double lmin, double pref, double pair, double secD) {
 		
 		pen_coursemin = 1;
 		pen_labmin = 1;
 		pen_notpaired = 1;
 		pen_section = 1;
 		
-		wMin = min;
+		wCMin = cmin;
+		wLMin = lmin;
 		wPref= pref;
 		wPair = pair;
 		wSecDiff = secD;
@@ -123,9 +125,9 @@ public class Eval {
 	 */
 	 // *** Use this to get eval of schedule if an assignment was added but WITHOUT 
 	 // actually adding it to the timetable ***
-	public Eval(Assignment a, Schedule schedule, 
-			double min, double pref, double pair, double secD) {
-		this(new Schedule(a, schedule), min, pref, pair, secD);
+	public Eval(Assignment a, Schedule schedule, double cmin,
+			double lmin, double pref, double pair, double secD) {
+		this(new Schedule(a, schedule), cmin, lmin, pref, pair, secD);
 	}
 	
 	/**
@@ -184,7 +186,7 @@ public class Eval {
     	}
     	
     	// return weighted result
-    	return (int) (wMin*result);		
+    	return (int) (wCMin*result);		
 	}
 	
 	/**
@@ -217,7 +219,7 @@ public class Eval {
     	}
     	
     	// return weighted result
-    	return (int) (wMin*result);
+    	return (int) (wLMin*result);
 	}
 	
 	/**
@@ -288,27 +290,19 @@ public class Eval {
 		
 		// for each pair in the pairs list
 		for (MeetingPair mp : schedule.getPairs()) {
+				
+			// skip if unassigned
+			if (mp.getFirst().getAssignment() == null
+					|| mp.getSecond().getAssignment() == null)
+				continue;
+			Slot s1 = mp.getFirst().getAssignment().getS();
+			Slot s2 = mp.getSecond().getAssignment().getS();
+			if (s1 == null || s2 == null)
+				continue;
 			
-			// for each assignment
-			for (Assignment a : schedule.getAssignments()) {
-				
-				// skip if slot unassigned or meeting doesn't match first
-				if (a.getS() == null || a.getM() != mp.getFirst())
-					continue;
-				
-				// for each other assignment
-				for (Assignment b : schedule.getAssignments()) {
-					if (a == b) continue; // skip if same
-					
-					// skip if slot unassigned or meeting doesn't match second
-					if (b.getS() == null || b.getM() != mp.getSecond())
-						continue;
-					
-					// add penalty if slots are not equal
-					if (!a.getS().equals(b.getS()))
-						result += pen_notpaired;
-				}
-			}
+			// return false if slots overlap
+			if (!s1.equals(s2))
+				result += pen_notpaired;
 		}
     	
     	// return weighted result
@@ -374,12 +368,38 @@ public class Eval {
      */
 	
 	/**
-	 * Set weight for coursemin/labmin
+	 * Sets the weight values for the different evaluations
+	 * 
+	 * @param cmin
+	 * @param lmin
+	 * @param pref
+	 * @param pair
+	 * @param secdiff
+	 */
+	public void setWeights(double cmin, double lmin, double pref, double pair, double secdiff) {
+		wCMin = cmin;
+		wLMin = lmin;
+		wPref = pref;
+		wPair = pair;
+		wSecDiff = secdiff;
+	}
+	
+	/**
+	 * Set weight for coursemin
 	 * 
 	 * @param weight Weight value
 	 */
-	public void setMinWeight(double weight) {
-		wMin = weight;
+	public void setCourseMinWeight(double weight) {
+		wCMin = weight;
+	}	
+	
+	/**
+	 * Set weight for labmin
+	 * 
+	 * @param weight Weight value
+	 */
+	public void setLabMinWeight(double weight) {
+		wLMin = weight;
 	}
 	
 	/**

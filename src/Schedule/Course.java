@@ -27,8 +27,8 @@ public class Course {
     private String department;				// name of the department
     private String number;					// course number
     private ArrayList<Section> sections;	// sections within the course
-    private ArrayList<Lab> openLabs;    // open lab sections
-    private ArrayList<Tutorial> openTuts; // open tutorial sections
+    private ArrayList<Lab> openLabs;    	// open lab sections
+    private ArrayList<Tutorial> openTuts; 	// open tutorial sections
 
     /**
      * Default constructor
@@ -58,54 +58,99 @@ public class Course {
     }
 
     /*
-     *  getters and setters
+     *  Getters and setters
      */
-    // department
+    
+    /**
+     * Get the department
+     * 
+     * @return The department string
+     */
     public String getDepartment() {
         return department;
     }
 
+    /**
+     * Set the department
+     * 
+     * @param department The department string
+     */
     public void setDepartment(String department) {
         this.department = department;
     }
-
-    // number
+    
+    /**
+     * Get the course number
+     * 
+     * @return The number string
+     */
     public String getNumber() {
         return number;
     }
 
+    /**
+     * Set the course number
+     * 
+     * @param number The number string
+     */
     public void setNumber(String number) {
         this.number = number;
     }
 
-    // sections
+    /**
+     * Get the sections
+     * 
+     * @return The sections list
+     */
     public ArrayList<Section> getSections() {
         return sections;
     }
 
+    /**
+     * Add a section
+     * 
+     * @param s The section
+     */
     public void addSection(Section s) {
         sections.add(s);
     }
 
+    /**
+     * Get the open labs
+     * 
+     * @return Open lab list
+     */
     public ArrayList<Lab> getOpenLabs() {
         return openLabs;
     }
 
+    /**
+     * Add an open lab
+     * 
+     * @param l The lab
+     */
     public void addOpenLab(Lab l) {
         this.openLabs.add(l);
     }
 
+    /**
+     * Get the open tutorials
+     * 
+     * @return Open tutorial list
+     */
     public ArrayList<Tutorial> getOpenTuts() {
         return openTuts;
     }
 
+    /**
+     * Add an open tutorial
+     * 
+     * @param t The tutorial
+     */
     public void addOpenTut(Tutorial t) {
         this.openTuts.add(t);
     }
 
-    /*
-     *  functions
-     */
     /**
      * getCourseLectures - returns a list of all lectures in this course
      *

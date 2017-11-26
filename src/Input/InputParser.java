@@ -17,8 +17,8 @@ import Schedule.*;
 import java.util.ArrayList;
 
 /**
- *
- * @author
+ * Class for parsing input from InputWrapper
+ * 
  */
 public class InputParser {
 
@@ -101,6 +101,10 @@ public class InputParser {
         return null;
     }
 
+    /**
+     * @param a
+     * @return
+     */
     private int orderValue(Assignment a) {
         // check if evening
         boolean evening = false;
@@ -119,6 +123,9 @@ public class InputParser {
         return 0;
     }
 
+    /**
+     * @param schedule
+     */
     private void applyPartialAssignments(Schedule schedule) {
         iw.partialAssignmentLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
             Meeting m = ScheduleUtils.findMeeting(schedule.getCourses(), parts[0]);
@@ -156,6 +163,10 @@ public class InputParser {
         });
     }
 
+    /**
+     * @param courses
+     * @return
+     */
     private ArrayList<MeetingPair> generatePairs(ArrayList<Course> courses) {
         ArrayList<MeetingPair> result = new ArrayList<>();
 
@@ -177,6 +188,11 @@ public class InputParser {
         return result;
     }
 
+    /**
+     * @param sched
+     * @param lSlots
+     * @param nlSlots
+     */
     private void generatePreferences(Schedule sched, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
         iw.preferencesLines.forEach((line) -> {
             String[] parts = line.split("\\s*,\\s*");
@@ -241,6 +257,11 @@ public class InputParser {
         });
     }
 
+    /**
+     * @param courses
+     * @param lSlots
+     * @param nlSlots
+     */
     private void generateUnwanted(ArrayList<Course> courses, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
         iw.unwantedLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
             Meeting m = ScheduleUtils.findMeeting(courses, parts[0]);
@@ -579,6 +600,9 @@ public class InputParser {
         return slots;
     }
 
+    /**
+     * @return
+     */
     private ArrayList<LectureSlot> generateGenericLectureSlots() {
         ArrayList<LectureSlot> slots = new ArrayList<>();
         // only add mondays as per uni constraint
@@ -610,6 +634,9 @@ public class InputParser {
         return slots;
     }
 
+    /**
+     * @return
+     */
     private ArrayList<NonLectureSlot> generateGenericNonLectureSlots() {
         ArrayList<NonLectureSlot> slots = new ArrayList<>();
 

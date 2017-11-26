@@ -29,6 +29,7 @@ public abstract class Slot {
     protected int endhour;		// slot end hour
     protected int endminute;	// slot end minute
     protected boolean evening;
+    
     /**
      * Default constructor
      */
@@ -42,7 +43,7 @@ public abstract class Slot {
     }
 
     /**
-     * check if slots are equal (have all the same values)
+     * Check if slots are equal (have all the same values)
      *
      * @param s
      * @return True if slots are equal
@@ -55,10 +56,6 @@ public abstract class Slot {
         } else {
             return false;
         }
-    }
-    
-    public boolean isEvening(){
-        return this.evening;
     }
     
     /**
@@ -94,24 +91,52 @@ public abstract class Slot {
         // if we got here no overlap
         return false;
     }
+    
+    /**
+     * Check if evening
+     * 
+     * @return True if evening
+     */
+    public boolean isEvening(){
+        return this.evening;
+    }
 
     /*
-     *  getters and setters
+     *  Getters and setters
      */
-    // day
+    
+    /**
+     * Get the day
+     * 
+     * @return Day string
+     */
     public String getDay() {
         return day;
     }
 
+    /**
+     * Set the day
+     * 
+     * @param day Day string
+     */
     public void setDay(String day) {
         this.day = day;
     }
 
-    // hour
+    /**
+     * Get the hour
+     * 
+     * @return The hour
+     */
     public int getHour() {
         return hour;
     }
     
+    /**
+     * Get the hour as a string
+     * 
+     * @return Hour string
+     */
     public String printHour(){
         String s = "" + hour;
         if(s.length() < 2)
@@ -119,15 +144,29 @@ public abstract class Slot {
         return s;
     }
 
+    /**
+     * Set the hour
+     * 
+     * @param hour The hour
+     */
     public void setHour(int hour) {
         this.hour = hour;
     }
 
-    // minute
+    /**
+     * Get the minute
+     * 
+     * @return The minute
+     */
     public int getMinute() {
         return minute;
     }
 
+    /**
+     * Get the minute as a string
+     * 
+     * @return Minute string
+     */
     public String printMinute(){
         String s = "" + minute;
         if(s.length() < 2)
@@ -135,28 +174,54 @@ public abstract class Slot {
         return s;
     }
     
+    /**
+     * Set the minute
+     * 
+     * @param minute The minute
+     */
     public void setMinute(int minute) {
         this.minute = minute;
     }
 
-    // end hour
+    /**
+     * Get the end hour
+     * 
+     * @return End hour
+     */
     public int getEndHour() {
         return endhour;
     }
 
+    /**
+     * Set the end hour
+     * 
+     * @param hour End hour
+     */
     public void setEndHour(int hour) {
         this.endhour = hour;
     }
 
-    // end minute
+    /**
+     * Get the end minute
+     * 
+     * @return End minute
+     */
     public int getEndMinute() {
         return endminute;
     }
 
+    /**
+     * Set the end minute
+     * 
+     * @param minute End minute
+     */
     public void setEndMinute(int minute) {
         this.endminute = minute;
     }
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString(){
         return getDay()+" "+printHour()+":"+printMinute();

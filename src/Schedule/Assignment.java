@@ -16,7 +16,7 @@ package Schedule;
 
 /**
  * Assignment: Class which, when instantiated, pairs a given meeting (lecture, lab, or tutorial), with a given slot.
- * @author
+ * 
  */
 public class Assignment {
     
@@ -38,22 +38,39 @@ public class Assignment {
      *  Getters and Setters
      */
 
+    /**
+     * Get the meeting
+     * 
+     * @return The meeting
+     */
     public Meeting getM() {
         return m;
     }
 
-     void setM(Meeting m) {
+     /**
+      * Set the meeting
+      * 
+     * @param m The meeting
+     */
+    void setM(Meeting m) {
         this.m = m;
     }
 
+    /**
+     * Get the slot
+     * 
+     * @return The slot
+     */
     public Slot getS() {
         return s;
     }
 
+    /**
+     * Set the slot
+     * 
+     * @param s The slot
+     */
     public void setS(Slot s) {
         this.s = s;
     }
-    
-
-    
 }
