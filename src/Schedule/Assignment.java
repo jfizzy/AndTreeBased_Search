@@ -14,14 +14,17 @@
 
 package Schedule;
 
+import java.util.Comparator;
+
 /**
  * Assignment: Class which, when instantiated, pairs a given meeting (lecture, lab, or tutorial), with a given slot.
  * 
  */
-public class Assignment {
+public class Assignment implements Comparable{
     
     private Meeting m;
     private Slot s;
+    private AssignmentPriority ap;
     
     /**
      * Constructor class for Assignment
@@ -32,6 +35,7 @@ public class Assignment {
         this.m = m;
         this.s = s;
         m.setAssignment(this); // need this for backref
+        ap = null;
     }
     
     /*
@@ -73,4 +77,28 @@ public class Assignment {
     public void setS(Slot s) {
         this.s = s;
     }
+
+    public AssignmentPriority getAp() {
+        return ap;
+    }
+
+    public void setAp(AssignmentPriority ap) {
+        this.ap = ap;
+    }
+    
+    public static Comparator<Assignment> AssignmentComparator = (Assignment a1, Assignment a2) -> a1.compareTo(a2);
+
+    @Override
+    public int compareTo(Object a2) {
+        if(!(a2 instanceof Assignment)){
+            System.out.println("Problem with objects in assignment arraylist");
+            System.exit(1);
+        }
+        System.out.println("("+this.getM().toString()+") ["+this.getAp().toString()+"]");
+        System.out.println("("+((Assignment) a2).getM().toString()+") ["+((Assignment) a2).getAp().toString()+"]");
+        int value = AssignmentPriority.compare(this.ap, ((Assignment) a2).getAp());
+        System.out.println("Result: "+value);
+        return value;
+    }
+    
 }
