@@ -237,8 +237,7 @@ public class Constr {
 				if (lsec.equals(nlsec)
 						|| (lsec.getParentCourse().equals(nl.getParentCourse())
 								&& (lsec.getParentCourse().getOpenLabs().contains(a.getM())
-										|| lsec.getParentCourse().getOpenTuts().contains(a.getM()))
-								&& lsec.getSectionNum().equals("01")));
+										|| lsec.getParentCourse().getOpenTuts().contains(a.getM()))));
 					return false;
 			}
 		}
@@ -365,22 +364,26 @@ public class Constr {
 			
 			// get section number
 			String snum = null;
+			boolean evening = false;
 			if (a.getM().getClass() == Lecture.class) {
 				Lecture l = (Lecture) a.getM();
 				snum = l.getParentSection().getSectionNum();
+				evening = l.getParentSection().isEvening();
 			}
 			else if (a.getM().getClass() == Lab.class) {
 				Lab nl = (Lab) a.getM();
 				snum = nl.getLabNum();
+				evening = nl.isEvening();
 			}
 			else if (a.getM().getClass() == Tutorial.class) {
 				Tutorial nl = (Tutorial) a.getM();
 				snum = nl.getTutNum();
+				evening = nl.isEvening();
 			}
 			else continue;
 			
 			// check section number begins with 9
-			if (snum.substring(0, 1).equals("9")) {
+			if (evening) { // snum.substring(0, 1).equals("9")
 				
 				// return false if not scheduled in the evening
 				if (a.getS().getHour() < 18)
