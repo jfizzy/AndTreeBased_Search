@@ -1,13 +1,20 @@
+/* 
+ * CPSC 433 Fall 2017
+ * 
+ * And-Tree-Based Scheduling Problem Solver
+ * 
+ * Created by:
+ * 
+ * Evan Loughlin
+ * Geordie Tait
+ * James MacIsaac
+ * Luke Kissick
+ * Sidney Shane Dizon
+ */
+
 package Search;
 
-import Schedule.Assignment;
-import Schedule.Course;
-import Schedule.Lecture;
-import Schedule.LectureSlot;
-import Schedule.NonLecture;
-import Schedule.Schedule;
-import Schedule.Section;
-import Schedule.Slot;
+import Schedule.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -19,35 +26,13 @@ public class SearchManager {
 	//----------------------------------------------------------------
 	// TODO for the actual search:
 	
-	// create tree/node classes, data structures
+	// create tree/node classes, data structures, done, AndSearchTreeNode
 	
-	// create functions for adding/removing nodes, traversing tree
+	// create functions for adding/removing nodes, traversing tree, in AndSearchTreeNode
 	
-	// implement a way to tell if the goal condition is met
+	// implement a way to tell if the goal condition is met, done, in Schedule
 	
-	// implement and-tree search (branch and bound):
 	
-		// start at the root node with no assignments
-		
-		// generate all possible branches - each represents one added assignment
-		//     (branches must satisfy Constr)
-		
-		// do a depth-first search to determine the bound value
-		//     (find the first valid solution quickly, then set bound to its Eval value)
-		
-		// go back to the root node
-		
-		// take branch with the lowest Eval
-		//     (close off branches if Eval greater than bound)
-		
-		// generate all possible branches for the new node
-		
-		// repeat until a solution is found, backtracking if necessary
-		
-		// if solution Eval < bound, set bound to new Eval value
-		
-		// return to root node, evaluate all possible solutions with Eval < bound
-		//     (final solution = lowest Eval leaf)
 	
 	//----------------------------------------------------------------
 	

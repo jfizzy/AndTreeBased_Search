@@ -13,25 +13,15 @@
  */
 package Input;
 
-import Schedule.Assignment;
-import Schedule.Course;
-import Schedule.Lab;
-import Schedule.Lecture;
-import Schedule.LectureSlot;
-import Schedule.Meeting;
-import Schedule.NonLecture;
-import Schedule.NonLectureSlot;
-import Schedule.Preference;
-import Schedule.Schedule;
-import Schedule.ScheduleUtils;
-import Schedule.Section;
-import Schedule.Slot;
-import Schedule.Tutorial;
+import Schedule.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import javafx.util.Pair;
 
 /**
+ * Class for parsing input from InputWrapper
  *
- * @author
  */
 public class InputParser {
 
@@ -47,16 +37,93 @@ public class InputParser {
         ArrayList<NonLectureSlot> nonlecSlots = activateNonLectureSlots();
         ArrayList<Course> courses = generateSections();
         generateNonLectures(courses);
-        generateIncompatibilities(courses);
-        generateUnwanted(courses, lecSlots, nonlecSlots);
         Schedule schedule = new Schedule(lecSlots, nonlecSlots, courses);
+        schedule.setNoncompatible(generateIncompatibilities(courses));
+        generateUnwanted(courses, lecSlots, nonlecSlots);
         generatePreferences(schedule, lecSlots, nonlecSlots);
-        generatePairs(courses);
-        // need to order the list of assignments
+        schedule.setPairs(generatePairs(courses));
         applyPartialAssignments(schedule);
+        orderAssignments(schedule);
         return schedule;
     }
 
+    /**
+     * orderAssignments - takes a schedule and orders its list of assignments
+     *
+     * @param s
+     */
+    public void orderAssignments(Schedule s) {
+        ArrayList<Assignment> orderedAssignments = new ArrayList<>();
+        //pseudo
+        ArrayList<Assignment> origAssignments = s.getAssignments();
+        ArrayList<Assignment> unAssigned = new ArrayList<>();
+
+        // look for partial assignments first
+        origAssignments.forEach((a) -> {
+            if (a.getS() != null) {
+                // non-null slot - this is a partial assignment
+                // no need to order any of these at all
+                orderedAssignments.add(a);
+            } else {
+                // null slot
+                unAssigned.add(a);
+            }
+        });
+        
+        // sort all unfilled assignment objects by restrictiveness
+        prioritizeAssignments(unAssigned);
+        // returns unAssigned in the new & improved order
+        
+        System.out.println("Already assigned (partial assignment):");
+        orderedAssignments.forEach((a)-> {
+            System.out.println("assign("+a.getM().toString()+" , "+a.getS().toString()+")");
+        });
+        
+        unAssigned.forEach((a)-> {
+            orderedAssignments.add(a);
+        });
+        
+        // ordering should be done here
+        s.setAssignments(orderedAssignments);
+        System.out.println("Ordering done");
+    }
+
+    /**
+     * prioritizeAssignments - takes a list of assignments and orders them based
+     * on restrictive priority
+     *
+     * @param assignments
+     * @return
+     */
+    private void prioritizeAssignments(ArrayList<Assignment> assignments) {
+
+        // compute priority values
+        assignments.forEach((a) -> {
+            a.setAp(new AssignmentPriority(a.getM()));
+        });
+        
+        System.out.println("Testing sorting:");
+        System.out.println("----------------------------------");
+        System.out.println("Before:");
+        assignments.forEach((a) -> {
+            System.out.println(a.getM().toString());
+        });
+        // sort the list
+        System.out.println("[evening, incompat, prefPens, unwanted, pairs, type, courseNum, secNum]");
+        
+        Collections.sort(assignments, Assignment.AssignmentComparator); // List<T> list, Comparator<? super T> c
+        
+        System.out.println("");
+        System.out.println("After:");
+        assignments.forEach((a) -> {
+            System.out.println(a.getM().toString());
+        });
+        System.out.println("----------------------------------");
+    }
+
+    /**
+     * @param schedule
+     */
     private void applyPartialAssignments(Schedule schedule) {
         iw.partialAssignmentLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
             Meeting m = ScheduleUtils.findMeeting(schedule.getCourses(), parts[0]);
@@ -74,10 +141,10 @@ public class InputParser {
                 if (ls == null) {
                     System.out.println("[!Partial assignment - no such lecture slot was found]");
                     return;
-                }else{
+                } else {
                     //set assignment to this slot
                     m.getAssignment().setS(ls);
-                    System.out.println("[Partial assignment - "+((Lecture) m).toString()+" <=> "+ls.toString()+"]");
+                    System.out.println("[Partial assignment - " + ((Lecture) m).toString() + " <=> " + ls.toString() + "]");
                     return;
                 }
             } else if (m instanceof NonLecture) {
@@ -85,16 +152,22 @@ public class InputParser {
                 if (nls == null) {
                     System.out.println("[!Partial assignment - no such non lecture slot was found]");
                     return;
-                }else{
+                } else {
                     // set assignment to this slot
                     m.getAssignment().setS(nls);
-                    System.out.println("[Partial assignment - "+((NonLecture) m).toString()+" <=> "+nls.toString()+"]");
+                    System.out.println("[Partial assignment - " + ((NonLecture) m).toString() + " <=> " + nls.toString() + "]");
                 }
             }
         });
     }
 
-    private void generatePairs(ArrayList<Course> courses) {
+    /**
+     * @param courses
+     * @return
+     */
+    private ArrayList<MeetingPair> generatePairs(ArrayList<Course> courses) {
+        ArrayList<MeetingPair> result = new ArrayList<>();
+
         iw.pairLines.forEach((line) -> {
             String parts[] = line.split("\\s*,\\s*");
             Meeting l = ScheduleUtils.findMeeting(courses, parts[0]);
@@ -103,14 +176,21 @@ public class InputParser {
             if (l != null && r != null) { // if both are found
                 l.addPaired(r);
                 r.addPaired(l);
+                result.add(new MeetingPair(l, r));
                 System.out.println("[Pair - " + l.toString() + " === " + r.toString() + "]");
             } else {
                 System.out.println("[!Pair - could not find at least one meeting]");
             }
         });
 
+        return result;
     }
 
+    /**
+     * @param sched
+     * @param lSlots
+     * @param nlSlots
+     */
     private void generatePreferences(Schedule sched, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
         iw.preferencesLines.forEach((line) -> {
             String[] parts = line.split("\\s*,\\s*");
@@ -175,6 +255,11 @@ public class InputParser {
         });
     }
 
+    /**
+     * @param courses
+     * @param lSlots
+     * @param nlSlots
+     */
     private void generateUnwanted(ArrayList<Course> courses, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
         iw.unwantedLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
             Meeting m = ScheduleUtils.findMeeting(courses, parts[0]);
@@ -211,7 +296,9 @@ public class InputParser {
      *
      * @param courses
      */
-    private void generateIncompatibilities(ArrayList<Course> courses) {
+    private ArrayList<MeetingPair> generateIncompatibilities(ArrayList<Course> courses) {
+        ArrayList<MeetingPair> result = new ArrayList<>();
+
         iw.notCompatibleLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((halves) -> {
             String left = halves[0];
             String right = halves[1];
@@ -224,12 +311,14 @@ public class InputParser {
             if (l != null && r != null) { // if both are found
                 l.addIncompatibility(r); // give them 
                 r.addIncompatibility(l); // the same incompatibility
+                result.add(new MeetingPair(l, r));
                 System.out.println("[Not compatible - " + l.toString() + " =/= " + r.toString() + "]");
             } else {
                 System.out.println("[!Not compatible - could not find at least one meeting]");
             }
         });
 
+        return result;
     }
 
     /**
@@ -245,32 +334,54 @@ public class InputParser {
             String dept = parts[0];
             String courseNum = parts[1];
             // index two is of no use to us
-            String section = parts[3];
+            String sectionString = parts[3];
             boolean added = false;
             for (Course c : courses) {
                 if (dept.equals(c.getDepartment())) { // same dept
                     if (courseNum.equals(c.getNumber())) { // same num
                         for (Section s : c.getSections()) {
-                            if (section.equals(s.getSectionNum())) {
+                            if (sectionString.equals(s.getSectionNum())) {
                                 // we have two Lectures for same section
                                 // this means input file is invalid
                                 return null;
                             }
                         }
-                        c.addSection(new Section(c, section)); // add the new section
-                        System.out.println("[Added Course Section - " + dept + " " + courseNum + " LEC " + section + "]");
+
+                        // Check if lecture section is an Evening section
+                        if (sectionString.charAt(0) == '9') {
+                            c.addSection(new Section(c, sectionString, true));
+                        } else {
+                            c.addSection(new Section(c, sectionString, false));
+                        }
+                        System.out.println("[Added Course Section - " + dept + " " + courseNum + " LEC " + sectionString + "]");
                         added = true;
                         break;
                     }
-                    courses.add(new Course(c.getDepartment(), courseNum, section));
-                    System.out.println("[Added Course - " + dept + " " + courseNum + " LEC " + section + "]");
+
+                    // Checks if Course is an "evening" course, then instantiates the course.
+                    if (sectionString.charAt(0) == '9') {
+                        // Instantiate a course that is an evening course.
+                        courses.add(new Course(c.getDepartment(), courseNum, sectionString, true));
+                    } else {
+                        //Instantiate a course that is NOT an evening course.
+                        courses.add(new Course(c.getDepartment(), courseNum, sectionString, false));
+                    }
+
+                    System.out.println("[Added Course - " + dept + " " + courseNum + " LEC " + sectionString + "]");
                     added = true;
                     break;
                 }
             }
+            // Check !added: True if there is no course sharing this department, and so a course needs to be created for it first. 
             if (!added) {
-                courses.add(new Course(dept, courseNum, section));
-                System.out.println("[Added Course and Dept - " + dept + " " + courseNum + " LEC " + section + "]");
+                // Instantiate a course that is an evening course.
+                if (sectionString.charAt(0) == '9') {
+                    courses.add(new Course(dept, courseNum, sectionString, true));
+                } // Instantiate a course that is NOT an evening course.
+                else {
+                    courses.add(new Course(dept, courseNum, sectionString, false));
+                }
+                System.out.println("[Added Course and Dept - " + dept + " " + courseNum + " LEC " + sectionString + "]");
             }
         }
         return courses;
@@ -440,10 +551,14 @@ public class InputParser {
             if (s != null) {
                 int coursemax = Integer.parseInt(parts[2]);
                 int coursemin = Integer.parseInt(parts[3]);
-                s.activate(coursemax, coursemin); // activate the slot
-                System.out.println("[Activated Lecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + coursemax + " " + coursemin + "]");
+                if (coursemin > coursemax) {
+                    System.out.println("[!Lecture Slot - coursemin [" + coursemin + "] > [" + coursemax + "]");
+                } else {
+                    s.activate(coursemax, coursemin); // activate the slot
+                    System.out.println("[Activated Lecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + coursemax + " " + coursemin + "]");
+                }
             } else {
-                System.out.println("Could not find the lecture slot");
+                System.out.println("[!Lecture Slot - Could not find the lecture slot]");
             }
         });
         return slots;
@@ -470,13 +585,22 @@ public class InputParser {
             if (s != null) {
                 int labmax = Integer.parseInt(parts[2]);
                 int labmin = Integer.parseInt(parts[3]);
-                s.activate(labmax, labmin);
-                System.out.println("[Activated NonLecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + labmax + " " + labmin + "]");
+                if (labmin > labmax) {
+                    System.out.println("[!NonLecture Slot - labmin [" + labmin + "] > labmax [" + labmax + "]");
+                } else {
+                    s.activate(labmax, labmin);
+                    System.out.println("[Activated NonLecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + labmax + " " + labmin + "]");
+                }
+            } else {
+                System.out.println("[!NonLecture Slot - could not find the non lecture slot]");
             }
         });
         return slots;
     }
 
+    /**
+     * @return
+     */
     private ArrayList<LectureSlot> generateGenericLectureSlots() {
         ArrayList<LectureSlot> slots = new ArrayList<>();
         // only add mondays as per uni constraint
@@ -508,6 +632,9 @@ public class InputParser {
         return slots;
     }
 
+    /**
+     * @return
+     */
     private ArrayList<NonLectureSlot> generateGenericNonLectureSlots() {
         ArrayList<NonLectureSlot> slots = new ArrayList<>();
 

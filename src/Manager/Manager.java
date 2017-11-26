@@ -31,25 +31,54 @@ class Manager {
      */
     public static void main(String[] args){
     	
-        if (args.length == 1) {
+    	// one argument or 5
+        if (args.length == 1 || args.length == 6) {
+        	
+        	// parse input file arg
             File f = new File(args[0]);
-            if (f.exists()) search(args[0]);
-            else exit();
+            if (!f.exists()) 
+            	usage();
+            
+            // parse weights if applicable
+            double w1 = 1;
+            double w2 = 1;
+            double w3 = 1;
+            double w4 = 1;
+            double w5 = 1;
+            if (args.length == 6) {
+            	try {
+            		w1 = Double.parseDouble(args[1]);
+            		w2 = Double.parseDouble(args[2]);
+            		w3 = Double.parseDouble(args[3]);
+            		w4 = Double.parseDouble(args[4]);
+            		w5 = Double.parseDouble(args[5]);
+            	}
+            	catch(NumberFormatException e) {
+            		// TODO
+            		usage();
+            	}
+            }
+            
+            // run the search
+            search(args[0], w1, w2, w3, w4, w5);
         }
-        else{
-            exit();
-        }
-        System.out.println("And-Tree based Search Scheduling Manager initialized.");
+        else usage();
+    }
+    
+    private static void usage() { // TODO make this clearer
+    	System.out.println("Acceptable args are: inputfile [weight] [weight] [weight] [weight]");
+    	exit();
     }
     
     /**
      * Perform a search using an input file
      * @param fp File path
      */
-    private static void search(String fp){
+    private static void search(String fp, double w1, double w2, double w3, double w4, double w5){
         System.out.println(">>> Reading input file ["+fp+"] and parsing ...");
         InputManager im = new InputManager();
         Schedule schedule = im.run(fp);
+        schedule.getEvalObject().setWeights(w1, w2, w3, w4, w5);
         System.out.println(">>> Done");
         System.out.println(">>> Finding optimal assignments ...");
         SearchManager sm = new SearchManager(schedule);

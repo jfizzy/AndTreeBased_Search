@@ -31,27 +31,36 @@ public class Tutorial extends NonLecture {
     public Tutorial(String num, Section s, boolean evening) {
         super();
         this.tutNum = num;
-        this.parentSection = s;
+        this.setParentSection(s);
         this.evening = evening;
     }
 
     /*
-     *  getters and setters
+     *  Getters and setters
+     */
+    
+    /**
+     * Get the tutorial number
+     * 
+     * @return Number string
      */
     public String getTutNum() {
         return tutNum;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
-        if (this.parentSection == null) {
+        if (this.getParentSection() == null) {
             String dept = this.getParentCourse().getDepartment();
             String cNum = this.getParentCourse().getNumber();
             return (dept + " " + cNum + " TUT " + this.tutNum);
         } else {
-            String dept = this.parentSection.getParentCourse().getDepartment();
-            String cNum = this.parentSection.getParentCourse().getNumber();
-            String sec = this.parentSection.getSectionNum();
+            String dept = this.getParentSection().getParentCourse().getDepartment();
+            String cNum = this.getParentSection().getParentCourse().getNumber();
+            String sec = this.getParentSection().getSectionNum();
             return (dept + " " + cNum + " LEC " + sec + " TUT " + this.tutNum);
         }
     }

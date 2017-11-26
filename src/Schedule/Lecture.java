@@ -20,15 +20,12 @@ package Schedule;
  */
 public class Lecture extends Meeting{
     
-    private Section parentSection;	// lecture's parent section
-    
     /**
      * Constructor
      * @param s Section
      */
     public Lecture(Section s) {
         super();
-        this.parentSection = s;
     }
     
     /* (non-Javadoc)
@@ -36,21 +33,9 @@ public class Lecture extends Meeting{
      */
     @Override
     public String toString(){
-        String dept = this.parentSection.getParentCourse().getDepartment();
-        String cNum = this.parentSection.getParentCourse().getNumber();
-        String sec = this.parentSection.getSectionNum();
+        String dept = this.getParentSection().getParentCourse().getDepartment();
+        String cNum = this.getParentSection().getParentCourse().getNumber();
+        String sec = this.getParentSection().getSectionNum();
         return (dept + " " + cNum + " LEC " + sec);
-    }
-    
-    /*
-     *  getters and setters
-     */
-
-    public Section getParentSection() {
-        return parentSection;
-    }
-
-    public void setParentSection(Section parentSection) {
-        this.parentSection = parentSection;
-    }    
+    }  
 }

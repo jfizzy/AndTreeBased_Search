@@ -16,8 +16,7 @@ package Schedule;
 import java.util.ArrayList;
 
 /**
- *
- * @author
+ * Class with utility functions for Schedule package
  */
 public class ScheduleUtils {
     
@@ -120,6 +119,11 @@ public class ScheduleUtils {
         return null; // couldnt find a match
     }
     
+    /**
+     * @param slots
+     * @param slotString
+     * @return
+     */
     public static LectureSlot findLectureSlot(ArrayList<LectureSlot> slots, String slotString) {
         String[] parts = slotString.split("\\s*,\\s*");
         String day = parts[0];
@@ -149,6 +153,11 @@ public class ScheduleUtils {
         return null;
     }
 
+    /**
+     * @param slots
+     * @param slotString
+     * @return
+     */
     public static NonLectureSlot findNonLectureSlot(ArrayList<NonLectureSlot> slots, String slotString) {
         String[] parts = slotString.split("\\s*,\\s*");
         String day = parts[0];

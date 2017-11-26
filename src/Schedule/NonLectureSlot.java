@@ -15,7 +15,6 @@ package Schedule;
 
 /**
  * Object representing a time slot into which a nonlecture can be scheduled
- * @author 
  *
  */
 public class NonLectureSlot extends Slot {
@@ -46,21 +45,59 @@ public class NonLectureSlot extends Slot {
     }
     
     /*
-     *  getters and setters
+     *  Getters and setters
      */
     
+    /**
+     * Get lab minimum
+     * 
+     * @return The value
+     */
     public int getLabMin() {
     	return this.labmin;
     }
     
+    /**
+     * Get lab maximum
+     * @return The value
+     */
     public int getLabMax() {
     	return this.labmax;
     }
     
+    /**
+     * Set lab minimum
+     * 
+     * @param lmin The value
+     */
+    public void setLabMin(int lmin) {
+    	this.labmin = lmin;
+    }
+    
+    /**
+     * Set lab maximum
+     * 
+     * @param lmax The value
+     */
+    public void setLabMax(int lmax) {
+    	this.labmax = lmax;
+    }
+    
+    /**
+     * Check if the slot is active
+     * 
+     * @return True if the slot is active
+     */
     public boolean isActive(){
         return (this.labmax > 0);
     }
     
+    /**
+     * Activate the slot
+     * 
+     * @param labmax Lab maximum
+     * @param labmin Lab minimum
+     */
     public void activate(int labmax, int labmin){
         this.labmax = labmax;
         this.labmin = labmin;

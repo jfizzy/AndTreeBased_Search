@@ -20,6 +20,10 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Class for reading lines from input
+ *
+ */
 public class FileExaminer {
 
     private final String fp;
@@ -66,7 +70,7 @@ public class FileExaminer {
     }
 
     /**
-     *
+     * Initialize the file examiner
      */
     public void init() {
         try {
@@ -79,14 +83,14 @@ public class FileExaminer {
     }
 
     /**
-     * parse - line by line, matches each line in the input file against a set
+     * Filter - line by line, matches each line in the input file against a set
      * of regular expressions in order to filter out lines that should be
      * rejected and sort the well formed lines into their arraylists in the
      * inputwrapper object
      *
      * @return true if successful false if exception occurred
      */
-    public boolean parse() {
+    public boolean filter() {
         try {
             if (!br.ready()) {
                 return false;
