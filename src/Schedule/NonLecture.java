@@ -15,14 +15,12 @@ package Schedule;
 
 /**
  * Abstract class representing Labs/Tutorials to be scheduled
- * @author 
  *
  */
 public abstract class NonLecture extends Meeting {
 
-    private Course parentCourse;
-    protected Section parentSection;	// nonlecture's parent section
-    protected boolean evening;			// whether it is an evening class
+    private Course parentCourse;	// the parent course
+    protected boolean evening;		// whether it is an evening class
     
     /**TODO:    figure out if evening Course means all labs and 
      *          tutorials are evening as well
@@ -33,40 +31,67 @@ public abstract class NonLecture extends Meeting {
     public NonLecture(){
         super();
         this.parentCourse = null;
-        this.parentSection = null;
         this.evening = false;
     }
     
     /*
-     *  getters and setters
+     *  Getters and setters
      */
 
+    /**
+     * Get the parent course
+     * 
+     * @return The course
+     */
     public Course getParentCourse(){
         return parentCourse;
     }
     
+    /**
+     * Set the parent course
+     * 
+     * @param c The course
+     */
     public void setParentCourse(Course c){
         this.parentCourse = c;
     }
-    
-    public Section getParentSection() {
-        return parentSection;
-    }
 
+    /**
+     * Check if an evening nonlecture
+     * 
+     * @return True if evening nonlecture
+     */
     public boolean isEvening() {
         return evening;
     }
     
+    /**
+     * Get the department
+     * 
+     * @return Department string
+     */
     public String getDept(){
-        return parentSection.getParentCourse().getDepartment();
+        return this.getParentSection().getParentCourse().getDepartment();
     }
     
+    /**
+     * Get the course number
+     * 
+     * @return Course number string
+     */
     public String getCourseNum(){
-        return parentSection.getParentCourse().getNumber();
+        if(this.getParentSection() == null)
+            return this.getParentCourse().getNumber();
+        return this.getParentSection().getParentCourse().getNumber();
     }
     
+    /**
+     * Get the section number
+     * 
+     * @return Section number string
+     */
     public String getSectionNum(){
-        return parentSection.getSectionNum();
+        return this.getParentSection().getSectionNum();
     }
     
 }

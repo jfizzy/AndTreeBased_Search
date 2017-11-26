@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 /**
  * Object representing a section of a course, containing lecures and nonlectures
- * @author 
  *
  */
 public class Section {
@@ -40,60 +39,102 @@ public class Section {
         this.labs = new ArrayList<>();
         this.tuts = new ArrayList<>();
         this.lecture = new Lecture(this);
+        this.lecture.setParentSection(this);
         this.evening = evening;
         
     }
     
-    
-   
-    
     /*
-     *  getters and setters
+     *  Getters and setters
      */
 
-    // section number
+    /**
+     * Get the section number
+     * 
+     * @return Section number string
+     */
     public String getSectionNum() {
         return sectionNum;
     }
 
+    /**
+     * Set the section number
+     * 
+     * @param sectionNum Section number string
+     */
     public void setSectionNum(String sectionNum) {
         this.sectionNum = sectionNum;
     }
 
-    // labs
+    /**
+     * Get the labs list
+     * 
+     * @return Lab list
+     */
     public ArrayList<Lab> getLabs() {
         return labs;
     }
     
+    /**
+     * Add a lab
+     * 
+     * @param l The lab
+     */
     public void addLab(Lab l) {
         labs.add(l);
     }
     
-    // tutorials
+    /**
+     * Get the tutorials list
+     * 
+     * @return Tutorial lsit
+     */
     public ArrayList<Tutorial> getTuts() {
         return tuts;
     }
     
+    /**
+     * Add a tutorial
+     * 
+     * @param t The tutorial
+     */
     public void addTutorial(Tutorial t) {
         tuts.add(t);
     }
     
-    // parent course
+    /**
+     * Get the parent course
+     * 
+     * @return The course
+     */
     public Course getParentCourse() {
         return parentCourse;
     }
 
-    // lecture
+    /**
+     * Get the lecture
+     * 
+     * @return The lecture
+     */
     public Lecture getLecture() {
         return lecture;
     }
 
+    /**
+     * Set the lecture
+     * 
+     * @param lecture The lecture
+     */
     public void setLecture(Lecture lecture) {
         this.lecture = lecture;
     }
     
-    public boolean isEvening()
-    {
+    /**
+     * Check if evening
+     * 
+     * @return True if evening
+     */
+    public boolean isEvening() {
     	return this.evening;
     }
     

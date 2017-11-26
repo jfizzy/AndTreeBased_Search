@@ -1,7 +1,7 @@
 package Schedule;
 
 /**
- * @author 
+ * Class representing a set of paired meetings
  *
  */
 public class MeetingPair {

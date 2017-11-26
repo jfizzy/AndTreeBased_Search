@@ -20,8 +20,6 @@ import Search.Eval;
 /**
  * Object representing a schedule of assigned meetings to slots
  *
- * @author
- *
  */
 public class Schedule {
 
@@ -32,8 +30,10 @@ public class Schedule {
     private ArrayList<Lecture> lectures;	// list of lectures (filled from courses)
     private ArrayList<Lab> labs;			// list of labs (filled from courses)
     private ArrayList<Tutorial> tuts;		// list of tutorials (filled from courses)
-    private ArrayList<MeetingPair> pairs;			// 
-    private ArrayList<MeetingPair> noncompatible;	// 
+    private ArrayList<MeetingPair> pairs;			// list of paired courses
+    private ArrayList<MeetingPair> noncompatible;	// list of incompatible courses
+    private Eval eval;		// Evaluator object
+    private Constr constr;	// Constraint checking object
 
     /**
      * Default constructor
@@ -48,10 +48,12 @@ public class Schedule {
         tuts = new ArrayList<>();
         pairs = new ArrayList<>();
         noncompatible = new ArrayList<>();
+        eval = new Eval(this);
+        constr = new Constr(this);
     }
 
     /**
-     * Constructor
+     * Constructor with slots and courses lists
      *
      * @param lslots
      * @param nlslots
@@ -70,6 +72,8 @@ public class Schedule {
         assignments = new ArrayList<>();
         pairs = new ArrayList<>();
         noncompatible = new ArrayList<>();
+        eval = new Eval(this);
+        constr = new Constr(this);
         
         // process the meetings into lists
         processLectures();
@@ -82,9 +86,10 @@ public class Schedule {
 
     /**
      * Constructor for Constr/Eval
+     * (makes a new schedule from the old with an added assignment)
      *
-     * @param a
-     * @param orig
+     * @param a New assignment
+     * @param orig Original schedule
      */
     public Schedule(Assignment a, Schedule orig) {
     	
@@ -97,8 +102,10 @@ public class Schedule {
         tuts = orig.getTuts();
         pairs = orig.getPairs();
         noncompatible = orig.getNoncompatible();
+        eval = new Eval(this);
+        constr = new Constr(this);
         
-        // make a copy of assignments list and add the new one
+        // make a copy of assignments list and add the new assignment
         assignments = (ArrayList<Assignment>) orig.getAssignments().clone();
         assignments.add(a);
     }
@@ -166,13 +173,34 @@ public class Schedule {
     }
 
     /**
+     * @return true if all courses have an assignment, false if there is work left to do
+     */
+    public boolean isComplete() {
+    	
+    		for (Assignment item: this.assignments) {
+    			if (item.getS() == null) {
+    				return false;
+    			}
+    		}
+    		return true;
+    }
+    
+    /**
+     * Get the Constr object for the schedule
+     * 
+     * @return Constr object
+     */
+    public Constr getConstrObject() {
+    	return this.constr;
+    }
+    
+    /**
      * Checks if the schedule meets all hard constraints
      *
      * @return True if all hard constraints are met
      */
     public boolean isValid() {
-        Constr c = new Constr(this);
-        return c.check();
+        return constr.check();
     }
 
     /**
@@ -184,8 +212,17 @@ public class Schedule {
      * constraints
      */
     public boolean isValidWith(Assignment a) {
-        Constr c = new Constr(a, this);
+    	Constr c = new Constr(a, this);
         return c.check();
+    }
+    
+    /**
+     * Get the Eval object for the schedule
+     * 
+     * @return Eval object
+     */
+    public Eval getEvalObject() {
+    	return this.eval;
     }
 
     /**
@@ -194,21 +231,21 @@ public class Schedule {
      * @return The evaluation of the schedule
      */
     public int eval() {
-        Eval e = new Eval(this);
-        return e.getEval();
+        return eval.getEval();
     }
 
     /**
      * Get the evaluation with weights
      *
-     * @param w1
-     * @param w2
-     * @param w3
-     * @param w4
+     * @param cmin
+     * @param lmin
+     * @param pref
+     * @param pair
+     * @param secdiff
      * @return The evaluation of the schedule
      */
-    public int eval(double w1, double w2, double w3, double w4) {
-        Eval e = new Eval(this, w1, w2, w3, w4);
+    public int eval(double cmin, double lmin, double pref, double pair, double secdiff) {
+        Eval e = new Eval(this, cmin, lmin, pref, pair, secdiff);
         return e.getEval();
     }
 
@@ -220,6 +257,11 @@ public class Schedule {
      */
     public int evalWith(Assignment a) {
         Eval e = new Eval(a, this);
+        e.setWeights(eval.getCourseMinWeight(),
+        			eval.getLabMinWeight(),
+        			eval.getPrefWeight(),
+        			eval.getPairWeight(),
+        			eval.getSecDiffWeight());
         return e.getEval();
     }
 
@@ -227,14 +269,15 @@ public class Schedule {
      * Get the evaluation with added assignment and weights
      *
      * @param a The assignment
-     * @param w1
-     * @param w2
-     * @param w3
-     * @param w4
+     * @param cmin
+     * @param lmin
+     * @param pref
+     * @param pair
+     * @param secdiff
      * @return The evaluation of the schedule with the assignment
      */
-    public int evalWith(Assignment a, double w1, double w2, double w3, double w4) {
-        Eval e = new Eval(a, this, w1, w2, w3, w4);
+    public int evalWith(Assignment a, double cmin, double lmin, double pref, double pair, double secdiff) {
+        Eval e = new Eval(a, this, cmin, lmin, pref, pair, secdiff);
         return e.getEval();
     }
 
@@ -288,6 +331,14 @@ public class Schedule {
      */
     public ArrayList<Assignment> getAssignments() {
         return assignments;
+    }
+
+    /**
+     * Set assignments list
+     * @param assignments 
+     */
+    public void setAssignments(ArrayList<Assignment> assignments) {
+        this.assignments = assignments;
     }
 
     /**

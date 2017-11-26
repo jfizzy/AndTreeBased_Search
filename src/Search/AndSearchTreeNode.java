@@ -73,7 +73,7 @@ public class AndSearchTreeNode {
 
 	//To bound the branch call this function
 	//changes the sol entry to true
-	public void solved() {
-		isSolved = true;
+	public void solved(boolean state) {
+		isSolved = state;
 	}
 }

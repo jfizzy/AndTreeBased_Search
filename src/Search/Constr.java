@@ -229,10 +229,15 @@ public class Constr {
 						|| !a.getS().overlaps(b.getS())) 
 					continue;
 				
-				// return false if section is the same
+				// return false if section is the same, or open lab/tut matches first section
 				Lecture l = (Lecture) b.getM();
+				Section lsec = l.getParentSection();
 				NonLecture nl = (NonLecture) a.getM();
-				if (l.getParentSection().equals(nl.getParentSection()));
+				Section nlsec = nl.getParentSection();
+				if (lsec.equals(nlsec)
+						|| (lsec.getParentCourse().equals(nl.getParentCourse())
+								&& (lsec.getParentCourse().getOpenLabs().contains(a.getM())
+										|| lsec.getParentCourse().getOpenTuts().contains(a.getM()))));
 					return false;
 			}
 		}
@@ -274,30 +279,18 @@ public class Constr {
 		// for each pair in the noncompatible list
 		for (MeetingPair mp : schedule.getNoncompatible()) {
 			
-			// for each assignment
-			for (Assignment a : schedule.getAssignments()) {
-				
-				// skip if slot unassigned or meeting doesn't match 
-				if (a.getS() == null 
-						|| (a.getM() != mp.getFirst() 
-						&& a.getM() != mp.getSecond()))
-					continue;
-				
-				// for each other assignment
-				for (Assignment b : schedule.getAssignments()) {
-					if (a == b) continue; // skip if same
-					
-					// skip if slot unassigned or meeting doesn't match 
-					if (b.getS() == null 
-							|| (b.getM() != mp.getFirst() 
-							&& b.getM() != mp.getSecond()))
-						continue;
-					
-					// return false if slots overlap
-					if (a.getS().overlaps(b.getS()))
-						return false;
-				}
-			}
+			// skip if unassigned
+			if (mp.getFirst().getAssignment() == null
+					|| mp.getSecond().getAssignment() == null)
+				continue;
+			Slot s1 = mp.getFirst().getAssignment().getS();
+			Slot s2 = mp.getSecond().getAssignment().getS();
+			if (s1 == null || s2 == null)
+				continue;
+			
+			// return false if slots overlap
+			if (s1.overlaps(s2))
+				return false;
 		}
 		
 		// if this is reached the constraint is satisfied
@@ -346,7 +339,7 @@ public class Constr {
 			for (Slot s : a.getM().getUnwanted()) {
 				
 				// return false if slot matches
-				if (a.getS() != null && a.getS().equals(s))
+				if (a.getS().equals(s))
 					return false;
 			}
 		}
@@ -371,22 +364,26 @@ public class Constr {
 			
 			// get section number
 			String snum = null;
+			boolean evening = false;
 			if (a.getM().getClass() == Lecture.class) {
 				Lecture l = (Lecture) a.getM();
 				snum = l.getParentSection().getSectionNum();
+				evening = l.getParentSection().isEvening();
 			}
 			else if (a.getM().getClass() == Lab.class) {
 				Lab nl = (Lab) a.getM();
 				snum = nl.getLabNum();
+				evening = nl.isEvening();
 			}
 			else if (a.getM().getClass() == Tutorial.class) {
 				Tutorial nl = (Tutorial) a.getM();
 				snum = nl.getTutNum();
+				evening = nl.isEvening();
 			}
 			else continue;
 			
 			// check section number begins with 9
-			if (snum.substring(0, 1).equals("9")) {
+			if (evening) { // snum.substring(0, 1).equals("9")
 				
 				// return false if not scheduled in the evening
 				if (a.getS().getHour() < 18)
