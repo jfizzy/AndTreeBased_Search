@@ -80,6 +80,8 @@ public abstract class NonLecture extends Meeting {
      * @return Course number string
      */
     public String getCourseNum(){
+        if(this.getParentSection() == null)
+            return this.getParentCourse().getNumber();
         return this.getParentSection().getParentCourse().getNumber();
     }
     

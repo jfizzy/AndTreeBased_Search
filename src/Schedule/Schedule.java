@@ -328,6 +328,14 @@ public class Schedule {
     }
 
     /**
+     * Set assignments list
+     * @param assignments 
+     */
+    public void setAssignments(ArrayList<Assignment> assignments) {
+        this.assignments = assignments;
+    }
+
+    /**
      * Add an assignment to the list
      * 
      * @param a The assignment

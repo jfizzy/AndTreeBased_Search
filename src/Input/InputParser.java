@@ -15,10 +15,13 @@ package Input;
 
 import Schedule.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import javafx.util.Pair;
 
 /**
  * Class for parsing input from InputWrapper
- * 
+ *
  */
 public class InputParser {
 
@@ -34,13 +37,13 @@ public class InputParser {
         ArrayList<NonLectureSlot> nonlecSlots = activateNonLectureSlots();
         ArrayList<Course> courses = generateSections();
         generateNonLectures(courses);
-        generateUnwanted(courses, lecSlots, nonlecSlots);
         Schedule schedule = new Schedule(lecSlots, nonlecSlots, courses);
-        generatePreferences(schedule, lecSlots, nonlecSlots);
         schedule.setNoncompatible(generateIncompatibilities(courses));
+        generateUnwanted(courses, lecSlots, nonlecSlots);
+        generatePreferences(schedule, lecSlots, nonlecSlots);
         schedule.setPairs(generatePairs(courses));
-        // need to order the list of assignments
         applyPartialAssignments(schedule);
+        orderAssignments(schedule);
         return schedule;
     }
 
@@ -66,9 +69,23 @@ public class InputParser {
                 unAssigned.add(a);
             }
         });
-
-        ArrayList<Assignment> orderedUnAssigned = prioritizeAssignments(unAssigned);
-
+        
+        // sort all unfilled assignment objects by restrictiveness
+        prioritizeAssignments(unAssigned);
+        // returns unAssigned in the new & improved order
+        
+        System.out.println("Already assigned (partial assignment):");
+        orderedAssignments.forEach((a)-> {
+            System.out.println("assign("+a.getM().toString()+" , "+a.getS().toString()+")");
+        });
+        
+        unAssigned.forEach((a)-> {
+            orderedAssignments.add(a);
+        });
+        
+        // ordering should be done here
+        s.setAssignments(orderedAssignments);
+        System.out.println("Ordering done");
     }
 
     /**
@@ -78,49 +95,30 @@ public class InputParser {
      * @param assignments
      * @return
      */
-    private ArrayList<Assignment> prioritizeAssignments(ArrayList<Assignment> assignments) {
+    private void prioritizeAssignments(ArrayList<Assignment> assignments) {
 
-        /* priority list
-        -partial assignment
-	-evening meetings
-	-number of incompatibilities
-	-highest preference penalty
-	-number of unwanted
-	-number of pairs
-        -lectures
-        -labs
-        -tutorials
-        -course number
-         */
-        ArrayList<Assignment> orderedAssignments = new ArrayList<>();
-        Assignment best = null;
+        // compute priority values
         assignments.forEach((a) -> {
-
+            a.setAp(new AssignmentPriority(a.getM()));
         });
-
-        return null;
-    }
-
-    /**
-     * @param a
-     * @return
-     */
-    private int orderValue(Assignment a) {
-        // check if evening
-        boolean evening = false;
-        if(a.getM().getParentSection() != null){
-            if(a.getM().getParentSection().isEvening())
-                evening = true;
-        }
-        //check how many incompatibilities
-        int incompatibilities = 0;
-        for(Meeting m : a.getM().getIncompatibility())
-            incompatibilities++;
         
-        // check preference penalties
-        // TODO revisit to make sure this works
+        System.out.println("Testing sorting:");
+        System.out.println("----------------------------------");
+        System.out.println("Before:");
+        assignments.forEach((a) -> {
+            System.out.println(a.getM().toString());
+        });
+        // sort the list
+        System.out.println("[evening, incompat, prefPens, unwanted, pairs, type, courseNum, secNum]");
         
-        return 0;
+        Collections.sort(assignments, Assignment.AssignmentComparator); // List<T> list, Comparator<? super T> c
+        
+        System.out.println("");
+        System.out.println("After:");
+        assignments.forEach((a) -> {
+            System.out.println(a.getM().toString());
+        });
+        System.out.println("----------------------------------");
     }
 
     /**
