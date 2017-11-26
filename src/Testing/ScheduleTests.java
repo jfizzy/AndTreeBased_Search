@@ -12,7 +12,7 @@ import org.junit.Test;
 import Schedule.*;
 
 /**
- * @author 
+ * JUnit test class for Schedule
  *
  */
 public class ScheduleTests {
