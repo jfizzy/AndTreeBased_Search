@@ -428,4 +428,49 @@ public class Eval {
 	public void setSecDiffWeight(double weight) {
 		wSecDiff = weight;
 	}
+	
+	/**
+	 * Get course min weight
+	 * 
+	 * @return Weight value
+	 */
+	public double getCourseMinWeight() {
+		return wCMin;
+	}
+	
+	/**
+	 * Get lab min weight
+	 * 
+	 * @return Weight value
+	 */
+	public double getLabMinWeight() {
+		return wLMin;
+	}
+	
+	/**
+	 * Get preference weight
+	 * 
+	 * @return Weight value
+	 */
+	public double getPrefWeight() {
+		return wPref;
+	}
+	
+	/**
+	 * Get pair weight
+	 * 
+	 * @return Weight value
+	 */
+	public double getPairWeight() {
+		return wPair;
+	}
+	
+	/**
+	 * Get section difference weight
+	 * 
+	 * @return Weight value
+	 */
+	public double getSecDiffWeight() {
+		return wSecDiff;
+	}
 }

@@ -212,7 +212,8 @@ public class Schedule {
      * constraints
      */
     public boolean isValidWith(Assignment a) {
-        return constr.check();
+    	Constr c = new Constr(a, this);
+        return c.check();
     }
     
     /**
@@ -256,6 +257,11 @@ public class Schedule {
      */
     public int evalWith(Assignment a) {
         Eval e = new Eval(a, this);
+        e.setWeights(eval.getCourseMinWeight(),
+        			eval.getLabMinWeight(),
+        			eval.getPrefWeight(),
+        			eval.getPairWeight(),
+        			eval.getSecDiffWeight());
         return e.getEval();
     }
 

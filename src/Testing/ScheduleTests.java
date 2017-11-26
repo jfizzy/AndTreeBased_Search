@@ -93,6 +93,9 @@ public class ScheduleTests {
 		c2.addOpenLab(b2);
 		Tutorial t2 = new Tutorial("02", null, false);
 		c2.addOpenTut(t2);
+		Section s3 = new Section(c2, "90", true);
+		Lecture l3 = s3.getLecture();
+		c2.addSection(s3);
 		cs.add(c2);
 		
 		l1.addPreference(ls2, 10);
@@ -107,6 +110,7 @@ public class ScheduleTests {
 		
 		schedule.updateAssignment(l1, ls1);
 		schedule.updateAssignment(l2, ls2);
+		schedule.updateAssignment(l3, ls4);
 		schedule.updateAssignment(b1, nls1);
 		schedule.updateAssignment(b2, nls2);
 		schedule.updateAssignment(t1, nls3);
@@ -121,7 +125,7 @@ public class ScheduleTests {
 			assertTrue(schedule.getLectureSlots().get(i).isActive());
 		}
 		LectureSlot lstest = schedule.findLectureSlot("MO", 8, 0);
-		assertTrue(lstest == ls1);
+		assertTrue(lstest == schedule.getLectureSlots().get(0));
 		
 		// test nonlecture slots
 		assertEquals(4, schedule.getNonLectureSlots().size());
@@ -129,17 +133,19 @@ public class ScheduleTests {
 			assertTrue(schedule.getNonLectureSlots().get(i).isActive());
 		}
 		NonLectureSlot nlstest = schedule.findNonLectureSlot("MO", 8, 0);
-		assertTrue(nlstest == nls1);
+		assertTrue(nlstest == schedule.getNonLectureSlots().get(0));
 		
 		// test courses
 		assertEquals(2, schedule.getCourses().size());
 		
 		// test sections
 		assertEquals(1, schedule.getCourses().get(0).getSections().size());
-		assertEquals(1, schedule.getCourses().get(1).getSections().size());
+		assertEquals(2, schedule.getCourses().get(1).getSections().size());
 		
 		// test lectures		
-		assertEquals(2, schedule.getLectures().size());
+		assertEquals(3, schedule.getLectures().size());
+		assertEquals(1, schedule.getCourses().get(0).getCourseLectures().size());
+		assertEquals(2, schedule.getCourses().get(1).getCourseLectures().size());
 		
 		// test nonlectures
 		assertEquals(4, schedule.getNonLectures().size());
@@ -159,7 +165,7 @@ public class ScheduleTests {
 		assertEquals(1, schedule.getCourses().get(1).getCourseTuts().size());
 		
 		// test assignments
-		assertEquals(6, schedule.getAssignments().size());
+		assertEquals(7, schedule.getAssignments().size());
 		
 		// test preference
 		int count = 0;
@@ -191,7 +197,7 @@ public class ScheduleTests {
 		// test pair
 		assertEquals(1, schedule.getPairs().size());
 		
-		// test complete
+		// test iscomplete
 		assertTrue(schedule.isComplete());
 	}
 }
