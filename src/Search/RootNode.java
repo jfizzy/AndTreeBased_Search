@@ -26,11 +26,10 @@ public class RootNode extends Node {
      * @param boundVal
      * @return
      */
-    public Schedule initSearch(int boundVal) {
+    public Schedule initSearch() {
     	
-        this.boundVal = boundVal;
-        return this.runSearch(true, 0);
-        
-        //return null;
+        Schedule s = this.runSearch(true, 0);
+        boundVal = s.eval();
+        return s;
     }
 }

@@ -94,6 +94,8 @@ public class Node {
         System.out.println(children.size() +" "+depth);
         if (depthFirst) {
         	
+        	// either result will be set to something non-null
+        	// or it will run out of choices and return out of the function
         	Schedule result = null;
         	while (result == null) {
         		

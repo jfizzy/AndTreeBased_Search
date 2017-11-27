@@ -42,7 +42,7 @@ public class SearchProcess {
         //inside while loop until the solution is found
         if(Constr.check(schedule)){
             // ( ✧≖ ͜ʖ≖)
-            Schedule optimalSchedule = rootNode.initSearch(boundVal); // this is the money function!
+            Schedule optimalSchedule = rootNode.initSearch(); // this is the money function!
             // (͡o‿O͡)
             optimalSchedule.printAssignments();
             return optimalSchedule;
