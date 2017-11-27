@@ -67,20 +67,19 @@ public class InputParser {
                 unAssigned.add(a);
             }
         });
-        
+
         // sort all unfilled assignment objects by restrictiveness
         prioritizeAssignments(unAssigned);
         // returns unAssigned in the new & improved order
-        
+
         /*System.out.println("Already assigned (partial assignment):");
         orderedAssignments.forEach((a)-> {
             System.out.println("assign("+a.getM().toString()+" , "+a.getS().toString()+")");
         });*/
-        
-        unAssigned.forEach((a)-> {
+        unAssigned.forEach((a) -> {
             orderedAssignments.add(a);
         });
-        
+
         s.setAssignments(orderedAssignments);
         //System.out.println("Ordering done");
     }
@@ -98,16 +97,15 @@ public class InputParser {
         assignments.forEach((a) -> {
             a.setAp(new AssignmentPriority(a.getM()));
         });
-        
+
         //System.out.println("Before:");
         /*assignments.forEach((a) -> {
             System.out.println(a.getM().toString());
         });*/
         // sort the list
         //System.out.println("[evening, incompat, prefPens, unwanted, pairs, type, courseNum, secNum]");
-        
         Collections.sort(assignments, (a, b) -> a.compareTo(b)); // sort the assignments by the priority scheme
-        
+
         /*System.out.println("");
         System.out.println("After:");
         assignments.forEach((a) -> {
@@ -423,7 +421,7 @@ public class InputParser {
     }
 
     /**
-     * generateNonLecture - refactored component of the generateNonLectures
+     * generateNonLecture - component of the generateNonLectures
      * logic, Takes a single 'NonLecture' and places it in its correct location
      * as long as the parent course exists
      *
@@ -446,7 +444,7 @@ public class InputParser {
                         if ("TUT".equals(nlType)) {
                             for (Tutorial t : course.getOpenTuts()) {
                                 if (t.getTutNum().equals(nlNum) && t.getSectionNum() == null) {
-                                    System.out.println("This is a duplicate open tutorial declaration");
+                                    System.out.println("[!NonLecture - duplicate open tutorial declaration]");
                                     return null;
                                 }
                             }
@@ -457,7 +455,7 @@ public class InputParser {
                         } else { // LAB
                             for (Lab l : course.getOpenLabs()) {
                                 if (l.getLabNum().equals(nlNum) && l.getSectionNum() == null) {
-                                    System.out.println("This is a duplicate open lab declaration");
+                                    System.out.println("[!NonLecture - duplicate open lab declaration]");
                                     return null;
                                 }
                             }
@@ -479,40 +477,63 @@ public class InputParser {
                         }
                     }
                     if (s == null) {
+                        System.out.println("[!NonLecture - non existent section]");
                         return null; // section does not exist
                     }
                 }
                 if ("TUT".equals(nlType)) {
                     if (s.getTuts().isEmpty()) {
-                        Tutorial tut = new Tutorial(nlNum, s, false);
+                        Tutorial tut;
+                        if (section.charAt(0) == '9') {
+                            tut = new Tutorial(nlNum, s, true);
+                        } else {
+                            tut = new Tutorial(nlNum, s, false);
+                        }
                         s.addTutorial(tut);
-                        return tut; // TODO need to revisit setting of evening
+                        return tut; 
                     } else {
                         for (Tutorial t : s.getTuts()) {
                             if (t.getTutNum().equals(nlNum)) {
                                 //this is a duplicate declaration of a tutorial
+                                System.out.println("[!NonLecture - duplicate tutorial declaration]");
                                 return null;
                             } else {
-                                Tutorial tut = new Tutorial(nlNum, s, false);
+                                Tutorial tut;
+                                if (section.charAt(0) == '9') {
+                                    tut = new Tutorial(nlNum, s, true);
+                                } else {
+                                    tut = new Tutorial(nlNum, s, false);
+                                }
                                 s.addTutorial(tut);
-                                return tut; // TODO need to revisit setting of evening
+                                return tut; 
                             }
                         }
                     }
                 } else {
                     if (s.getLabs().isEmpty()) {
-                        Lab lab = new Lab(nlNum, s, false);
+                        Lab lab;
+                        if (section.charAt(0) == '9') {
+                            lab = new Lab(nlNum, s, true);
+                        } else {
+                            lab = new Lab(nlNum, s, false);
+                        }
                         s.addLab(lab);
-                        return lab; // TODO need to revisit setting of evening
+                        return lab; 
                     } else {
                         for (Lab l : s.getLabs()) {
                             if (l.getLabNum().equals(nlNum)) {
                                 //this is a duplicate declaration of a lab
+                                System.out.println("[!NonLecture - duplicate lab declaration]");
                                 return null;
                             } else {
-                                Lab lab = new Lab(nlNum, s, false);
+                                Lab lab;
+                                if (section.charAt(0) == '9') {
+                                    lab = new Lab(nlNum, s, true);
+                                } else {
+                                    lab = new Lab(nlNum, s, false);
+                                }
                                 s.addLab(lab);
-                                return lab; // TODO need to revisit setting of evening
+                                return lab; 
                             }
                         }
                     }
@@ -520,6 +541,7 @@ public class InputParser {
 
             }
         }
+        System.out.println("[!NonLecture - invalid non lecture declaration]");
         return null; // could not match a course with same dept or number, so ignore
     }
 
