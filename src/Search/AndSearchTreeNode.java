@@ -24,7 +24,7 @@ public class AndSearchTreeNode {
 	
 	private Schedule state;
 	private AndSearchTreeNode parent;
-	private ArrayList<AndSearchTreeNode> subTree;
+	private ArrayList<AndSearchTreeNode> children;
 	private int eValue = 1000000000;
 	private boolean isSolved;
 	
@@ -51,11 +51,11 @@ public class AndSearchTreeNode {
 	}
 	
 	public boolean hasChildren() {
-		return (this.subTree.isEmpty());
+		return (!this.children.isEmpty());
 	}
 	
 	public ArrayList<AndSearchTreeNode> getSubTree() {
-		return this.subTree;
+		return this.children;
 	}
 	
 	public AndSearchTreeNode getParent() {
@@ -68,7 +68,7 @@ public class AndSearchTreeNode {
 	
 	public void addChild(Schedule state) {
 		AndSearchTreeNode child = new AndSearchTreeNode(state, this);
-		this.subTree.add(child);
+		this.children.add(child);
 	}
 
 	//To bound the branch call this function
