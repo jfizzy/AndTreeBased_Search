@@ -30,7 +30,7 @@ public class Eval {
 	 * 				- returns the eval without actually adding the assignment
 	 * 
 	 * 				To use weights, add them to the end of the parameters
-	 * 				e.g. schedulemanager.evalWith(assignment, 0.5, 1.5, 10, 0);
+	 * 				e.g. schedule.evalWith(assignment, 0.5, 1.5, 10, 0);
 	 * 
 	 * Otherwise:
 	 * 
@@ -333,7 +333,6 @@ public class Eval {
 				// for each other section in the course
 				for (int j = i+1; j < nsections; j++) {
 					
-					//if (i == j) continue;	// skip if same section
 					Lecture l2 = c.getSections().get(j).getLecture();
 				
 					// for each assignment in the schedule
@@ -363,7 +362,7 @@ public class Eval {
 	}
 	
     /*
-     * Getters, setters, adders
+     * Getters, setters
      * 
      */
 	
@@ -472,5 +471,92 @@ public class Eval {
 	 */
 	public double getSecDiffWeight() {
 		return wSecDiff;
+	}
+	
+	/**
+	 * Sets the penalty values for the different evaluations
+	 * 
+	 * @param cmin pen_coursemin
+	 * @param lmin pen_labmin
+	 * @param pair pen_notpaired
+	 * @param secdiff pen_section
+	 */
+	public void setPenalties(double cmin, double lmin, double pair, double secdiff) {
+		pen_coursemin = cmin;
+		pen_labmin = lmin;
+		pen_notpaired = pair;
+		pen_section = secdiff;
+	}
+	
+	/**
+	 * Set penalty for coursemin
+	 * 
+	 * @param p Penalty
+	 */
+	public void setCourseMinPenalty(double p) {
+		pen_coursemin = p;
+	}	
+	
+	/**
+	 * Set penalty for labmin
+	 * 
+	 * @param p Penalty
+	 */
+	public void setLabMinPenalty(double p) {
+		pen_labmin = p;
+	}
+	
+	/**
+	 * Set penalty for pairs
+	 * 
+	 * @param p Penalty
+	 */
+	public void setPairPenalty(double p) {
+		pen_notpaired = p;
+	}
+	
+	/**
+	 * Set penalty for section difference
+	 * 
+	 * @param p Penalty
+	 */
+	public void setSecDiffPenalty(double p) {
+		pen_section = p;
+	}
+	
+	/**
+	 * Get course min penalty
+	 * 
+	 * @return Penalty
+	 */
+	public double getCourseMinPenalty() {
+		return pen_coursemin;
+	}
+	
+	/**
+	 * Get lab min penalty
+	 * 
+	 * @return Penalty
+	 */
+	public double getLabMinPenalty() {
+		return pen_labmin;
+	}
+	
+	/**
+	 * Get pair penalty
+	 * 
+	 * @return Penalty
+	 */
+	public double getPairPenalty() {
+		return pen_notpaired;
+	}
+	
+	/**
+	 * Get section difference penalty
+	 * 
+	 * @return Penalty
+	 */
+	public double getSecDiffPenalty() {
+		return pen_section;
 	}
 }

@@ -27,7 +27,7 @@ import Schedule.*;
 import Search.Eval;
 
 /**
- * @author 
+ * JUnit test class for Eval
  *
  */
 public class EvalTests {

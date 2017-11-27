@@ -26,7 +26,7 @@ import Search.Constr;
 
 
 /**
- * @author 
+ * JUnit test class for Constr
  *
  */
 public class ConstrTests {
