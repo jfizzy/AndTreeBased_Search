@@ -34,6 +34,8 @@ public class Node {
     private boolean solEntry;
     private final ArrayList<Node> children;
     private Node parent;
+    
+    private String id;
 
     /**
      * Constructor for root node
@@ -45,6 +47,7 @@ public class Node {
         solEntry = false;
         children = new ArrayList<>();
         parent = null;
+        id = "R";
     }
     
     /**
@@ -74,7 +77,7 @@ public class Node {
         }
         
         // generate children if we didn't yet for this node
-        if (children.size() == 0) {
+        if (children.size() == 0 && !this.isSolved()) {
 	        if (start.getM() instanceof Lecture) { // lecture
 	            Lecture l = (Lecture) start.getM();
 	            
@@ -127,16 +130,20 @@ public class Node {
 	        	
 	        	// if no unsolved branches return to parent
 	        	if (choice == null) {
+	        		//System.out.println("x "+depth);
 	        		this.setSolved();
-	        		//children.clear();
+	        		children.clear();
 	        		return null;
 	        	}
 	
 	        	// recurse search on chosen child node
 	        	// if result is null we will loop to the next choice
 	        	result = choice.runSearch(true, depth+1);
-	        	if (result == null)
+	        	if (result == null) {
 	        		choice.setSolved();
+	        		children.remove(choice);
+	        		System.out.println("- "+depth);
+	        	}
         	}
         		
         	return result;
