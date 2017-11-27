@@ -28,8 +28,8 @@ import Schedule.Schedule;
 		//     (final solution = lowest Eval leaf)
 
 public class SearchProcess {
-	private AndSearchTreeNode root;
-	private AndSearchTreeNode current;
+	private Node root;
+	private Node current;
 	private Schedule state;
 	private int bestW = -1;
 	private Meeting toAdd;
@@ -37,7 +37,7 @@ public class SearchProcess {
 	public SearchProcess(Schedule state) {
 		this.state = state;
 		//Create the root node
-		root = new AndSearchTreeNode(state);
+		root = new RootNode(state);
 		//pointer to the current node
 		current = root;
 	}
