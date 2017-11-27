@@ -45,7 +45,6 @@ public class AssignmentPriority{
         // check preference penalties
         this.preferencePenaltySum = 0;
         m.getPreferences().forEach((p) -> {
-            System.out.println("preference: "+m.toString()+" @ "+p.getSlot().toString() + " -> "+p.getValue());
             this.preferencePenaltySum= this.preferencePenaltySum + p.getValue();
         });
         
@@ -93,45 +92,27 @@ public class AssignmentPriority{
         }
         // compare number of incompatibilities
         if(ap1.incompatibilities != ap2.incompatibilities){
-            if(ap1.incompatibilities > ap2.incompatibilities)
-                return 1; // ap1 > ap2
-            else
-                return -1; // ap1 < ap2
+            return Integer.compare(ap1.incompatibilities, ap2.incompatibilities);
         }
         // compare sum of preference penalties
         if(ap1.preferencePenaltySum != ap2.preferencePenaltySum){
-            if(ap1.preferencePenaltySum > ap2.preferencePenaltySum)
-                return 1; // ap1 > ap2
-            else
-                return -1; // ap1 < ap2
+            return Integer.compare(ap1.preferencePenaltySum, ap2.preferencePenaltySum);
         }
         // compare num of unwanted
         if(ap1.unwanted != ap2.unwanted){
-            if(ap1.unwanted > ap2.unwanted)
-                return 1; // ap1 > ap2
-            else
-                return -1; // ap1 < ap2
+            return Integer.compare(ap1.unwanted, ap2.unwanted);
         }
         // compare num of pairs
         if(ap1.pairs != ap2.pairs){
-            if(ap1.pairs > ap2.pairs) // compare these backwards
-                return 1; // ap1 > ap2
-            else
-                return -1; // ap1 < ap2
+            return Integer.compare(ap1.pairs, ap2.pairs);
         }
         // compare type
         if(ap1.type != ap2.type){
-            if(ap1.type > ap2.type)
-                return 1; // ap1 > ap2
-            else
-                return -1; // ap1 < ap2
+            return Integer.compare(ap1.type, ap2.type);
         }
         // compare course number
         if(ap1.courseNum != ap2.courseNum){
-            if(ap1.courseNum < ap2.courseNum) // check backwards for coursenum
-                return 1; // ap1 > ap2
-            else
-                return -1; // ap1 < ap2
+            Integer.compare(ap1.courseNum, ap2.courseNum);
         }
         // compare section number
         boolean ap1NoSec = (ap1.courseNum < 1);
@@ -145,10 +126,7 @@ public class AssignmentPriority{
                 return 1; // ap1 > ap2
             }
         }else{ // both have sections
-            if(ap1.secNum < ap2.secNum) // check backwards for secnum
-                return 1; // ap1 > ap2
-            else
-                return -1; // ap1 < ap2
+            return Integer.compare(ap1.secNum, ap2.secNum);
         }
         // tiebreaker - return the left item as better
         return 1;

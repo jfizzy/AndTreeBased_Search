@@ -31,86 +31,72 @@ public class Constr {
 	 * 
 	 * Otherwise:
 	 * 
-	 * Constr c = new Constr(schedule);
-	 * c.check() == true if schedule meets all hard constraints
+	 * Constr.check(schedule) == true if schedule meets all hard constraints
 	 * 
-	 * Constr c = new Constr(assignment, schedule);
-	 * c.check() == true if adding assignment to schedule would meet all hard constraints
+	 * Constr.check(schedule, assignment) == true if adding assignment to schedule 
+	 * 											would meet all hard constraints
 	 * 		--> this does not add the assignment to the schedule
 	 * 
 	 * You can also check individual constraints if you need:
-	 * 		c.checkCourseMax()
-	 * 		c.checkLabMax()
-	 * 		c.checkLabsDifferent()
-	 * 		c.checkNoncompatible()
-	 * 		c.checkPartassign()
-	 * 		c.checkUnwanted()
-	 * 		c.checkEveningClasses()
-	 * 		c.checkOver500Classes()
-	 * 		c.checkSpecificTimes()
-	 * 		c.checkSpecialClasses()
+	 * 		Constr.checkCourseMax(schedule)
+	 * 		Constr.checkLabMax(schedule)
+	 * 		Constr.checkLabsDifferent(schedule)
+	 * 		Constr.checkNoncompatible(schedule)
+	 * 		Constr.checkPartassign(schedule)
+	 * 		Constr.checkUnwanted(schedule)
+	 * 		Constr.checkEveningClasses(schedule)
+	 * 		Constr.checkOver500Classes(schedule)
+	 * 		Constr.checkSpecificTimes(schedule)
+	 * 		Constr.checkSpecialClasses(schedule)
 	 */
-	
-	// the schedule data
-	private Schedule schedule;
-	
-	/**
-	 * Constructor for checking if adding an assignment to a search is valid
-	 * 
-	 * *** Use this to check if an assignment would be valid but WITHOUT 
-	 * actually adding it to the timetable ***
-	 * 
-	 * @param a Assignment
-	 * @param schedule Schedule data
-	 */
-	public Constr(Assignment a, Schedule schedule) {
-		this(new Schedule(a, schedule));
-	}
-
-	/**
-	 * Constructor for checking if a search is valid
-	 * 
-	 * @param schedule Schedule data
-	 */
-	public Constr(Schedule schedule) {
-		this.schedule = schedule;
-	}
 
 	/**
 	 * Check all hard constraints
 	 * 
 	 * @return True if all hard constraints are satisfied
 	 */
-	public boolean check() {
+	public static boolean check(Schedule s) {
 		// TODO reorder by most likely to be violated
-		return checkCourseMax() && checkLabMax() && checkLabsDifferent() && checkNoncompatible() 
-				&& checkPartassign() && checkUnwanted() && checkEveningClasses()
-				&& checkOver500Classes() && checkSpecificTimes() && checkSpecialClasses();
+		return checkCourseMax(s) && checkLabMax(s) && checkLabsDifferent(s) && checkNoncompatible(s) 
+				&& checkPartassign(s) && checkUnwanted(s) && checkEveningClasses(s)
+				&& checkOver500Classes(s) && checkSpecificTimes(s) && checkSpecialClasses(s);
+	}
+	
+	/**
+	 * Check all hard constraints if an assignment was added
+	 * to an existing schedule
+	 * 
+	 * @return True if all hard constraints are satisfied
+	 */
+	public static boolean check(Schedule s1, Assignment a) {
+		
+		Schedule s2 = new Schedule(a, s1);
+		return check(s2);
 	}
 	
 	/**
 	 * Prints which constraints were violated for debugging
 	 */
-	public void printViolations() {
-		if (!checkCourseMax())
+	public static void printViolations(Schedule s) {
+		if (!checkCourseMax(s))
 			System.out.println("Coursemax violated");
-		if (!checkLabMax())
+		if (!checkLabMax(s))
 			System.out.println("Labmax violated");
-		if (!checkLabsDifferent())
+		if (!checkLabsDifferent(s))
 			System.out.println("Labs different from lecture violated");
-		if (!checkNoncompatible())
+		if (!checkNoncompatible(s))
 			System.out.println("Noncompatible violated");
-		if (!checkPartassign())
+		if (!checkPartassign(s))
 			System.out.println("Partassign violated");
-		if (!checkUnwanted())
+		if (!checkUnwanted(s))
 			System.out.println("Unwanted violated");
-		if (!checkEveningClasses())
+		if (!checkEveningClasses(s))
 			System.out.println("Evening classes violated");
-		if (!checkOver500Classes())
+		if (!checkOver500Classes(s))
 			System.out.println("No overlap in >500 courses violated");
-		if (!checkSpecificTimes())
+		if (!checkSpecificTimes(s))
 			System.out.println("Tuesday 11:00 constraint violated");
-		if (!checkSpecialClasses())
+		if (!checkSpecialClasses(s))
 			System.out.println("CPSC 813/913 constraint violated");
 	}
 	
@@ -123,7 +109,7 @@ public class Constr {
 	 * 
 	 * @return True if course max constraint is met
 	 */
-	public boolean checkCourseMax() {
+	public static boolean checkCourseMax(Schedule schedule) {
 		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
@@ -165,7 +151,7 @@ public class Constr {
 	 * 
 	 * @return True if lab max constraint is met
 	 */
-	public boolean checkLabMax() {
+	public static boolean checkLabMax(Schedule schedule) {
 		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
@@ -207,7 +193,7 @@ public class Constr {
 	 * 
 	 * @return True if labs assignment constraint is met
 	 */
-	public boolean checkLabsDifferent() {
+	public static boolean checkLabsDifferent(Schedule schedule) {
 		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
@@ -252,7 +238,7 @@ public class Constr {
 	 * 
 	 * @return True if non-compatible constraint is met
 	 */
-	public boolean checkNoncompatible() {
+	public static boolean checkNoncompatible(Schedule schedule) {
 		/*
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
@@ -303,7 +289,7 @@ public class Constr {
 	 * 
 	 * @return True if partassign constraint is met
 	 */
-	public boolean checkPartassign() {
+	public static boolean checkPartassign(Schedule schedule) {
 		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
@@ -327,7 +313,7 @@ public class Constr {
 	 * 
 	 * @return True if unwanted constraint is met
 	 */
-	public boolean checkUnwanted() {
+	public static boolean checkUnwanted(Schedule schedule) {
 		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
@@ -354,7 +340,7 @@ public class Constr {
 	 * 
 	 * @return True if evening classes constraint is met
 	 */
-	public boolean checkEveningClasses() {
+	public static boolean checkEveningClasses(Schedule schedule) {
 		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
@@ -401,7 +387,7 @@ public class Constr {
 	 * 
 	 * @return True if 500-level constraint is met
 	 */
-	public boolean checkOver500Classes() {
+	public static boolean checkOver500Classes(Schedule schedule) {
 		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
@@ -448,7 +434,7 @@ public class Constr {
 	 * 
 	 * @return True if Tues 11:00 constraint is met
 	 */
-	public boolean checkSpecificTimes() {
+	public static boolean checkSpecificTimes(Schedule schedule) {
 		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
@@ -472,7 +458,7 @@ public class Constr {
 	 * 
 	 * @return True if CPSC813/913 constraint is met
 	 */
-	public boolean checkSpecialClasses() {
+	public static boolean checkSpecialClasses(Schedule schedule) {
 		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {

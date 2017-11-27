@@ -16,6 +16,7 @@ package Input;
 import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,14 +72,16 @@ public class FileExaminer {
 
     /**
      * Initialize the file examiner
+     * @throws java.io.FileNotFoundException
      */
-    public void init() {
+    public void init() throws FileNotFoundException {
         try {
-            f = new File(fp);
-            br = new BufferedReader(new FileReader(f));
+            this.f = new File(this.fp);
+            this.br = new BufferedReader(new FileReader(this.f));
 
-        } catch (Exception e) {
-            System.err.println("Problem when initializing input file reader");
+        } catch (FileNotFoundException e) {
+            System.err.println("Could no locate input file");
+            throw e;
         }
     }
 
@@ -149,8 +152,8 @@ public class FileExaminer {
                             partialAssignmentSec = true;
                             break;
                         default:
-                            System.err.println("unrecognized section line");
-                            System.err.println("forcing exit");
+                            //System.out.println("unrecognized section line");
+                            //System.out.println("forcing exit");
                             br.close();
                             return false; // had an unrecognized section
                     }
@@ -219,8 +222,8 @@ public class FileExaminer {
                     }
                 } else { //not one of our line formats
                     //System.out.println("unusable line");
-                    /*System.out.println("Poorly formatted input file");
-                    return false;*/
+                    //System.out.println("Poorly formatted input file");
+                    return false;
                 }
 
             }
