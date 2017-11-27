@@ -145,7 +145,7 @@ public class Schedule {
         
         // make a copy of assignments list and add the new assignment
         assignments = (ArrayList<Assignment>) orig.getAssignments().clone();
-        assignments.add(a);
+        this.updateAssignment(a.getM(), a.getS());
     }
 
     /**
