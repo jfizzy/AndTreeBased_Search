@@ -444,7 +444,7 @@ public class InputParser {
                         if ("TUT".equals(nlType)) {
                             for (Tutorial t : course.getOpenTuts()) {
                                 if (t.getTutNum().equals(nlNum) && t.getSectionNum() == null) {
-                                    System.out.println("This is a duplicate open tutorial declaration");
+                                    System.out.println("[!NonLecture - duplicate open tutorial declaration]");
                                     return null;
                                 }
                             }
@@ -455,7 +455,7 @@ public class InputParser {
                         } else { // LAB
                             for (Lab l : course.getOpenLabs()) {
                                 if (l.getLabNum().equals(nlNum) && l.getSectionNum() == null) {
-                                    System.out.println("This is a duplicate open lab declaration");
+                                    System.out.println("[!NonLecture - duplicate open lab declaration]");
                                     return null;
                                 }
                             }
@@ -477,6 +477,7 @@ public class InputParser {
                         }
                     }
                     if (s == null) {
+                        System.out.println("[!NonLecture - non existent section]");
                         return null; // section does not exist
                     }
                 }
@@ -489,11 +490,12 @@ public class InputParser {
                             tut = new Tutorial(nlNum, s, false);
                         }
                         s.addTutorial(tut);
-                        return tut; // TODO need to revisit setting of evening
+                        return tut; 
                     } else {
                         for (Tutorial t : s.getTuts()) {
                             if (t.getTutNum().equals(nlNum)) {
                                 //this is a duplicate declaration of a tutorial
+                                System.out.println("[!NonLecture - duplicate tutorial declaration]");
                                 return null;
                             } else {
                                 Tutorial tut;
@@ -503,7 +505,7 @@ public class InputParser {
                                     tut = new Tutorial(nlNum, s, false);
                                 }
                                 s.addTutorial(tut);
-                                return tut; // TODO need to revisit setting of evening
+                                return tut; 
                             }
                         }
                     }
@@ -516,11 +518,12 @@ public class InputParser {
                             lab = new Lab(nlNum, s, false);
                         }
                         s.addLab(lab);
-                        return lab; // TODO need to revisit setting of evening
+                        return lab; 
                     } else {
                         for (Lab l : s.getLabs()) {
                             if (l.getLabNum().equals(nlNum)) {
                                 //this is a duplicate declaration of a lab
+                                System.out.println("[!NonLecture - duplicate lab declaration]");
                                 return null;
                             } else {
                                 Lab lab;
@@ -530,7 +533,7 @@ public class InputParser {
                                     lab = new Lab(nlNum, s, false);
                                 }
                                 s.addLab(lab);
-                                return lab; // TODO need to revisit setting of evening
+                                return lab; 
                             }
                         }
                     }
@@ -538,6 +541,7 @@ public class InputParser {
 
             }
         }
+        System.out.println("[!NonLecture - invalid non lecture declaration]");
         return null; // could not match a course with same dept or number, so ignore
     }
 
