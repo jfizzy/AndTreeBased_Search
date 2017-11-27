@@ -138,4 +138,27 @@ public class Section {
     	return this.evening;
     }
     
+    public String toString()
+    {
+        // Lecture data:
+        String lecString = lecture.toString();
+        lecString.concat("\n");
+        
+        //Tutorial's data:
+        String tutString = "";
+        for(Tutorial t : this.tuts)
+        {
+            tutString.concat(t.toString() + "\n");
+        }
+        
+        //Lab data:
+        String labString = "";
+        for (Lab l : this.labs)
+        {
+            labString.concat(l.toString() + "\n");
+        }
+        
+        return (lecString + tutString + labString);
+    }
+    
 }

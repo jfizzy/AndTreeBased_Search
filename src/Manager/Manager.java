@@ -74,7 +74,7 @@ class Manager {
     }
 
     private static void usage() { // TODO make this clearer
-        System.out.println("Acceptable args are: inputfile [weight] [weight] [weight] [weight]");
+        System.out.println("Acceptable args are: inputfile [weight] [weight] [weight] [weight] [weight]");
         exit();
     }
 
