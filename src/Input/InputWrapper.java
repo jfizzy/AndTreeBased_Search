@@ -20,6 +20,7 @@ import java.util.ArrayList;
  *
  */
 public class InputWrapper {
+
     ArrayList<String> lectureSlotLines;
     ArrayList<String> nonlectureSlotLines;
     ArrayList<String> lectureLines;
@@ -29,11 +30,11 @@ public class InputWrapper {
     ArrayList<String> preferencesLines;
     ArrayList<String> pairLines;
     ArrayList<String> partialAssignmentLines;
-    
+
     /**
      * Constructor
      */
-    public InputWrapper(){
+    public InputWrapper() {
         lectureSlotLines = new ArrayList<>();
         nonlectureSlotLines = new ArrayList<>();
         lectureLines = new ArrayList<>();
@@ -43,5 +44,9 @@ public class InputWrapper {
         preferencesLines = new ArrayList<>();
         pairLines = new ArrayList<>();
         partialAssignmentLines = new ArrayList<>();
+    }
+
+    public boolean hasContent() {
+        return !lectureSlotLines.isEmpty() && !nonlectureSlotLines.isEmpty() && !lectureLines.isEmpty() && !nonlectureLines.isEmpty() && !notCompatibleLines.isEmpty() && !unwantedLines.isEmpty() && !preferencesLines.isEmpty() && !pairLines.isEmpty() && !partialAssignmentLines.isEmpty();
     }
 }

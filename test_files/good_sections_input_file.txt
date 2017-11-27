@@ -1,0 +1,19 @@
+Name:
+
+Course slots:
+
+Lab slots:
+
+Courses:
+
+Labs:
+
+Not compatible:
+
+Unwanted:
+
+Preferences:
+
+Pair:
+
+Partial assignments:
