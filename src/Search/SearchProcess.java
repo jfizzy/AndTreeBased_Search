@@ -40,9 +40,9 @@ public class SearchProcess {
     public Schedule run() {
         //first thing to do is find a valid solution to base future eval judgments on
         //inside while loop until the solution is found
-        if(Constr.check(this.schedule)){
+        if(Constr.check(schedule)){
             // ( ✧≖ ͜ʖ≖)
-            Schedule optimalSchedule = this.rootNode.initSearch(this.boundVal); // this is the money function!
+            Schedule optimalSchedule = rootNode.initSearch(); // this is the money function!
             // (͡o‿O͡)
             optimalSchedule.printAssignments();
             return optimalSchedule;
@@ -52,10 +52,16 @@ public class SearchProcess {
         }
     }
 
+    /**
+     * 
+     */
     private void findFirst() {
         //TODO find the first valid solution
     }
 
+    /**
+     * 
+     */
     private void improve() {
         //TODO improve upon the first solution
     }

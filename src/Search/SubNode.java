@@ -14,14 +14,27 @@ import Schedule.Schedule;
 public class SubNode extends Node {
 
     private final Node parentNode;
+    private int evalValue;
     
+    /**
+     * @param s
+     * @param parentNode
+     */
     public SubNode(Schedule s, Node parentNode) {
         super(s);
         this.parentNode = parentNode;
+        evalValue = s.eval();
     }
 
+    /**
+     * @return
+     */
     public Node getParentNode() {
         return parentNode;
+    }
+    
+    public int eval() {
+    	return evalValue;
     }
     
      // TODO add some subnode specific functions here

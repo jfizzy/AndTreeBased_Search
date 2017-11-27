@@ -44,20 +44,18 @@ public class SearchManager {
      * Run the search
      */
     public void run() {
-        // print the assignments
-        this.schedule.printAssignments();
 
-        // check if valid (meets hard constraints)
-        Constr.printViolations(this.schedule);
-
-        // print eval breakdown
-        Eval.printBreakdown(this.schedule);
-
+    	// find the best solution
         if (schedule.isValid()) {
-            SearchProcess sp = new SearchProcess(this.schedule);
-            Schedule sol = sp.run(); // find the best solution
+            SearchProcess sp = new SearchProcess(schedule);
+            Schedule sol = sp.run(); 
         }
 
+        // check if valid (meets hard constraints)
+        Constr.printViolations(schedule);
+
+        // print eval breakdown
+        Eval.printBreakdown(schedule);
     }
 
     /**
@@ -91,7 +89,7 @@ public class SearchManager {
                     Assignment a = new Assignment(l, slot);
 
                     // add the assignment, checking if it is valid
-                    if (Constr.check(this.schedule, a)) {
+                    if (Constr.check(this.schedule, l, slot)) {
                         schedule.addAssignment(a);
                         break;
                     }
@@ -116,7 +114,7 @@ public class SearchManager {
                 Assignment a = new Assignment(nl, slot);
 
                 // add the assignment, checking if it is valid
-                if (Constr.check(this.schedule, a)) {
+                if (Constr.check(this.schedule, nl, slot)) {
                     schedule.addAssignment(a);
                     break;
                 }
