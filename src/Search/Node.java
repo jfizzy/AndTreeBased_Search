@@ -33,14 +33,30 @@ public class Node {
     private Schedule schedule;
     private boolean solEntry;
     private final ArrayList<Node> children;
+    private Node parent;
 
     /**
+     * Constructor for root node
+     * 
      * @param s
      */
     public Node(Schedule s) {
         schedule = s;
         solEntry = false;
         children = new ArrayList<>();
+        parent = null;
+    }
+    
+    /**
+     * Constructor for child nodes
+     * 
+     * @param s
+     */
+    public Node(Schedule s, Node n) {
+        schedule = s;
+        solEntry = false;
+        children = new ArrayList<>();
+        parent = n;
     }
     
     /**
@@ -68,7 +84,7 @@ public class Node {
 	            	if (!ls.isActive()) continue;
 	            	
 	            	if (schedule.isValidWith(l, ls)) {
-	            		this.addChildNode(new SubNode(new Schedule(schedule, l, ls), this));
+	            		this.addChildNode(new Node(new Schedule(schedule, l, ls), this));
 	            	}
 	            }
 	        }
@@ -80,7 +96,7 @@ public class Node {
 	        		if (!nls.isActive()) continue;
 	        		
 	            	if (schedule.isValidWith(nl, nls)) {
-	            		this.addChildNode(new SubNode(new Schedule(schedule, nl, nls), this));
+	            		this.addChildNode(new Node(new Schedule(schedule, nl, nls), this));
 	            	}
 	            }
 	        }
@@ -96,6 +112,7 @@ public class Node {
         	
         	// either result will be set to something non-null
         	// or it will run out of choices and return out of the function
+        	// (so the loop terminates)
         	Schedule result = null;
         	while (result == null) {
         		
@@ -117,7 +134,7 @@ public class Node {
 	
 	        	// recurse search on chosen child node
 	        	// if result is null we will loop to the next choice
-	        	result = choice.runSearch(depthFirst, depth+1);
+	        	result = choice.runSearch(true, depth+1);
 	        	if (result == null)
 	        		choice.setSolved();
         	}
@@ -190,5 +207,19 @@ public class Node {
      */
     public ArrayList<Node> getChildNodes(){
         return this.children;
+    }
+    
+    /**
+     * @param n
+     */
+    public void setParent(Node n) {
+    	parent = n;
+    }
+    
+    /**
+     * @return
+     */
+    public Node getParent() {
+    	return parent;
     }
 }

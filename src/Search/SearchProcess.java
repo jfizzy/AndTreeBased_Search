@@ -20,16 +20,12 @@ import Schedule.Schedule;
 //     (final solution = lowest Eval leaf)
 public class SearchProcess {
 
-    private final RootNode rootNode;
-    private Node currentNode;
+    private final Node rootNode;
     private Schedule schedule;
-    private int boundVal = -1;
-    private Meeting toAdd;
 
     public SearchProcess(Schedule schedule) {
         this.schedule = schedule;
-        this.rootNode = new RootNode(schedule);
-        this.currentNode = this.rootNode;
+        this.rootNode = new Node(schedule);
     }
 
     /**
@@ -38,15 +34,21 @@ public class SearchProcess {
      * @return the solution schedule
      */
     public Schedule run() {
+    	
         //first thing to do is find a valid solution to base future eval judgments on
         //inside while loop until the solution is found
-        if(Constr.check(schedule)){
+    	
+        if (Constr.check(schedule)){
+        	
             // ( ✧≖ ͜ʖ≖)
-            Schedule optimalSchedule = rootNode.initSearch(); // this is the money function!
+            Schedule optimalSchedule = rootNode.runSearch(true, 0); // this is the money function!
+            
             // (͡o‿O͡)
             optimalSchedule.printAssignments();
+            
             return optimalSchedule;
-        }else{
+        }
+        else {
             System.out.println("Not a valid initial schedule");
             return null;
         }
