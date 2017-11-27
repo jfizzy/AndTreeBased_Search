@@ -16,8 +16,6 @@ package Input;
 import Schedule.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import javafx.util.Pair;
 
 /**
  * Class for parsing input from InputWrapper
@@ -74,18 +72,17 @@ public class InputParser {
         prioritizeAssignments(unAssigned);
         // returns unAssigned in the new & improved order
         
-        System.out.println("Already assigned (partial assignment):");
+        /*System.out.println("Already assigned (partial assignment):");
         orderedAssignments.forEach((a)-> {
             System.out.println("assign("+a.getM().toString()+" , "+a.getS().toString()+")");
-        });
+        });*/
         
         unAssigned.forEach((a)-> {
             orderedAssignments.add(a);
         });
         
-        // ordering should be done here
         s.setAssignments(orderedAssignments);
-        System.out.println("Ordering done");
+        //System.out.println("Ordering done");
     }
 
     /**
@@ -102,23 +99,21 @@ public class InputParser {
             a.setAp(new AssignmentPriority(a.getM()));
         });
         
-        System.out.println("Testing sorting:");
-        System.out.println("----------------------------------");
-        System.out.println("Before:");
-        assignments.forEach((a) -> {
+        //System.out.println("Before:");
+        /*assignments.forEach((a) -> {
             System.out.println(a.getM().toString());
-        });
+        });*/
         // sort the list
-        System.out.println("[evening, incompat, prefPens, unwanted, pairs, type, courseNum, secNum]");
+        //System.out.println("[evening, incompat, prefPens, unwanted, pairs, type, courseNum, secNum]");
         
-        Collections.sort(assignments, Assignment.AssignmentComparator); // List<T> list, Comparator<? super T> c
+        Collections.sort(assignments, (a, b) -> a.compareTo(b)); // sort the assignments by the priority scheme
         
-        System.out.println("");
+        /*System.out.println("");
         System.out.println("After:");
         assignments.forEach((a) -> {
             System.out.println(a.getM().toString());
         });
-        System.out.println("----------------------------------");
+        System.out.println("----------------------------------");*/
     }
 
     /**

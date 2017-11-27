@@ -1,7 +1,9 @@
 package Testing;
 
 import Input.FileExaminer;
+import Input.InputParser;
 import Input.InputWrapper;
+import Schedule.Schedule;
 import java.io.FileNotFoundException;
 import static org.junit.Assert.*;
 
@@ -85,5 +87,24 @@ public class InputTests {
         assertTrue(fe.filter());
         
         assertTrue(iw.hasContent());
+    }
+    
+    @Test
+    public void testBasicInputParser() {
+        InputWrapper iw = new InputWrapper();
+        FileExaminer fe = new FileExaminer("test_files/sample_input_3.txt", iw);
+        try{
+            fe.init();
+        }catch(FileNotFoundException e){
+            fail("File not found");
+        }
+        assertTrue(fe.filter());
+        
+        assertTrue(iw.hasContent());
+        
+        InputParser ip = new InputParser();
+        Schedule schedule = ip.run(iw);
+        
+        assertTrue(!schedule.getAssignments().isEmpty());
     }
 }

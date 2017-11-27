@@ -88,6 +88,10 @@ class Manager {
         try{
         InputManager im = new InputManager();
         Schedule schedule = im.run(fp);
+        if(schedule == null){
+            System.out.println("There were invalid lines in the input file.");
+            exit();
+        }
         schedule.getEvalObject().setWeights(w1, w2, w3, w4, w5);
         System.out.println(">>> Done");
         System.out.println(">>> Finding optimal assignments ...");
@@ -103,7 +107,7 @@ class Manager {
      * Exit the program
      */
     private static void exit() {
-        System.out.println("Exiting...");
+        System.out.println(">>> Exiting...");
         System.exit(0);
     }
 }

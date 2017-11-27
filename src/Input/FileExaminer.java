@@ -152,8 +152,8 @@ public class FileExaminer {
                             partialAssignmentSec = true;
                             break;
                         default:
-                            System.err.println("unrecognized section line");
-                            System.err.println("forcing exit");
+                            //System.out.println("unrecognized section line");
+                            //System.out.println("forcing exit");
                             br.close();
                             return false; // had an unrecognized section
                     }
