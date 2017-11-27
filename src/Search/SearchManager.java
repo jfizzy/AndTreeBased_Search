@@ -63,12 +63,10 @@ public class SearchManager {
 		schedule.printAssignments();
 		
 		// print eval breakdown
-		Eval eval = new Eval(schedule);		
-		eval.printBreakdown();
+		Eval.printBreakdown(schedule);
 		
 		// check if valid (meets hard constraints)
-		Constr constr = new Constr(schedule);
-		constr.printViolations();
+		Constr.printViolations(schedule);
 	}
 	
 	/**
@@ -101,8 +99,7 @@ public class SearchManager {
 					Assignment a = new Assignment(l, slot);
 					
 					// add the assignment, checking if it is valid
-					Constr constr = new Constr(a, schedule);
-					if (constr.check()) {
+					if (Constr.check(schedule, a)) {
 						schedule.addAssignment(a);
 						break;
 					}
@@ -127,8 +124,7 @@ public class SearchManager {
 				Assignment a = new Assignment(nl, slot);
 				
 				// add the assignment, checking if it is valid
-				Constr constr = new Constr(a, schedule);
-				if (constr.check()) {
+				if (Constr.check(schedule, a)) {
 					schedule.addAssignment(a);
 					break;
 				}
