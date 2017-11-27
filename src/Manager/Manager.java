@@ -85,21 +85,21 @@ class Manager {
      */
     private static void search(String fp, double w1, double w2, double w3, double w4, double w5) throws FileNotFoundException {
         System.out.println(">>> Reading input file [" + fp + "] and parsing ...");
-        try{
+        //try{
         InputManager im = new InputManager();
         Schedule schedule = im.run(fp);
         if(schedule == null){
             System.out.println("There were invalid lines in the input file.");
             exit();
         }
-        schedule.getEvalObject().setWeights(w1, w2, w3, w4, w5);
+        schedule.setWeights(w1, w2, w3, w4, w5);
         System.out.println(">>> Done");
         System.out.println(">>> Finding optimal assignments ...");
         SearchManager sm = new SearchManager(schedule);
         sm.run();
-        } catch(FileNotFoundException e){
-            throw e;
-        }
+        //} catch(FileNotFoundException e){
+        //    throw e;
+        //}
         System.out.println(">>> Done");
     }
 

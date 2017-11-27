@@ -32,8 +32,21 @@ public class Schedule {
     private ArrayList<Tutorial> tuts;		// list of tutorials (filled from courses)
     private ArrayList<MeetingPair> pairs;			// list of paired courses
     private ArrayList<MeetingPair> noncompatible;	// list of incompatible courses
-    private Eval eval;		// Evaluator object
-    private Constr constr;	// Constraint checking object
+    //private Eval eval;		// Evaluator object
+    //private Constr constr;	// Constraint checking object
+    
+	// penalties
+	private double pen_coursemin;
+	private double pen_labmin;
+	private double pen_notpaired;
+	private double pen_section;
+	
+	// weights
+	private double wCMin;
+	private double wLMin;
+	private double wPref;
+	private double wPair;
+	private double wSecDiff;
 
     /**
      * Default constructor
@@ -48,8 +61,16 @@ public class Schedule {
         tuts = new ArrayList<>();
         pairs = new ArrayList<>();
         noncompatible = new ArrayList<>();
-        eval = new Eval(this);
-        constr = new Constr(this);
+
+        pen_coursemin = 1;
+        pen_labmin = 1;
+        pen_notpaired = 1;
+        pen_section = 1;
+        wCMin = 1;
+        wLMin = 1;
+        wPref = 1;
+        wPair = 1;
+        wSecDiff = 1;
     }
 
     /**
@@ -72,8 +93,6 @@ public class Schedule {
         assignments = new ArrayList<>();
         pairs = new ArrayList<>();
         noncompatible = new ArrayList<>();
-        eval = new Eval(this);
-        constr = new Constr(this);
         
         // process the meetings into lists
         processLectures();
@@ -82,6 +101,16 @@ public class Schedule {
         
         // create assignments list with null slots
         generateAssignments();
+        
+        pen_coursemin = 1;
+        pen_labmin = 1;
+        pen_notpaired = 1;
+        pen_section = 1;
+        wCMin = 1;
+        wLMin = 1;
+        wPref = 1;
+        wPair = 1;
+        wSecDiff = 1;
     }
 
     /**
@@ -102,8 +131,17 @@ public class Schedule {
         tuts = orig.getTuts();
         pairs = orig.getPairs();
         noncompatible = orig.getNoncompatible();
-        eval = new Eval(this);
-        constr = new Constr(this);
+
+        // keep original penalties and weights
+        pen_coursemin = orig.getCourseMinPenalty();
+        pen_labmin = orig.getLabMinPenalty();
+        pen_notpaired = orig.getPairPenalty();
+        pen_section = orig.getSecDiffPenalty();
+        wCMin = orig.getCourseMinWeight();
+        wLMin = orig.getLabMinWeight();
+        wPref = orig.getPrefWeight();
+        wPair = orig.getPairWeight();
+        wSecDiff = orig.getSecDiffWeight();
         
         // make a copy of assignments list and add the new assignment
         assignments = (ArrayList<Assignment>) orig.getAssignments().clone();
@@ -186,21 +224,12 @@ public class Schedule {
     }
     
     /**
-     * Get the Constr object for the schedule
-     * 
-     * @return Constr object
-     */
-    public Constr getConstrObject() {
-    	return this.constr;
-    }
-    
-    /**
      * Checks if the schedule meets all hard constraints
      *
      * @return True if all hard constraints are met
      */
     public boolean isValid() {
-        return constr.check();
+        return Constr.check(this);
     }
 
     /**
@@ -212,17 +241,8 @@ public class Schedule {
      * constraints
      */
     public boolean isValidWith(Assignment a) {
-    	Constr c = new Constr(a, this);
-        return c.check();
-    }
-    
-    /**
-     * Get the Eval object for the schedule
-     * 
-     * @return Eval object
-     */
-    public Eval getEvalObject() {
-    	return this.eval;
+    	//Constr c = new Constr(a, this);
+        return Constr.check(this, a);
     }
 
     /**
@@ -231,22 +251,7 @@ public class Schedule {
      * @return The evaluation of the schedule
      */
     public int eval() {
-        return eval.getEval();
-    }
-
-    /**
-     * Get the evaluation with weights
-     *
-     * @param cmin
-     * @param lmin
-     * @param pref
-     * @param pair
-     * @param secdiff
-     * @return The evaluation of the schedule
-     */
-    public int eval(double cmin, double lmin, double pref, double pair, double secdiff) {
-        Eval e = new Eval(this, cmin, lmin, pref, pair, secdiff);
-        return e.getEval();
+        return Eval.getEval(this);
     }
 
     /**
@@ -256,29 +261,8 @@ public class Schedule {
      * @return The evaluation of the schedule with the assignment
      */
     public int evalWith(Assignment a) {
-        Eval e = new Eval(a, this);
-        e.setWeights(eval.getCourseMinWeight(),
-        			eval.getLabMinWeight(),
-        			eval.getPrefWeight(),
-        			eval.getPairWeight(),
-        			eval.getSecDiffWeight());
-        return e.getEval();
-    }
-
-    /**
-     * Get the evaluation with added assignment and weights
-     *
-     * @param a The assignment
-     * @param cmin
-     * @param lmin
-     * @param pref
-     * @param pair
-     * @param secdiff
-     * @return The evaluation of the schedule with the assignment
-     */
-    public int evalWith(Assignment a, double cmin, double lmin, double pref, double pair, double secdiff) {
-        Eval e = new Eval(a, this, cmin, lmin, pref, pair, secdiff);
-        return e.getEval();
+        //Eval e = new Eval(a, this);
+        return Eval.getEval(this, a);
     }
 
     /**
@@ -597,4 +581,198 @@ public class Schedule {
     public void setNoncompatible(ArrayList<MeetingPair> noncompatible) {
     	this.noncompatible = noncompatible;
     }
+    
+    /**
+	 * Sets the weight values for the different evaluations
+	 * 
+	 * @param cmin
+	 * @param lmin
+	 * @param pref
+	 * @param pair
+	 * @param secdiff
+	 */
+	public void setWeights(double cmin, double lmin, double pref, double pair, double secdiff) {
+		wCMin = cmin;
+		wLMin = lmin;
+		wPref = pref;
+		wPair = pair;
+		wSecDiff = secdiff;
+	}
+	
+	/**
+	 * Set weight for coursemin
+	 * 
+	 * @param weight Weight value
+	 */
+	public void setCourseMinWeight(double weight) {
+		wCMin = weight;
+	}	
+	
+	/**
+	 * Set weight for labmin
+	 * 
+	 * @param weight Weight value
+	 */
+	public void setLabMinWeight(double weight) {
+		wLMin = weight;
+	}
+	
+	/**
+	 * Set weight for preferences
+	 * 
+	 * @param weight Weight value
+	 */
+	public void setPrefWeight(double weight) {
+		wPref = weight;
+	}
+	
+	/**
+	 * Set weight for pairs
+	 * 
+	 * @param weight Weight value
+	 */
+	public void setPairWeight(double weight) {
+		wPair = weight;
+	}
+	
+	/**
+	 * Set weight for section difference
+	 * 
+	 * @param weight Weight value
+	 */
+	public void setSecDiffWeight(double weight) {
+		wSecDiff = weight;
+	}
+	
+	/**
+	 * Get course min weight
+	 * 
+	 * @return Weight value
+	 */
+	public double getCourseMinWeight() {
+		return wCMin;
+	}
+	
+	/**
+	 * Get lab min weight
+	 * 
+	 * @return Weight value
+	 */
+	public double getLabMinWeight() {
+		return wLMin;
+	}
+	
+	/**
+	 * Get preference weight
+	 * 
+	 * @return Weight value
+	 */
+	public double getPrefWeight() {
+		return wPref;
+	}
+	
+	/**
+	 * Get pair weight
+	 * 
+	 * @return Weight value
+	 */
+	public double getPairWeight() {
+		return wPair;
+	}
+	
+	/**
+	 * Get section difference weight
+	 * 
+	 * @return Weight value
+	 */
+	public double getSecDiffWeight() {
+		return wSecDiff;
+	}
+	
+	/**
+	 * Sets the penalty values for the different evaluations
+	 * 
+	 * @param cmin pen_coursemin
+	 * @param lmin pen_labmin
+	 * @param pair pen_notpaired
+	 * @param secdiff pen_section
+	 */
+	public void setPenalties(double cmin, double lmin, double pair, double secdiff) {
+		pen_coursemin = cmin;
+		pen_labmin = lmin;
+		pen_notpaired = pair;
+		pen_section = secdiff;
+	}
+	
+	/**
+	 * Set penalty for coursemin
+	 * 
+	 * @param p Penalty
+	 */
+	public void setCourseMinPenalty(double p) {
+		pen_coursemin = p;
+	}	
+	
+	/**
+	 * Set penalty for labmin
+	 * 
+	 * @param p Penalty
+	 */
+	public void setLabMinPenalty(double p) {
+		pen_labmin = p;
+	}
+	
+	/**
+	 * Set penalty for pairs
+	 * 
+	 * @param p Penalty
+	 */
+	public void setPairPenalty(double p) {
+		pen_notpaired = p;
+	}
+	
+	/**
+	 * Set penalty for section difference
+	 * 
+	 * @param p Penalty
+	 */
+	public void setSecDiffPenalty(double p) {
+		pen_section = p;
+	}
+	
+	/**
+	 * Get course min penalty
+	 * 
+	 * @return Penalty
+	 */
+	public double getCourseMinPenalty() {
+		return pen_coursemin;
+	}
+	
+	/**
+	 * Get lab min penalty
+	 * 
+	 * @return Penalty
+	 */
+	public double getLabMinPenalty() {
+		return pen_labmin;
+	}
+	
+	/**
+	 * Get pair penalty
+	 * 
+	 * @return Penalty
+	 */
+	public double getPairPenalty() {
+		return pen_notpaired;
+	}
+	
+	/**
+	 * Get section difference penalty
+	 * 
+	 * @return Penalty
+	 */
+	public double getSecDiffPenalty() {
+		return pen_section;
+	}
 }
