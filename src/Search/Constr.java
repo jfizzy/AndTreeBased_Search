@@ -68,9 +68,9 @@ public class Constr {
 	 * 
 	 * @return True if all hard constraints are satisfied
 	 */
-	public static boolean check(Schedule s1, Assignment a) {
+	public static boolean check(Schedule s1, Meeting m, Slot s) {
 		
-		Schedule s2 = new Schedule(a, s1);
+		Schedule s2 = new Schedule(s1, m, s);
 		return check(s2);
 	}
 	

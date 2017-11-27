@@ -117,10 +117,11 @@ public class Schedule {
      * Constructor for Constr/Eval
      * (makes a new schedule from the old with an added assignment)
      *
-     * @param a New assignment
+     * @param m
+     * @param s
      * @param orig Original schedule
      */
-    public Schedule(Assignment a, Schedule orig) {
+    public Schedule(Schedule orig, Meeting m, Slot s) {
     	
     	// keep original lists
         lslots = orig.getLectureSlots();
@@ -144,8 +145,11 @@ public class Schedule {
         wSecDiff = orig.getSecDiffWeight();
         
         // make a copy of assignments list and add the new assignment
-        assignments = (ArrayList<Assignment>) orig.getAssignments().clone();
-        this.updateAssignment(a.getM(), a.getS());
+        assignments = new ArrayList<>();
+        for (int i = 0; i < orig.getAssignments().size(); i++) {
+        	assignments.add(new Assignment(orig.getAssignments().get(i)));
+        }
+        this.updateAssignment(m, s);
     }
 
     /**
@@ -209,6 +213,21 @@ public class Schedule {
             assignments.add(new Assignment(t, null));
         });
     }
+    
+    /**
+     * Get the first null assignment
+     * 
+     * @return The assignment or null if all assigned
+     */
+    public Assignment findFirstNull() {
+    	
+    	for (Assignment a : assignments) {
+    		if (a.getS() == null) 
+    			return a;
+    	}
+    	
+    	return null;
+    }
 
     /**
      * @return true if all courses have an assignment, false if there is work left to do
@@ -241,8 +260,30 @@ public class Schedule {
      * constraints
      */
     public boolean isValidWith(Assignment a) {
-    	//Constr c = new Constr(a, this);
-        return Constr.check(this, a);
+        return Constr.check(this, a.getM(), a.getS());
+    }
+    
+    /**
+     * Checks if adding an assignment to the schedule would meet hard
+     * constraints
+     *
+     * @param m
+     * @param s
+     * @return True if the schedule with the assignment meets all hard
+     * constraints
+     */
+    public boolean isValidWith(Meeting m, Slot s) {
+    	//Constr.printViolations(new Schedule(this, m, s));
+        return Constr.check(this, m, s);
+    }
+    
+    /**
+     * @param s
+     * @return
+     */
+    public boolean isValidWith(Slot s) {
+    	Meeting m = findFirstNull().getM();
+    	return Constr.check(this, m, s);
     }
 
     /**
@@ -261,8 +302,18 @@ public class Schedule {
      * @return The evaluation of the schedule with the assignment
      */
     public int evalWith(Assignment a) {
-        //Eval e = new Eval(a, this);
-        return Eval.getEval(this, a);
+        return Eval.getEval(this, a.getM(), a.getS());
+    }
+    
+    /**
+     * Get the evaluation with added assignment without weights
+     * 
+     * @param m
+     * @param s
+     * @return The evaluation of the schedule with the assignment
+     */
+    public int evalWith(Meeting m, Slot s) {
+        return Eval.getEval(this, m, s);
     }
 
     /**
@@ -359,7 +410,7 @@ public class Schedule {
     	}
     	
     	// if we got here meeting was not found, so add it
-    	assignments.add(new Assignment(m, s));
+    	//assignments.add(new Assignment(m, s));
     }
 
     /**

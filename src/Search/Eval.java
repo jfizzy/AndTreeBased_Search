@@ -73,8 +73,8 @@ public class Eval {
 	 * @param a
 	 * @return Total evaluation of search instance
 	 */
-	public static int getEval(Schedule s1, Assignment a) {
-		Schedule s2 = new Schedule(a, s1);
+	public static int getEval(Schedule s1, Meeting m, Slot s) {
+		Schedule s2 = new Schedule(s1, m, s);
 		return getEval(s2);
 	}
 	
