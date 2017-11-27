@@ -67,20 +67,19 @@ public class InputParser {
                 unAssigned.add(a);
             }
         });
-        
+
         // sort all unfilled assignment objects by restrictiveness
         prioritizeAssignments(unAssigned);
         // returns unAssigned in the new & improved order
-        
+
         /*System.out.println("Already assigned (partial assignment):");
         orderedAssignments.forEach((a)-> {
             System.out.println("assign("+a.getM().toString()+" , "+a.getS().toString()+")");
         });*/
-        
-        unAssigned.forEach((a)-> {
+        unAssigned.forEach((a) -> {
             orderedAssignments.add(a);
         });
-        
+
         s.setAssignments(orderedAssignments);
         //System.out.println("Ordering done");
     }
@@ -98,16 +97,15 @@ public class InputParser {
         assignments.forEach((a) -> {
             a.setAp(new AssignmentPriority(a.getM()));
         });
-        
+
         //System.out.println("Before:");
         /*assignments.forEach((a) -> {
             System.out.println(a.getM().toString());
         });*/
         // sort the list
         //System.out.println("[evening, incompat, prefPens, unwanted, pairs, type, courseNum, secNum]");
-        
         Collections.sort(assignments, (a, b) -> a.compareTo(b)); // sort the assignments by the priority scheme
-        
+
         /*System.out.println("");
         System.out.println("After:");
         assignments.forEach((a) -> {
@@ -423,7 +421,7 @@ public class InputParser {
     }
 
     /**
-     * generateNonLecture - refactored component of the generateNonLectures
+     * generateNonLecture - component of the generateNonLectures
      * logic, Takes a single 'NonLecture' and places it in its correct location
      * as long as the parent course exists
      *
@@ -484,7 +482,12 @@ public class InputParser {
                 }
                 if ("TUT".equals(nlType)) {
                     if (s.getTuts().isEmpty()) {
-                        Tutorial tut = new Tutorial(nlNum, s, false);
+                        Tutorial tut;
+                        if (section.charAt(0) == '9') {
+                            tut = new Tutorial(nlNum, s, true);
+                        } else {
+                            tut = new Tutorial(nlNum, s, false);
+                        }
                         s.addTutorial(tut);
                         return tut; // TODO need to revisit setting of evening
                     } else {
@@ -493,7 +496,12 @@ public class InputParser {
                                 //this is a duplicate declaration of a tutorial
                                 return null;
                             } else {
-                                Tutorial tut = new Tutorial(nlNum, s, false);
+                                Tutorial tut;
+                                if (section.charAt(0) == '9') {
+                                    tut = new Tutorial(nlNum, s, true);
+                                } else {
+                                    tut = new Tutorial(nlNum, s, false);
+                                }
                                 s.addTutorial(tut);
                                 return tut; // TODO need to revisit setting of evening
                             }
@@ -501,7 +509,12 @@ public class InputParser {
                     }
                 } else {
                     if (s.getLabs().isEmpty()) {
-                        Lab lab = new Lab(nlNum, s, false);
+                        Lab lab;
+                        if (section.charAt(0) == '9') {
+                            lab = new Lab(nlNum, s, true);
+                        } else {
+                            lab = new Lab(nlNum, s, false);
+                        }
                         s.addLab(lab);
                         return lab; // TODO need to revisit setting of evening
                     } else {
@@ -510,7 +523,12 @@ public class InputParser {
                                 //this is a duplicate declaration of a lab
                                 return null;
                             } else {
-                                Lab lab = new Lab(nlNum, s, false);
+                                Lab lab;
+                                if (section.charAt(0) == '9') {
+                                    lab = new Lab(nlNum, s, true);
+                                } else {
+                                    lab = new Lab(nlNum, s, false);
+                                }
                                 s.addLab(lab);
                                 return lab; // TODO need to revisit setting of evening
                             }
