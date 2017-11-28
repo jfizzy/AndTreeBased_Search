@@ -275,6 +275,9 @@ public class InputParser {
             } else if (m == null) {
                 System.out.println("Could not find the meeting");
             } else {
+                if(m.getUnwanted().contains(s)){
+                    System.out.println("[!Unwanted - duplicate unwanted declaration]");
+                }
                 m.addUnwanted(s); // set it
                 System.out.println("[Unwanted - " + m.toString() + " & " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + "]");
             }
@@ -302,10 +305,16 @@ public class InputParser {
             r = ScheduleUtils.findMeeting(courses, right);
 
             if (l != null && r != null) { // if both are found
-                l.addIncompatibility(r); // give them 
-                r.addIncompatibility(l); // the same incompatibility
-                result.add(new MeetingPair(l, r));
-                System.out.println("[Not compatible - " + l.toString() + " =/= " + r.toString() + "]");
+                // check for duplicate
+                if (l.getIncompatibility().contains(r) && r.getIncompatibility().contains(l)) {
+                    // duplicate incompatibility
+                    System.out.println("[!Not compatible - duplicate declaration of incompatibility]");
+                } else {
+                    l.addIncompatibility(r); // give them 
+                    r.addIncompatibility(l); // the same incompatibility
+                    result.add(new MeetingPair(l, r));
+                    System.out.println("[Not compatible - " + l.toString() + " =/= " + r.toString() + "]");
+                }
             } else {
                 System.out.println("[!Not compatible - could not find at least one meeting]");
             }
@@ -322,62 +331,85 @@ public class InputParser {
      */
     private ArrayList<Course> generateSections() {
         ArrayList<Course> courses = new ArrayList<>();
-        for (String line : iw.lectureLines) {
-            String[] parts = line.split("\\s+"); // split on whitespace
+        iw.lectureLines.stream().map((line) -> line.split("\\s+")).forEachOrdered((parts) -> {
+            // split on whitespace
             String dept = parts[0];
             String courseNum = parts[1];
             // index two is of no use to us
             String sectionString = parts[3];
-            boolean added = false;
-            for (Course c : courses) {
-                if (dept.equals(c.getDepartment())) { // same dept
-                    if (courseNum.equals(c.getNumber())) { // same num
-                        for (Section s : c.getSections()) {
-                            if (sectionString.equals(s.getSectionNum())) {
-                                // we have two Lectures for same section
-                                // this means input file is invalid
-                                return null;
-                            }
-                        }
+            generateSection(dept, courseNum, sectionString, courses);
+        });
+        return courses;
+    }
 
-                        // Check if lecture section is an Evening section
-                        if (sectionString.charAt(0) == '9') {
-                            c.addSection(new Section(c, sectionString, true));
-                        } else {
-                            c.addSection(new Section(c, sectionString, false));
+    private Section generateSection(String dept, String courseNum, String section, ArrayList<Course> courses) {
+        boolean existingDept = false;
+        for (Course c : courses) {
+            if (dept.equals(c.getDepartment())) { // same dept
+                existingDept = true;
+                //System.out.println("same dept");
+                //System.out.println("course nums = " + courseNum + " & " + c.getNumber());
+                if (Integer.parseInt(courseNum) == Integer.parseInt(c.getNumber())) { // same num
+                    //System.out.println("Same number");
+                    //System.out.println("num sections: " + c.getSections().size());
+                    for (Section s : c.getSections()) { // iterate sections
+                        if (section.equals(s.getSectionNum())) {
+                            // we have two Lectures for same section
+                            // this means input file is invalid
+                            System.out.println("[!Course Section - duplicate section declaration]");
+                            return null;
                         }
-                        System.out.println("[Added Course Section - " + dept + " " + courseNum + " LEC " + sectionString + "]");
-                        added = true;
-                        break;
                     }
-
-                    // Checks if Course is an "evening" course, then instantiates the course.
-                    if (sectionString.charAt(0) == '9') {
-                        // Instantiate a course that is an evening course.
-                        courses.add(new Course(c.getDepartment(), courseNum, sectionString, true));
+                    // Check if lecture section is an Evening section
+                    Section s;
+                    if (section.charAt(0) == '9') {
+                        s = new Section(c, section, true);
+                        c.addSection(s);
+                        System.out.println("[Added Course Section - " + dept + " " + courseNum + " LEC " + section + " (evening)]");
                     } else {
-                        //Instantiate a course that is NOT an evening course.
-                        courses.add(new Course(c.getDepartment(), courseNum, sectionString, false));
+                        s = new Section(c, section, false);
+                        c.addSection(s);
+                        System.out.println("[Added Course Section - " + dept + " " + courseNum + " LEC " + section + "]");
                     }
-
-                    System.out.println("[Added Course - " + dept + " " + courseNum + " LEC " + sectionString + "]");
-                    added = true;
-                    break;
+                    return s;
                 }
-            }
-            // Check !added: True if there is no course sharing this department, and so a course needs to be created for it first. 
-            if (!added) {
-                // Instantiate a course that is an evening course.
-                if (sectionString.charAt(0) == '9') {
-                    courses.add(new Course(dept, courseNum, sectionString, true));
-                } // Instantiate a course that is NOT an evening course.
-                else {
-                    courses.add(new Course(dept, courseNum, sectionString, false));
-                }
-                System.out.println("[Added Course and Dept - " + dept + " " + courseNum + " LEC " + sectionString + "]");
             }
         }
-        return courses;
+        Section s;
+        if (existingDept) {
+            // Checks if Course is an "evening" course, then instantiates the course.
+            Course c;
+            if (section.charAt(0) == '9') {
+                // Instantiate a course that is an evening course.
+                c = new Course(dept, courseNum, section, true);
+                courses.add(c);
+                s = c.getSections().get(0);
+                System.out.println("[Added Course - " + dept + " " + courseNum + " LEC " + section + " (evening)]");
+            } else {
+                //Instantiate a course that is NOT an evening course.
+                c = new Course(dept, courseNum, section, false);
+                courses.add(c);
+                s = c.getSections().get(0);
+                System.out.println("[Added Course - " + dept + " " + courseNum + " LEC " + section + "]");
+            }
+        } else {
+            // Instantiate a course that is an evening course.
+            Course c;
+            if (section.charAt(0) == '9') {
+                c = new Course(dept, courseNum, section, true);
+                courses.add(c);
+                s = c.getSections().get(0);
+                System.out.println("[Added Course and Dept - " + dept + " " + courseNum + " LEC " + section + " (evening)]");
+            } // Instantiate a course that is NOT an evening course.
+            else {
+                c = new Course(dept, courseNum, section, false);
+                courses.add(c);
+                s = c.getSections().get(0);
+                System.out.println("[Added Course and Dept - " + dept + " " + courseNum + " LEC " + section + "]");
+            }
+
+        }
+        return s;
     }
 
     /**
@@ -421,9 +453,9 @@ public class InputParser {
     }
 
     /**
-     * generateNonLecture - component of the generateNonLectures
-     * logic, Takes a single 'NonLecture' and places it in its correct location
-     * as long as the parent course exists
+     * generateNonLecture - component of the generateNonLectures logic, Takes a
+     * single 'NonLecture' and places it in its correct location as long as the
+     * parent course exists
      *
      * @param dept
      * @param courseNum
@@ -470,6 +502,8 @@ public class InputParser {
                         return null; // no sections exist
                     }
                 } else {
+                    //System.out.println("finding sections of " + course.getDepartment() + " " + course.getNumber());
+                    //System.out.println("num: " + course.getSections().size());
                     for (Section sec : course.getSections()) {
                         if (sec.getSectionNum().equals(section)) {
                             s = sec;
@@ -483,14 +517,9 @@ public class InputParser {
                 }
                 if ("TUT".equals(nlType)) {
                     if (s.getTuts().isEmpty()) {
-                        Tutorial tut;
-                        if (section.charAt(0) == '9') {
-                            tut = new Tutorial(nlNum, s, true);
-                        } else {
-                            tut = new Tutorial(nlNum, s, false);
-                        }
+                        Tutorial tut = new Tutorial(nlNum, s, false);
                         s.addTutorial(tut);
-                        return tut; 
+                        return tut;
                     } else {
                         for (Tutorial t : s.getTuts()) {
                             if (t.getTutNum().equals(nlNum)) {
@@ -498,27 +527,17 @@ public class InputParser {
                                 System.out.println("[!NonLecture - duplicate tutorial declaration]");
                                 return null;
                             } else {
-                                Tutorial tut;
-                                if (section.charAt(0) == '9') {
-                                    tut = new Tutorial(nlNum, s, true);
-                                } else {
-                                    tut = new Tutorial(nlNum, s, false);
-                                }
+                                Tutorial tut = new Tutorial(nlNum, s, false);
                                 s.addTutorial(tut);
-                                return tut; 
+                                return tut;
                             }
                         }
                     }
                 } else {
                     if (s.getLabs().isEmpty()) {
-                        Lab lab;
-                        if (section.charAt(0) == '9') {
-                            lab = new Lab(nlNum, s, true);
-                        } else {
-                            lab = new Lab(nlNum, s, false);
-                        }
+                        Lab lab = new Lab(nlNum, s, false);
                         s.addLab(lab);
-                        return lab; 
+                        return lab;
                     } else {
                         for (Lab l : s.getLabs()) {
                             if (l.getLabNum().equals(nlNum)) {
@@ -526,14 +545,9 @@ public class InputParser {
                                 System.out.println("[!NonLecture - duplicate lab declaration]");
                                 return null;
                             } else {
-                                Lab lab;
-                                if (section.charAt(0) == '9') {
-                                    lab = new Lab(nlNum, s, true);
-                                } else {
-                                    lab = new Lab(nlNum, s, false);
-                                }
+                                Lab lab = new Lab(nlNum, s, false);
                                 s.addLab(lab);
-                                return lab; 
+                                return lab;
                             }
                         }
                     }
