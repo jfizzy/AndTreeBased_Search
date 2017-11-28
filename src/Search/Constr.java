@@ -56,10 +56,11 @@ public class Constr {
 	 * @return True if all hard constraints are satisfied
 	 */
 	public static boolean check(Schedule s) {
-		// TODO reorder by most likely to be violated
-		return checkCourseMax(s) && checkLabMax(s) && checkLabsDifferent(s) && checkNoncompatible(s) 
-				&& checkPartassign(s) && checkUnwanted(s) && checkEveningClasses(s)
-				&& checkOver500Classes(s) && checkSpecificTimes(s) && checkSpecialClasses(s);
+		// TODO reorder by most likely to be violated/running time cost
+		return checkEveningClasses(s) && checkSpecificTimes(s) && checkPartassign(s) 
+				&& checkUnwanted(s) && checkCourseMax(s) && checkLabMax(s) 
+				&& checkLabsDifferent(s) && checkNoncompatible(s)
+				&& checkOver500Classes(s) && checkSpecialClasses(s);
 	}
 	
 	/**

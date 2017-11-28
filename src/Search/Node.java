@@ -33,14 +33,36 @@ public class Node {
     private Schedule schedule;
     private boolean solEntry;
     private final ArrayList<Node> children;
+    private Node parent;
+    private Assignment start;
+    private String id;
 
     /**
+     * Constructor for root node
+     * 
      * @param s
      */
     public Node(Schedule s) {
         schedule = s;
         solEntry = false;
         children = new ArrayList<>();
+        parent = null;
+        start = schedule.findFirstNull();
+        id = "ROOT";
+    }
+    
+    /**
+     * Constructor for child nodes
+     * 
+     * @param s
+     */
+    public Node(Schedule s, Node n, String id) {
+        schedule = s;
+        solEntry = false;
+        children = new ArrayList<>();
+        parent = n;
+        start = schedule.findFirstNull();
+        this.id = id;
     }
     
     /**
@@ -51,14 +73,13 @@ public class Node {
     	//schedule.printAssignments();
     	
     	// pick the first null assignment
-        Assignment start = schedule.findFirstNull();
         if (start == null || schedule.isComplete()) {
             System.out.println("the schedule is full!");
             return schedule;
         }
         
         // generate children if we didn't yet for this node
-        if (children.size() == 0) {
+        if (children.size() == 0 && !this.isSolved()) {
 	        if (start.getM() instanceof Lecture) { // lecture
 	            Lecture l = (Lecture) start.getM();
 	            
@@ -68,7 +89,8 @@ public class Node {
 	            	if (!ls.isActive()) continue;
 	            	
 	            	if (schedule.isValidWith(l, ls)) {
-	            		this.addChildNode(new SubNode(new Schedule(schedule, l, ls), this));
+	            		this.addChildNode(new Node(new Schedule(schedule, l, ls), 
+	            				this, l.toString()+" "+ls.toString()));
 	            	}
 	            }
 	        }
@@ -80,7 +102,8 @@ public class Node {
 	        		if (!nls.isActive()) continue;
 	        		
 	            	if (schedule.isValidWith(nl, nls)) {
-	            		this.addChildNode(new SubNode(new Schedule(schedule, nl, nls), this));
+	            		this.addChildNode(new Node(new Schedule(schedule, nl, nls), 
+	            				this, nl.toString()+" "+nls.toString()));
 	            	}
 	            }
 	        }
@@ -91,11 +114,12 @@ public class Node {
         // recurse through all
         
         // depth-first search
-        System.out.println(children.size() +" "+depth);
+        System.out.println(children.size() +" "+depth+" "+id);
         if (depthFirst) {
         	
         	// either result will be set to something non-null
         	// or it will run out of choices and return out of the function
+        	// (so the loop terminates)
         	Schedule result = null;
         	while (result == null) {
         		
@@ -110,16 +134,20 @@ public class Node {
 	        	
 	        	// if no unsolved branches return to parent
 	        	if (choice == null) {
+	        		//System.out.println("x "+depth);
 	        		this.setSolved();
-	        		//children.clear();
+	        		children.clear();
 	        		return null;
 	        	}
 	
 	        	// recurse search on chosen child node
 	        	// if result is null we will loop to the next choice
-	        	result = choice.runSearch(depthFirst, depth+1);
-	        	if (result == null)
+	        	result = choice.runSearch(true, depth+1);
+	        	if (result == null) {
 	        		choice.setSolved();
+	        		children.remove(choice);
+	        		System.out.println("- "+depth);
+	        	}
         	}
         		
         	return result;
@@ -190,5 +218,19 @@ public class Node {
      */
     public ArrayList<Node> getChildNodes(){
         return this.children;
+    }
+    
+    /**
+     * @param n
+     */
+    public void setParent(Node n) {
+    	parent = n;
+    }
+    
+    /**
+     * @return
+     */
+    public Node getParent() {
+    	return parent;
     }
 }
