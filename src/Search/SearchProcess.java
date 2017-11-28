@@ -41,14 +41,13 @@ public class SearchProcess {
         if (Constr.check(schedule)){
         	
         	// get the first solution quickly (depth-first search)
-        	// first param: bound = 0 for first run
-        	// second param: depth counter
-            Schedule first = rootNode.runSearch(0, 0);
+        	// param: bound = 0 for first run
+            Schedule first = rootNode.runSearch(0);
             int bound = first.eval();
             first.printAssignments();
             
             // run the whole search using the bound value we got
-            Schedule optimal = rootNode.runSearch(bound, 0);   
+            Schedule optimal = rootNode.runSearch(bound);   
             
             return optimal;
         }

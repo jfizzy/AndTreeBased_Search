@@ -33,6 +33,7 @@ public class Node {
     private Node parent;		// reference to the parent node (null if root node)
     private Assignment start;	// the assignment to try for this node's branches
     private String id;			// identifier string for the node
+    private int depth;			// level of the tree the node is at
 
     /**
      * Constructor for the root node
@@ -46,6 +47,7 @@ public class Node {
         parent = null;
         start = schedule.findFirstNull();
         id = "ROOT";
+        depth = 0;
     }
     
     /**
@@ -55,13 +57,14 @@ public class Node {
      * @param n Parent node
      * @param id Node identifier string
      */
-    public Node(Schedule s, Node n, String id) {
+    public Node(Schedule s, Node n, String id, int depth) {
         schedule = s;
         solEntry = false;
         children = new ArrayList<>();
         parent = n;
         start = schedule.findFirstNull();
         this.id = id;
+        this.depth = depth;
     }
     
     /**
@@ -71,7 +74,7 @@ public class Node {
      * @param depth
      * @return
      */
-    Schedule runSearch(int bound, int depth) {
+    Schedule runSearch(int bound) {
     	
     	//schedule.printAssignments();
     	
@@ -100,8 +103,10 @@ public class Node {
 	            	if (schedule.isValidWith(l, ls)) {
 	            		
 	            		// add the new child node
-	            		this.addChildNode(new Node(new Schedule(schedule, l, ls), 
-	            				this, l.toString()+" "+ls.toString()));
+	            		Schedule s = new Schedule(schedule, l, ls);
+	            		String id = l.toString()+" "+ls.toString();
+	            		Node n = new Node(s, this, id, depth+1);
+	            		this.addChildNode(n);
 	            	}
 	            }
 	        }
@@ -120,8 +125,10 @@ public class Node {
 	            	if (schedule.isValidWith(nl, nls)) {
 	            		
 	            		// add the new child node
-	            		this.addChildNode(new Node(new Schedule(schedule, nl, nls), 
-	            				this, nl.toString()+" "+nls.toString()));
+	            		Schedule s = new Schedule(schedule, nl, nls);
+	            		String id = nl.toString()+" "+nls.toString();
+	            		Node n = new Node(s, this, id, depth+1);
+	            		this.addChildNode(n);
 	            	}
 	            }
 	        }
@@ -164,7 +171,7 @@ public class Node {
 	        	// recurse search on chosen child node:
 	        	// 	if result is null (meaning all branches of that node solved),
 	        	// 	we will loop to the next choice
-	        	result = choice.runSearch(0, depth+1);
+	        	result = choice.runSearch(0);
 	        	if (result == null) {
 	        		
 	        		choice.setSolved();
