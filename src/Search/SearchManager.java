@@ -49,17 +49,18 @@ public class SearchManager {
         if (schedule.isValid() && schedule.isPossible()) {
             SearchProcess sp = new SearchProcess(schedule);
             Schedule sol = sp.run(); 
+            
+            // check if valid (meets hard constraints)
+            Constr.printViolations(sol);
+
+            // print eval breakdown
+            Eval.printBreakdown(sol);
         }
+        
         else {
         	System.out.println("Impossible starting schedule");
         	return;
         }
-
-        // check if valid (meets hard constraints)
-        Constr.printViolations(schedule);
-
-        // print eval breakdown
-        Eval.printBreakdown(schedule);
     }
 
     /**

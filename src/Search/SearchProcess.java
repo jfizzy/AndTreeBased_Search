@@ -40,13 +40,17 @@ public class SearchProcess {
     	
         if (Constr.check(schedule)){
         	
-            // ( ✧≖ ͜ʖ≖)
-            Schedule optimalSchedule = rootNode.runSearch(true, 0); // true means depth first search
+        	// get the first solution quickly (depth-first search)
+        	// first param: bound = 0 for first run
+        	// second param: depth counter
+            Schedule first = rootNode.runSearch(0, 0);
+            int bound = first.eval();
+            first.printAssignments();
             
-            // (͡o‿O͡)
-            optimalSchedule.printAssignments();
+            // run the whole search using the bound value we got
+            Schedule optimal = rootNode.runSearch(bound, 0);   
             
-            return optimalSchedule;
+            return optimal;
         }
         else {
             System.out.println("Not a valid initial schedule");

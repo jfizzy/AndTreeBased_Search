@@ -11,14 +11,10 @@
  * Luke Kissick
  * Sidney Shane Dizon
  */
+
 package Search;
 
-import Schedule.Assignment;
-import Schedule.Lecture;
-import Schedule.LectureSlot;
-import Schedule.NonLecture;
-import Schedule.NonLectureSlot;
-import Schedule.Schedule;
+import Schedule.*;
 import java.util.ArrayList;
 
 /**
@@ -75,7 +71,7 @@ public class Node {
      * @param depth
      * @return
      */
-    Schedule runSearch(boolean depthFirst, int depth) {
+    Schedule runSearch(int bound, int depth) {
     	
     	//schedule.printAssignments();
     	
@@ -131,11 +127,11 @@ public class Node {
 	        }
         }
         
-        // print number of children, depth in tree, id of current node (meeting and slot)
-        System.out.println(children.size() +" "+depth+" "+id);
-        
         // depth-first search (get the first solution quickly)
-        if (depthFirst) {
+        if (bound == 0) {
+        	
+        	// print number of children, depth in tree, id of current node (meeting and slot)
+            System.out.println(children.size() +" "+depth+" "+id);
         	
         	// loop until we get a result or we run out of unsolved child nodes to try
         	// 	(either result will be set to something non-null
@@ -168,7 +164,7 @@ public class Node {
 	        	// recurse search on chosen child node:
 	        	// 	if result is null (meaning all branches of that node solved),
 	        	// 	we will loop to the next choice
-	        	result = choice.runSearch(true, depth+1);
+	        	result = choice.runSearch(0, depth+1);
 	        	if (result == null) {
 	        		
 	        		choice.setSolved();
@@ -197,9 +193,9 @@ public class Node {
 	        		choice = child;
 	        }
 	        */
-	        
+        	
+	        return schedule;
         }
-        return null;
     }
 
     /*
