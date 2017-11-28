@@ -46,9 +46,13 @@ public class SearchManager {
     public void run() {
 
     	// find the best solution
-        if (schedule.isValid()) {
+        if (schedule.isValid() && schedule.isPossible()) {
             SearchProcess sp = new SearchProcess(schedule);
             Schedule sol = sp.run(); 
+        }
+        else {
+        	System.out.println("Impossible starting schedule");
+        	return;
         }
 
         // check if valid (meets hard constraints)

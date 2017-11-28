@@ -354,6 +354,23 @@ public class Schedule {
             System.out.print("\n");
         });
     }
+    
+    /**
+     * Check if the number of meetings and number of slots
+     * can possibly make a valid schedule
+     * 
+     * @return True if possible
+     */
+    public boolean isPossible() {
+    	
+    	int lmax = 0;
+    	for (LectureSlot ls : lslots)
+    		lmax += ls.getCourseMax();
+    	int nlmax = 0;
+    	for (NonLectureSlot nls : nlslots)
+    		nlmax += nls.getLabMax();
+    	return (lectures.size() <= lmax && (labs.size() + tuts.size()) <= nlmax);
+    }
 
     /*
      *  Getters and setters

@@ -240,7 +240,7 @@ public class Constr {
 	 * @return True if non-compatible constraint is met
 	 */
 	public static boolean checkNoncompatible(Schedule schedule) {
-		/*
+		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
 			
@@ -260,9 +260,9 @@ public class Constr {
 				}
 			}
 		}
-		*/
-		// TODO delete above
 		
+		// TODO delete above
+		/*
 		// for each pair in the noncompatible list
 		for (MeetingPair mp : schedule.getNoncompatible()) {
 			
@@ -279,7 +279,7 @@ public class Constr {
 			if (s1.overlaps(s2))
 				return false;
 		}
-		
+		*/
 		// if this is reached the constraint is satisfied
 		return true;
 	}

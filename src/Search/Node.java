@@ -22,25 +22,26 @@ import Schedule.Schedule;
 import java.util.ArrayList;
 
 /**
- * Node. This is an abstract class defining the common elements the Node type
+ * Node class - defines the fields and methods for a node of an And-tree
  *
  * @author
  */
 public class Node {
-    //A search tree is composed of a schedule, and it's sub tree, these need to be parameters
-    //Additionally, there is a parent to the tree, and root should have a null parent
+	
+    // A search tree is composed of a schedule, and it's sub tree, these need to be parameters
+    // Additionally, there is a parent to the tree, and root should have a null parent
 
-    private Schedule schedule;
-    private boolean solEntry;
-    private final ArrayList<Node> children;
-    private Node parent;
-    private Assignment start;
-    private String id;
+	private final ArrayList<Node> children;	// list of child nodes
+    private Schedule schedule;	// schedule for this node
+    private boolean solEntry;	// solution entry (true = yes, false = ?)
+    private Node parent;		// reference to the parent node (null if root node)
+    private Assignment start;	// the assignment to try for this node's branches
+    private String id;			// identifier string for the node
 
     /**
-     * Constructor for root node
+     * Constructor for the root node
      * 
-     * @param s
+     * @param s Schedule
      */
     public Node(Schedule s) {
         schedule = s;
@@ -54,7 +55,9 @@ public class Node {
     /**
      * Constructor for child nodes
      * 
-     * @param s
+     * @param s Schedule
+     * @param n Parent node
+     * @param id Node identifier string
      */
     public Node(Schedule s, Node n, String id) {
         schedule = s;
@@ -66,13 +69,17 @@ public class Node {
     }
     
     /**
+     * Main recursive search function which is run on each node
      * 
+     * @param depthFirst
+     * @param depth
+     * @return
      */
     Schedule runSearch(boolean depthFirst, int depth) {
     	
     	//schedule.printAssignments();
     	
-    	// pick the first null assignment
+    	// check if the schedule is complete
         if (start == null || schedule.isComplete()) {
             System.out.println("the schedule is full!");
             return schedule;
@@ -80,28 +87,43 @@ public class Node {
         
         // generate children if we didn't yet for this node
         if (children.size() == 0 && !this.isSolved()) {
-	        if (start.getM() instanceof Lecture) { // lecture
+        	
+        	// if we are assigning a lecture
+	        if (start.getM() instanceof Lecture) {
 	            Lecture l = (Lecture) start.getM();
 	            
 	            // TODO add special assignment possibility for 813, 913, etc
-	            for (LectureSlot ls : schedule.getLectureSlots()){ // iterate over lecture slots
-	                // try each one
+	            
+	            // for each lecture slot we could assign it to
+	            for (LectureSlot ls : schedule.getLectureSlots()){
+	            	
+	                // skip if the slot is inactive
 	            	if (!ls.isActive()) continue;
 	            	
+	            	// check if the schedule would be valid if we made the assignment
 	            	if (schedule.isValidWith(l, ls)) {
+	            		
+	            		// add the new child node
 	            		this.addChildNode(new Node(new Schedule(schedule, l, ls), 
 	            				this, l.toString()+" "+ls.toString()));
 	            	}
 	            }
 	        }
-	        else { // nonlecture
+	        
+	        // if we are assigning a nonlecture
+	        else {
 	        	NonLecture nl = (NonLecture) start.getM();
 	        	
+	        	// for each nonlecture slot we could assign it to
 	        	for (NonLectureSlot nls : schedule.getNonLectureSlots()){ 
-	                // try each one
+	        		
+	                // skip if the slot is inactive
 	        		if (!nls.isActive()) continue;
 	        		
+	        		// check if the schedule would be valid if we made the assignment
 	            	if (schedule.isValidWith(nl, nls)) {
+	            		
+	            		// add the new child node
 	            		this.addChildNode(new Node(new Schedule(schedule, nl, nls), 
 	            				this, nl.toString()+" "+nls.toString()));
 	            	}
@@ -109,21 +131,22 @@ public class Node {
 	        }
         }
         
-        // find possible assignments
-        // evaluate leftmost first
-        // recurse through all
-        
-        // depth-first search
+        // print number of children, depth in tree, id of current node (meeting and slot)
         System.out.println(children.size() +" "+depth+" "+id);
+        
+        // depth-first search (get the first solution quickly)
         if (depthFirst) {
         	
-        	// either result will be set to something non-null
-        	// or it will run out of choices and return out of the function
-        	// (so the loop terminates)
+        	// loop until we get a result or we run out of unsolved child nodes to try
+        	// 	(either result will be set to something non-null
+        	// 	or it will run out of choices and return out of the function)
         	Schedule result = null;
         	while (result == null) {
         		
-        		// choose an unsolved branch
+        		// for the depth first search, solved can only mean that we
+        		// 	couldn't find a solution down that branch of the tree
+        		
+        		// choose the first unsolved branch
 	        	Node choice = null;
 	        	for (Node n : children) {
 	        		if (!n.isSolved()) {
@@ -132,20 +155,24 @@ public class Node {
 	        		}
 	        	}
 	        	
-	        	// if no unsolved branches return to parent
+	        	// if we did not find an unsolved branch, set solved,
+	        	// 	clear children and return to parent
 	        	if (choice == null) {
+	        		
 	        		//System.out.println("x "+depth);
 	        		this.setSolved();
 	        		children.clear();
 	        		return null;
 	        	}
 	
-	        	// recurse search on chosen child node
-	        	// if result is null we will loop to the next choice
+	        	// recurse search on chosen child node:
+	        	// 	if result is null (meaning all branches of that node solved),
+	        	// 	we will loop to the next choice
 	        	result = choice.runSearch(true, depth+1);
 	        	if (result == null) {
+	        		
 	        		choice.setSolved();
-	        		children.remove(choice);
+	        		//children.remove(choice);
 	        		System.out.println("- "+depth);
 	        	}
         	}
@@ -153,8 +180,9 @@ public class Node {
         	return result;
         }
         
+        // normal search (go through entire tree)
         else {
-        	// normal search
+        	
         	// TODO
         	/*
         	SubNode choice = null;

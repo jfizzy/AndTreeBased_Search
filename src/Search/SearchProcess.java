@@ -41,7 +41,7 @@ public class SearchProcess {
         if (Constr.check(schedule)){
         	
             // ( ✧≖ ͜ʖ≖)
-            Schedule optimalSchedule = rootNode.runSearch(true, 0); // this is the money function!
+            Schedule optimalSchedule = rootNode.runSearch(true, 0); // true means depth first search
             
             // (͡o‿O͡)
             optimalSchedule.printAssignments();
