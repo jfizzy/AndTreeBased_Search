@@ -394,16 +394,35 @@ public class Schedule {
     }
 
     /**
-     * Add an assignment to the list
+     * Add or update an assignment
      * 
      * @param a The assignment
      */
-    public void addAssignment(Assignment a) {
-        assignments.add(a);
+    public void addAssignment(Meeting m, Slot s) {
+    	
+    	// don't assign if slot is not in list and not null
+    	if (s != null && !lslots.contains(s) && !nlslots.contains(s))
+    		return;
+    	
+    	// for each assignment
+    	for (Assignment a : assignments) {
+    		
+    		// skip if meeting doesn't match
+    		if (a.getM() != m)
+    			continue;
+    		
+    		// otherwise set slot and return
+    		a.setS(s);
+    		return;
+    	}
+    	
+    	// if we got here meeting was not found, so add it
+    	assignments.add(new Assignment(m, s));
     }
     
     /**
      * Update the assignment for a given meeting
+     * (do nothing if assignment not found)
      * 
      * @param m The meeting
      * @param s The slot to assign it to
@@ -425,9 +444,6 @@ public class Schedule {
     		a.setS(s);
     		return;
     	}
-    	
-    	// if we got here meeting was not found, so add it
-    	//assignments.add(new Assignment(m, s));
     }
 
     /**

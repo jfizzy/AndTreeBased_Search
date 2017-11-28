@@ -91,16 +91,15 @@ public class SearchManager {
                     // make a random assignment for the course
                     int rand = ThreadLocalRandom.current().nextInt(0, schedule.getLectureSlots().size());
                     Slot slot = schedule.getLectureSlots().get(rand);
-                    Assignment a = new Assignment(l, slot);
 
                     // add the assignment, checking if it is valid
                     if (Constr.check(this.schedule, l, slot)) {
-                        schedule.addAssignment(a);
+                        schedule.addAssignment(l, slot);
                         break;
                     }
                     if (i == max - 1) {
                         System.out.println("Course violated Constr");
-                        schedule.addAssignment(a); // add anyway
+                        schedule.addAssignment(l, slot); // add anyway
                     }
 
                 }
@@ -116,16 +115,15 @@ public class SearchManager {
                 // make a random assignment for the nonlecture
                 int rand = ThreadLocalRandom.current().nextInt(0, schedule.getNonLectureSlots().size());
                 Slot slot = schedule.getNonLectureSlots().get(rand);
-                Assignment a = new Assignment(nl, slot);
 
                 // add the assignment, checking if it is valid
                 if (Constr.check(this.schedule, nl, slot)) {
-                    schedule.addAssignment(a);
+                    schedule.addAssignment(nl, slot);
                     break;
                 }
                 if (i == max - 1) {
                     System.out.println("Lab violated Constr");
-                    schedule.addAssignment(a); // add anyway
+                    schedule.addAssignment(nl, slot); // add anyway
                 }
             }
         }

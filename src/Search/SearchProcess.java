@@ -1,8 +1,6 @@
 package Search;
 
-import Schedule.Assignment;
-import Schedule.Meeting;
-import Schedule.Schedule;
+import Schedule.*;
 
 //implement and-tree search (branch and bound):
 // start at the rootNode node with no assignments - done
