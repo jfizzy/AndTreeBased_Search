@@ -68,7 +68,7 @@ public class Node {
     }
     
     /**
-     * Main recursive search function which is run on each node
+     * Main recursive search function which is run on each node.
      * 
      * @param depthFirst
      * @param depth
@@ -76,15 +76,34 @@ public class Node {
      */
     Schedule runSearch(int bound) {
     	
+    	/*
+		 * The first time, it is run on the root node.
+		 * 
+		 * The function calls itself on child nodes to progress down the tree.
+		 * 
+		 * If there are no options to go down the tree, the function returns null,
+		 * which is detected by the parent node (who called the function), then
+		 * the next option at the parent node is taken.
+		 * 
+		 * If there are no other options to take, then the parent node's function
+		 * returns null and ITS parent takes another option.
+		 * 
+		 * Each recursive call ultimately returns the schedule found by its recursive
+		 * call, so that in the end the original function call will return the
+		 * solved schedule.
+    	 */
+    	
+    	// print the assignments for this node
     	//schedule.printAssignments();
     	
-    	// check if the schedule is complete
+    	// check if the schedule is complete, if so return it
         if (start == null || schedule.isComplete()) {
             System.out.println("the schedule is full!");
             return schedule;
         }
         
-        // generate children if we didn't yet for this node
+        // generate child nodes if we didn't yet for this node
+        // and if this node is not solved yet
         if (children.size() == 0 && !this.isSolved()) {
         	
         	// if we are assigning a lecture
@@ -102,7 +121,7 @@ public class Node {
 	            	// check if the schedule would be valid if we made the assignment
 	            	if (schedule.isValidWith(l, ls)) {
 	            		
-	            		// add the new child node
+	            		// add the new child node if valid
 	            		Schedule s = new Schedule(schedule, l, ls);
 	            		String id = l.toString()+" "+ls.toString();
 	            		Node n = new Node(s, this, id, depth+1);
@@ -124,7 +143,7 @@ public class Node {
 	        		// check if the schedule would be valid if we made the assignment
 	            	if (schedule.isValidWith(nl, nls)) {
 	            		
-	            		// add the new child node
+	            		// add the new child node if valid
 	            		Schedule s = new Schedule(schedule, nl, nls);
 	            		String id = nl.toString()+" "+nls.toString();
 	            		Node n = new Node(s, this, id, depth+1);
@@ -134,14 +153,17 @@ public class Node {
 	        }
         }
         
-        // depth-first search (get the first solution quickly)
+        // depth-first search (get the first solution quickly to get a bound value)
         if (bound == 0) {
         	
-        	// print number of children, depth in tree, id of current node (meeting and slot)
+        	// print :
+        	// number of children,
+        	// depth in tree, 
+        	// id of current node (meeting and slot)
             System.out.println(children.size() +" "+depth+" "+id);
         	
         	// loop until we get a result or we run out of unsolved child nodes to try
-        	// 	(either result will be set to something non-null
+        	// 	(either result will be set to a non-null schedule
         	// 	or it will run out of choices and return out of the function)
         	Schedule result = null;
         	while (result == null) {
@@ -158,8 +180,8 @@ public class Node {
 	        		}
 	        	}
 	        	
-	        	// if we did not find an unsolved branch, set solved,
-	        	// 	clear children and return to parent
+	        	// if we did not find an unsolved branch, set this node solved,
+	        	// 	clear this node's children, and return to parent
 	        	if (choice == null) {
 	        		
 	        		//System.out.println("x "+depth);
@@ -169,8 +191,8 @@ public class Node {
 	        	}
 	
 	        	// recurse search on chosen child node:
-	        	// 	if result is null (meaning all branches of that node solved),
-	        	// 	we will loop to the next choice
+	        	// 	if result is null (meaning all branches of that node are solved),
+	        	// 	we will loop to the next choice (if any remain)
 	        	result = choice.runSearch(0);
 	        	if (result == null) {
 	        		
@@ -180,6 +202,7 @@ public class Node {
 	        	}
         	}
         		
+        	// return the result we got
         	return result;
         }
         
