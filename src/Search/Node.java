@@ -34,7 +34,7 @@ public class Node {
     private boolean solEntry;
     private final ArrayList<Node> children;
     private Node parent;
-    
+    private Assignment start;
     private String id;
 
     /**
@@ -47,7 +47,8 @@ public class Node {
         solEntry = false;
         children = new ArrayList<>();
         parent = null;
-        id = "R";
+        start = schedule.findFirstNull();
+        id = "ROOT";
     }
     
     /**
@@ -55,11 +56,13 @@ public class Node {
      * 
      * @param s
      */
-    public Node(Schedule s, Node n) {
+    public Node(Schedule s, Node n, String id) {
         schedule = s;
         solEntry = false;
         children = new ArrayList<>();
         parent = n;
+        start = schedule.findFirstNull();
+        this.id = id;
     }
     
     /**
@@ -70,7 +73,6 @@ public class Node {
     	//schedule.printAssignments();
     	
     	// pick the first null assignment
-        Assignment start = schedule.findFirstNull();
         if (start == null || schedule.isComplete()) {
             System.out.println("the schedule is full!");
             return schedule;
@@ -87,7 +89,8 @@ public class Node {
 	            	if (!ls.isActive()) continue;
 	            	
 	            	if (schedule.isValidWith(l, ls)) {
-	            		this.addChildNode(new Node(new Schedule(schedule, l, ls), this));
+	            		this.addChildNode(new Node(new Schedule(schedule, l, ls), 
+	            				this, l.toString()+" "+ls.toString()));
 	            	}
 	            }
 	        }
@@ -99,7 +102,8 @@ public class Node {
 	        		if (!nls.isActive()) continue;
 	        		
 	            	if (schedule.isValidWith(nl, nls)) {
-	            		this.addChildNode(new Node(new Schedule(schedule, nl, nls), this));
+	            		this.addChildNode(new Node(new Schedule(schedule, nl, nls), 
+	            				this, nl.toString()+" "+nls.toString()));
 	            	}
 	            }
 	        }
@@ -110,7 +114,7 @@ public class Node {
         // recurse through all
         
         // depth-first search
-        System.out.println(children.size() +" "+depth);
+        System.out.println(children.size() +" "+depth+" "+id);
         if (depthFirst) {
         	
         	// either result will be set to something non-null
