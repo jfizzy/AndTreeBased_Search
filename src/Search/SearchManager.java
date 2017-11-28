@@ -24,9 +24,26 @@ public class SearchManager {
 
     //----------------------------------------------------------------
     // TODO for the actual search:
+	
     // create tree/node classes, data structures, done, AndSearchTreeNode
     // create functions for adding/removing nodes, traversing tree, in AndSearchTreeNode
     // implement a way to tell if the goal condition is met, done, in Schedule
+	
+	//implement and-tree search (branch and bound):
+	// start at the rootNode node with no assignments - done
+	// generate all possible branches - each represents one added assignment
+	//	     (branches must satisfy Constr) 
+	//don't want to do this, it will take too long to generate everything first. You can generate locally. 
+	// do a depth-first search to determine the bound value
+	//	     (find the first valid solution quickly, then set bound to its Eval value)
+	// go back to the rootNode node
+	// take branch with the lowest Eval
+	//	     (close off branches if Eval greater than bound)
+	// generate all possible branches for the new node
+	// if solution Eval < bound, set bound to new Eval value
+	// return to rootNode node, evaluate all possible solutions with Eval < bound
+	//	     (final solution = lowest Eval leaf)
+	
     //----------------------------------------------------------------
     private Schedule schedule; 	// all the data required for the search
     private int bound;			// the bound value
@@ -47,14 +64,28 @@ public class SearchManager {
 
     	// find the best solution
         if (schedule.isValid() && schedule.isPossible()) {
-            SearchProcess sp = new SearchProcess(schedule);
-            Schedule sol = sp.run(); 
+        	
+        	// get the first solution quickly (depth-first search)
+        	// runSearch arg: bound = 0 for first run
+        	Node rootNode = new Node(schedule);
+            Schedule first = rootNode.runSearch(0);
+            int bound = first.eval();
+            first.printAssignments();
             
             // check if valid (meets hard constraints)
-            Constr.printViolations(sol);
+            Constr.printViolations(first);
 
             // print eval breakdown
-            Eval.printBreakdown(sol);
+            Eval.printBreakdown(first);
+            
+            // run the whole search using the bound value we got
+            Schedule optimal = rootNode.runSearch(bound);   
+            
+            // check if valid (meets hard constraints)
+            //Constr.printViolations(optimal);
+
+            // print eval breakdown
+            //Eval.printBreakdown(optimal);
         }
         
         else {
