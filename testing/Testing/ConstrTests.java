@@ -82,10 +82,9 @@ public class ConstrTests {
 		courses.add(c);
 		
 		Schedule schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(sect.getLecture(), slot);
-		
-		Constr constr = new Constr(schedule);
-		assertTrue(constr.checkCourseMax());
+		schedule.addAssignment(sect.getLecture(), slot);
+
+		assertTrue(Constr.checkCourseMax(schedule));
 		assertTrue(schedule.isValid());
 		
 		// valid
@@ -93,10 +92,9 @@ public class ConstrTests {
 		courses.get(0).addSection(sect);
 		
 		schedule.setCourses(courses);
-		schedule.updateAssignment(sect.getLecture(), slot);
+		schedule.addAssignment(sect.getLecture(), slot);
 		
-		constr = new Constr(schedule);
-		assertTrue(constr.checkCourseMax());
+		assertTrue(Constr.checkCourseMax(schedule));
 		assertTrue(schedule.isValid());
 		
 		// invalid
@@ -104,10 +102,10 @@ public class ConstrTests {
 		courses.get(0).addSection(sect);
 		
 		schedule.setCourses(courses);
-		schedule.updateAssignment(sect.getLecture(), slot);
+		schedule.addAssignment(sect.getLecture(), slot);
 		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkCourseMax());
+		assertFalse(Constr.checkCourseMax(schedule));
+		assertFalse(schedule.isValid());
 	}
 
 	/**
@@ -131,10 +129,9 @@ public class ConstrTests {
 		courses.add(c);
 		
 		Schedule schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(lab1, slot);
+		schedule.addAssignment(lab1, slot);
 		
-		Constr constr = new Constr(schedule);
-		assertTrue(constr.checkLabMax());
+		assertTrue(Constr.checkLabMax(schedule));
 		assertTrue(schedule.isValid());
 		
 		// valid
@@ -143,10 +140,9 @@ public class ConstrTests {
 		
 		//schedule.setNonLectures(nonlecs);
 		schedule.setCourses(courses);
-		schedule.updateAssignment(lab2, slot);
+		schedule.addAssignment(lab2, slot);
 		
-		constr = new Constr(schedule);
-		assertTrue(constr.checkLabMax());
+		assertTrue(Constr.checkLabMax(schedule));
 		assertTrue(schedule.isValid());
 		
 		// invalid
@@ -155,10 +151,9 @@ public class ConstrTests {
 		
 		//schedule.setNonLectures(nonlecs);
 		schedule.setCourses(courses);
-		schedule.updateAssignment(lab3, slot);
+		schedule.addAssignment(lab3, slot);
 		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkLabMax());
+		assertFalse(Constr.checkLabMax(schedule));
 		assertFalse(schedule.isValid());
 	}
 
@@ -199,63 +194,57 @@ public class ConstrTests {
 		
 		// valid
 		Schedule schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l2, lslot1);
-		schedule.updateAssignment(l1, lslot2);
-		schedule.updateAssignment(lab1, nlslot_good1);
-		schedule.updateAssignment(tut1, nlslot_good1);
+		schedule.addAssignment(l2, lslot1);
+		schedule.addAssignment(l1, lslot2);
+		schedule.addAssignment(lab1, nlslot_good1);
+		schedule.addAssignment(tut1, nlslot_good1);
 		
-		Constr constr = new Constr(schedule);
-		assertTrue(constr.checkLabsDifferent());
+		assertTrue(Constr.checkLabsDifferent(schedule));
 		assertTrue(schedule.isValid());
 		
 		// valid		
-		schedule.updateAssignment(l2, lslot1);
-		schedule.updateAssignment(l1, lslot2);
-		schedule.updateAssignment(lab1, nlslot_good2);
-		schedule.updateAssignment(tut1, nlslot_good2);
+		schedule.addAssignment(l2, lslot1);
+		schedule.addAssignment(l1, lslot2);
+		schedule.addAssignment(lab1, nlslot_good2);
+		schedule.addAssignment(tut1, nlslot_good2);
 		
-		constr = new Constr(schedule);
-		assertTrue(constr.checkLabsDifferent());
+		assertTrue(Constr.checkLabsDifferent(schedule));
 		assertTrue(schedule.isValid());
 		
 		// invalid		
-		schedule.updateAssignment(l2, lslot1);
-		schedule.updateAssignment(l1, lslot2);
-		schedule.updateAssignment(lab1, nlslot_bad1);
-		schedule.updateAssignment(tut1, nlslot_good1);
+		schedule.addAssignment(l2, lslot1);
+		schedule.addAssignment(l1, lslot2);
+		schedule.addAssignment(lab1, nlslot_bad1);
+		schedule.addAssignment(tut1, nlslot_good1);
 		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkLabsDifferent());
+		assertFalse(Constr.checkLabsDifferent(schedule));
 		assertFalse(schedule.isValid());
 		
 		// invalid		
-		schedule.updateAssignment(l2, lslot1);
-		schedule.updateAssignment(l1, lslot2);
-		schedule.updateAssignment(lab1, nlslot_bad2);
-		schedule.updateAssignment(tut1, nlslot_good2);
+		schedule.addAssignment(l2, lslot1);
+		schedule.addAssignment(l1, lslot2);
+		schedule.addAssignment(lab1, nlslot_bad2);
+		schedule.addAssignment(tut1, nlslot_good2);
 		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkLabsDifferent());
+		assertFalse(Constr.checkLabsDifferent(schedule));
 		assertFalse(schedule.isValid());
 		
 		// invalid		
-		schedule.updateAssignment(l2, lslot1);
-		schedule.updateAssignment(l1, lslot2);
-		schedule.updateAssignment(lab1, nlslot_good2);
-		schedule.updateAssignment(tut1, nlslot_bad1);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkLabsDifferent());
+		schedule.addAssignment(l2, lslot1);
+		schedule.addAssignment(l1, lslot2);
+		schedule.addAssignment(lab1, nlslot_good2);
+		schedule.addAssignment(tut1, nlslot_bad1);
+
+		assertFalse(Constr.checkLabsDifferent(schedule));
 		assertFalse(schedule.isValid());
 		
 		// invalid		
-		schedule.updateAssignment(l2, lslot1);
-		schedule.updateAssignment(l1, lslot2);
-		schedule.updateAssignment(lab1, nlslot_good1);
-		schedule.updateAssignment(tut1, nlslot_bad2);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkLabsDifferent());
+		schedule.addAssignment(l2, lslot1);
+		schedule.addAssignment(l1, lslot2);
+		schedule.addAssignment(lab1, nlslot_good1);
+		schedule.addAssignment(tut1, nlslot_bad2);
+
+		assertFalse(Constr.checkLabsDifferent(schedule));
 		assertFalse(schedule.isValid());
 	}
 
@@ -296,45 +285,42 @@ public class ConstrTests {
 		
 		// valid
 		Schedule schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot1);
-		schedule.updateAssignment(l2, lslot2);
+		schedule.addAssignment(l1, lslot1);
+		schedule.addAssignment(l2, lslot2);
 		schedule.addNoncompatible(l1, l2);
 		schedule.addNoncompatible(b1, b2);
-		
-		Constr constr = new Constr(schedule);
-		assertTrue(constr.checkNoncompatible());
+
+		assertTrue(Constr.checkNoncompatible(schedule));
+		assertTrue(schedule.isValid());
 		
 		// valid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(b1, nlslot1);
-		schedule.updateAssignment(b2, nlslot2);
+		schedule.addAssignment(b1, nlslot1);
+		schedule.addAssignment(b2, nlslot2);
 		schedule.addNoncompatible(l1, l2);
 		schedule.addNoncompatible(b1, b2);
 		
-		constr = new Constr(schedule);
-		assertTrue(constr.checkNoncompatible());
+		assertTrue(Constr.checkNoncompatible(schedule));
 		assertTrue(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot1);
-		schedule.updateAssignment(l2, lslot1);
+		schedule.addAssignment(l1, lslot1);
+		schedule.addAssignment(l2, lslot1);
 		schedule.addNoncompatible(l1, l2);
 		schedule.addNoncompatible(b1, b2);
 		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkNoncompatible());
+		assertFalse(Constr.checkNoncompatible(schedule));
 		assertFalse(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(b1, nlslot2);
-		schedule.updateAssignment(b2, nlslot2);
+		schedule.addAssignment(b1, nlslot2);
+		schedule.addAssignment(b2, nlslot2);
 		schedule.addNoncompatible(l1, l2);
 		schedule.addNoncompatible(b1, b2);
 		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkNoncompatible());
+		assertFalse(Constr.checkNoncompatible(schedule));
 		assertFalse(schedule.isValid());
 	}
 
@@ -369,38 +355,34 @@ public class ConstrTests {
 		
 		// valid
 		Schedule schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot1);
-		schedule.updateAssignment(b1, nlslot1);
-		
-		Constr constr = new Constr(schedule);
-		assertTrue(constr.checkPartassign());
+		schedule.addAssignment(l1, lslot1);
+		schedule.addAssignment(b1, nlslot1);
+
+		assertTrue(Constr.checkPartassign(schedule));
 		assertTrue(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot1);
-		schedule.updateAssignment(b1, nlslot2);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkPartassign());
+		schedule.addAssignment(l1, lslot1);
+		schedule.addAssignment(b1, nlslot2);
+
+		assertFalse(Constr.checkPartassign(schedule));
 		assertFalse(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot2);
-		schedule.updateAssignment(b1, nlslot1);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkPartassign());
+		schedule.addAssignment(l1, lslot2);
+		schedule.addAssignment(b1, nlslot1);
+
+		assertFalse(Constr.checkPartassign(schedule));
 		assertFalse(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, nlslot2);
-		schedule.updateAssignment(b1, nlslot2);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkPartassign());
+		schedule.addAssignment(l1, nlslot2);
+		schedule.addAssignment(b1, nlslot2);
+
+		assertFalse(Constr.checkPartassign(schedule));
 		assertFalse(schedule.isValid());
 	}
 
@@ -434,38 +416,34 @@ public class ConstrTests {
 		
 		// valid
 		Schedule schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot1);
-		schedule.updateAssignment(b1, lslot1);
-		
-		Constr constr = new Constr(schedule);
-		assertTrue(constr.checkUnwanted());
+		schedule.addAssignment(l1, lslot1);
+		schedule.addAssignment(b1, lslot1);
+
+		assertTrue(Constr.checkUnwanted(schedule));
 		assertTrue(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, nlslot1);
-		schedule.updateAssignment(b1, nlslot2);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkUnwanted());
+		schedule.addAssignment(l1, nlslot1);
+		schedule.addAssignment(b1, nlslot2);
+
+		assertFalse(Constr.checkUnwanted(schedule));
 		assertFalse(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot2);
-		schedule.updateAssignment(b1, lslot1);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkUnwanted());
+		schedule.addAssignment(l1, lslot2);
+		schedule.addAssignment(b1, lslot1);
+
+		assertFalse(Constr.checkUnwanted(schedule));
 		assertFalse(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, nlslot2);
-		schedule.updateAssignment(b1, nlslot2);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkUnwanted());
+		schedule.addAssignment(l1, nlslot2);
+		schedule.addAssignment(b1, nlslot2);
+
+		assertFalse(Constr.checkUnwanted(schedule));
 		assertFalse(schedule.isValid());
 	}
 
@@ -503,46 +481,42 @@ public class ConstrTests {
 		
 		// valid
 		Schedule schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot2);
-		schedule.updateAssignment(b1, nlslot2);
-		schedule.updateAssignment(l2, lslot1);
-		schedule.updateAssignment(b2, nlslot1);
-		
-		Constr constr = new Constr(schedule);
-		assertTrue(constr.checkEveningClasses());
+		schedule.addAssignment(l1, lslot2);
+		schedule.addAssignment(b1, nlslot2);
+		schedule.addAssignment(l2, lslot1);
+		schedule.addAssignment(b2, nlslot1);
+
+		assertTrue(Constr.checkEveningClasses(schedule));
 		assertTrue(schedule.isValid());
 		
 		// valid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot2);
-		schedule.updateAssignment(b1, nlslot2);
-		schedule.updateAssignment(l2, lslot2);
-		schedule.updateAssignment(b2, nlslot2);
-		
-		constr = new Constr(schedule);
-		assertTrue(constr.checkEveningClasses());
+		schedule.addAssignment(l1, lslot2);
+		schedule.addAssignment(b1, nlslot2);
+		schedule.addAssignment(l2, lslot2);
+		schedule.addAssignment(b2, nlslot2);
+
+		assertTrue(Constr.checkEveningClasses(schedule));
 		assertTrue(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot1);
-		schedule.updateAssignment(b1, nlslot1);
-		schedule.updateAssignment(l2, lslot1);
-		schedule.updateAssignment(b2, nlslot1);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkEveningClasses());
+		schedule.addAssignment(l1, lslot1);
+		schedule.addAssignment(b1, nlslot1);
+		schedule.addAssignment(l2, lslot1);
+		schedule.addAssignment(b2, nlslot1);
+
+		assertFalse(Constr.checkEveningClasses(schedule));
 		assertFalse(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot1);
-		schedule.updateAssignment(b1, nlslot1);
-		schedule.updateAssignment(l2, lslot2);
-		schedule.updateAssignment(b2, nlslot2);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkEveningClasses());
+		schedule.addAssignment(l1, lslot1);
+		schedule.addAssignment(b1, nlslot1);
+		schedule.addAssignment(l2, lslot2);
+		schedule.addAssignment(b2, nlslot2);
+
+		assertFalse(Constr.checkEveningClasses(schedule));
 		assertFalse(schedule.isValid());
 	}
 
@@ -572,38 +546,34 @@ public class ConstrTests {
 		
 		// valid
 		Schedule schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot1);
-		schedule.updateAssignment(l2, lslot2);
-		
-		Constr constr = new Constr(schedule);
-		assertTrue(constr.checkOver500Classes());
+		schedule.addAssignment(l1, lslot1);
+		schedule.addAssignment(l2, lslot2);
+
+		assertTrue(Constr.checkOver500Classes(schedule));
 		assertTrue(schedule.isValid());
 		
 		// valid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot2);
-		schedule.updateAssignment(l2, lslot1);
-		
-		constr = new Constr(schedule);
-		assertTrue(constr.checkOver500Classes());
+		schedule.addAssignment(l1, lslot2);
+		schedule.addAssignment(l2, lslot1);
+
+		assertTrue(Constr.checkOver500Classes(schedule));
 		assertTrue(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot1);
-		schedule.updateAssignment(l2, lslot1);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkOver500Classes());
+		schedule.addAssignment(l1, lslot1);
+		schedule.addAssignment(l2, lslot1);
+
+		assertFalse(Constr.checkOver500Classes(schedule));
 		assertFalse(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot2);
-		schedule.updateAssignment(l2, lslot2);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkOver500Classes());
+		schedule.addAssignment(l1, lslot2);
+		schedule.addAssignment(l2, lslot2);
+
+		assertFalse(Constr.checkOver500Classes(schedule));
 		assertFalse(schedule.isValid());
 	}
 
@@ -627,18 +597,16 @@ public class ConstrTests {
 		
 		// valid
 		Schedule schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot1);
-		
-		Constr constr = new Constr(schedule);
-		assertTrue(constr.checkSpecificTimes());
+		schedule.addAssignment(l1, lslot1);
+
+		assertTrue(Constr.checkSpecificTimes(schedule));
 		assertTrue(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l1, lslot2);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkSpecificTimes());
+		schedule.addAssignment(l1, lslot2);
+
+		assertFalse(Constr.checkSpecificTimes(schedule));
 		assertFalse(schedule.isValid());
 	}
 
@@ -701,78 +669,74 @@ public class ConstrTests {
 		
 		// valid
 		Schedule schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l313, lslot1);
-		schedule.updateAssignment(l413, lslot1);
-		schedule.updateAssignment(l813, lslot2);
-		schedule.updateAssignment(l913, lslot2);
-		schedule.updateAssignment(b313, nlslot1);
-		schedule.updateAssignment(b413, nlslot1);
-		schedule.updateAssignment(b813, nlslot2);
-		schedule.updateAssignment(b913, nlslot2);
-		schedule.updateAssignment(t313, nlslot1);
-		schedule.updateAssignment(t413, nlslot1);
-		schedule.updateAssignment(t813, nlslot2);
-		schedule.updateAssignment(t913, nlslot2);
-		
-		Constr constr = new Constr(schedule);
-		assertTrue(constr.checkSpecialClasses());
+		schedule.addAssignment(l313, lslot1);
+		schedule.addAssignment(l413, lslot1);
+		schedule.addAssignment(l813, lslot2);
+		schedule.addAssignment(l913, lslot2);
+		schedule.addAssignment(b313, nlslot1);
+		schedule.addAssignment(b413, nlslot1);
+		schedule.addAssignment(b813, nlslot2);
+		schedule.addAssignment(b913, nlslot2);
+		schedule.addAssignment(t313, nlslot1);
+		schedule.addAssignment(t413, nlslot1);
+		schedule.addAssignment(t813, nlslot2);
+		schedule.addAssignment(t913, nlslot2);
+
+		assertTrue(Constr.checkSpecialClasses(schedule));
 		assertTrue(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l313, lslot1);
-		schedule.updateAssignment(l413, lslot2);
-		schedule.updateAssignment(l813, lslot1);
-		schedule.updateAssignment(l913, lslot2);
-		schedule.updateAssignment(b313, nlslot1);
-		schedule.updateAssignment(b413, nlslot1);
-		schedule.updateAssignment(b813, nlslot2);
-		schedule.updateAssignment(b913, nlslot2);
-		schedule.updateAssignment(t313, nlslot1);
-		schedule.updateAssignment(t413, nlslot1);
-		schedule.updateAssignment(t813, nlslot2);
-		schedule.updateAssignment(t913, nlslot2);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkSpecialClasses());
+		schedule.addAssignment(l313, lslot1);
+		schedule.addAssignment(l413, lslot2);
+		schedule.addAssignment(l813, lslot1);
+		schedule.addAssignment(l913, lslot2);
+		schedule.addAssignment(b313, nlslot1);
+		schedule.addAssignment(b413, nlslot1);
+		schedule.addAssignment(b813, nlslot2);
+		schedule.addAssignment(b913, nlslot2);
+		schedule.addAssignment(t313, nlslot1);
+		schedule.addAssignment(t413, nlslot1);
+		schedule.addAssignment(t813, nlslot2);
+		schedule.addAssignment(t913, nlslot2);
+
+		assertFalse(Constr.checkSpecialClasses(schedule));
 		assertFalse(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l313, lslot2);
-		schedule.updateAssignment(l413, lslot1);
-		schedule.updateAssignment(l813, lslot2);
-		schedule.updateAssignment(l913, lslot1);
-		schedule.updateAssignment(b313, nlslot1);
-		schedule.updateAssignment(b413, nlslot1);
-		schedule.updateAssignment(b813, nlslot2);
-		schedule.updateAssignment(b913, nlslot2);
-		schedule.updateAssignment(t313, nlslot1);
-		schedule.updateAssignment(t413, nlslot1);
-		schedule.updateAssignment(t813, nlslot2);
-		schedule.updateAssignment(t913, nlslot2);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkSpecialClasses());
+		schedule.addAssignment(l313, lslot2);
+		schedule.addAssignment(l413, lslot1);
+		schedule.addAssignment(l813, lslot2);
+		schedule.addAssignment(l913, lslot1);
+		schedule.addAssignment(b313, nlslot1);
+		schedule.addAssignment(b413, nlslot1);
+		schedule.addAssignment(b813, nlslot2);
+		schedule.addAssignment(b913, nlslot2);
+		schedule.addAssignment(t313, nlslot1);
+		schedule.addAssignment(t413, nlslot1);
+		schedule.addAssignment(t813, nlslot2);
+		schedule.addAssignment(t913, nlslot2);
+
+		assertFalse(Constr.checkSpecialClasses(schedule));
 		assertFalse(schedule.isValid());
 		
 		// invalid
 		schedule = new Schedule(ls, nls, courses);
-		schedule.updateAssignment(l313, lslot2);
-		schedule.updateAssignment(l413, lslot2);
-		schedule.updateAssignment(l813, lslot1);
-		schedule.updateAssignment(l913, lslot1);
-		schedule.updateAssignment(b313, nlslot1);
-		schedule.updateAssignment(b413, nlslot1);
-		schedule.updateAssignment(b813, nlslot2);
-		schedule.updateAssignment(b913, nlslot2);
-		schedule.updateAssignment(t313, nlslot1);
-		schedule.updateAssignment(t413, nlslot1);
-		schedule.updateAssignment(t813, nlslot2);
-		schedule.updateAssignment(t913, nlslot2);
-		
-		constr = new Constr(schedule);
-		assertFalse(constr.checkSpecialClasses());
+		schedule.addAssignment(l313, lslot2);
+		schedule.addAssignment(l413, lslot2);
+		schedule.addAssignment(l813, lslot1);
+		schedule.addAssignment(l913, lslot1);
+		schedule.addAssignment(b313, nlslot1);
+		schedule.addAssignment(b413, nlslot1);
+		schedule.addAssignment(b813, nlslot2);
+		schedule.addAssignment(b913, nlslot2);
+		schedule.addAssignment(t313, nlslot1);
+		schedule.addAssignment(t413, nlslot1);
+		schedule.addAssignment(t813, nlslot2);
+		schedule.addAssignment(t913, nlslot2);
+
+		assertFalse(Constr.checkSpecialClasses(schedule));
 		assertFalse(schedule.isValid());
 		
 		// TODO more conditions

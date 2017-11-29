@@ -35,133 +35,71 @@ public class Eval {
 	 * Otherwise:
 	 * 
 	 * Total eval of a schedule:
-	 * 		Eval e = new Eval(schedule);
-	 * 		int value = e.getEval();
+	 * 		int value = Eval.getEval(schedule);
 	 * 
 	 * Total eval of a schedule if an assignment was added:
 	 * --> this does not add the assignment to the schedule
-	 * 		Eval e = new Eval(assignment, schedule);
-	 * 		int value = e.getEval();
+	 * 		int value = Eval.getEval(schedule, assignment);
 	 * 
-	 * To use weights, add them to the end of the parameters
-	 * e.g. Eval e = new Eval(schedule, 0.5, 1.5, 10, 0);
+	 * Weights are stored on the schedule
 	 * 
 	 * You can also check individual evals if you need:
-	 * 		e.getCourseMinEval()
-	 * 		e.getLabMinEval()
-	 * 		e.getPrefEval()
-	 * 		e.getPairEval()
-	 * 		e.getSecDiffEval()
+	 * 		Eval.getCourseMinEval(schedule)
+	 * 		Eval.getLabMinEval(schedule)
+	 * 		Eval.getPrefEval(schedule)
+	 * 		Eval.getPairEval(schedule)
+	 * 		Eval.getSecDiffEval(schedule)
 	 */
-	
-	// penalties
-	private double pen_coursemin;
-	private double pen_labmin;
-	private double pen_notpaired;
-	private double pen_section;
-	
-	// weights
-	private double wCMin;
-	private double wLMin;
-	private double wPref;
-	private double wPair;
-	private double wSecDiff;
-	
-	// instance
-	private Schedule schedule;
-	
-	/**
-	 * Constructor without weights
-	 * 
-	 * @param schedule Schedule data
-	 */
-	public Eval(Schedule schedule) {
-		this(schedule,1,1,1,1,1);
-	}
-	
-	/**
-	 * Constructor with weights
-	 * 
-	 * @param schedule Schedule data
-	 * @param min Weight for minimums
-	 * @param pref Weight for preference
-	 * @param pair Weight for pair
-	 * @param secD Weight for section diff
-	 */
-	public Eval(Schedule schedule, double cmin, double lmin, double pref, double pair, double secD) {
-		
-		pen_coursemin = 1;
-		pen_labmin = 1;
-		pen_notpaired = 1;
-		pen_section = 1;
-		
-		wCMin = cmin;
-		wLMin = lmin;
-		wPref= pref;
-		wPair = pair;
-		wSecDiff = secD;
-		
-		this.schedule = schedule;
-	}
-	
-	/**
-	 * Constructor for getting evaluation if an assignment was added
-	 * 
-	 * @param a Assignment
-	 * @param schedule Schedule data
-	 */
-	 // *** Use this to get eval of schedule if an assignment was added but WITHOUT 
-	 // actually adding it to the timetable ***
-	public Eval(Assignment a, Schedule schedule) {
-		this(new Schedule(a, schedule));
-	}
-	
-	/**
-	 * Constructor for getting evaluation if an assignment was added
-	 * (with weights)
-	 * 
-	 * @param a Assignment
-	 * @param schedule Schedule data
-	 */
-	 // *** Use this to get eval of schedule if an assignment was added but WITHOUT 
-	 // actually adding it to the timetable ***
-	public Eval(Assignment a, Schedule schedule, double cmin,
-			double lmin, double pref, double pair, double secD) {
-		this(new Schedule(a, schedule), cmin, lmin, pref, pair, secD);
-	}
 	
 	/**
 	 * Get total evaluation
 	 * 
+	 * @param s
 	 * @return Total evaluation of search instance
 	 */
-	public int getEval() {
-		return getCourseMinEval() 
-				+ getLabMinEval() 
-				+ getPrefEval() 
-				+ getPairEval() 
-				+ getSecDiffEval();
+	public static int getEval(Schedule s) {
+		return getCourseMinEval(s) 
+				+ getLabMinEval(s) 
+				+ getPrefEval(s) 
+				+ getPairEval(s) 
+				+ getSecDiffEval(s);
+	}
+	
+	/**
+	 * Get total evaluation if an assignment was added to
+	 * an existing schedule
+	 * 
+	 * @param s1
+	 * @param a
+	 * @return Total evaluation of search instance
+	 */
+	public static int getEval(Schedule s1, Meeting m, Slot s) {
+		Schedule s2 = new Schedule(s1, m, s);
+		return getEval(s2);
 	}
 	
 	/**
 	 * Print a breakdown of all the eval components and then the total
+	 * 
+	 * @param s
 	 */
-	public void printBreakdown() {
-		System.out.println("Cmin = "+getCourseMinEval());
-		System.out.println("Lmin = "+getLabMinEval());
-		System.out.println("Pref = "+getPrefEval());
-		System.out.println("Pair = "+getPairEval());
-		System.out.println("Sect = "+getSecDiffEval());
-		System.out.println("EVAL = "+getEval());
+	public static void printBreakdown(Schedule s) {
+		System.out.println("Cmin = "+getCourseMinEval(s));
+		System.out.println("Lmin = "+getLabMinEval(s));
+		System.out.println("Pref = "+getPrefEval(s));
+		System.out.println("Pair = "+getPairEval(s));
+		System.out.println("Sect = "+getSecDiffEval(s));
+		System.out.println("EVAL = "+getEval(s));
 	}
 	
 	/**
 	 * Get coursemin eval component
 	 * (penalty if slot has less courses than min)
 	 * 
+	 * @param schedule
 	 * @return Penalty for violating coursemin
 	 */
-	public int getCourseMinEval() {
+	public static int getCourseMinEval(Schedule schedule) {
     	double result = 0.0;
     	
     	// for each lecture slot in schedule
@@ -182,20 +120,21 @@ public class Eval {
         	
         	// add penalty for each course less than coursemin
     		if (count < ls.getCourseMin())
-    			result += (ls.getCourseMin() - count) * pen_coursemin;
+    			result += (ls.getCourseMin() - count) * schedule.getCourseMinPenalty();
     	}
     	
     	// return weighted result
-    	return (int) (wCMin*result);		
+    	return (int) (schedule.getCourseMinWeight()*result);		
 	}
 	
 	/**
 	 * Get labmin eval component
 	 * (penalty if slot has less labs than min)
 	 * 
+	 * @param schedule
 	 * @return Penalty for violating labmin
 	 */
-	public int getLabMinEval() {
+	public static int getLabMinEval(Schedule schedule) {
     	double result = 0.0;
     	
     	// for each nonlecture slot in schedule
@@ -215,20 +154,21 @@ public class Eval {
         	
         	// add penalty for each nonlecture less than labmin
     		if (count < nls.getLabMin())
-    			result += (nls.getLabMin() - count) * pen_labmin;
+    			result += (nls.getLabMin() - count) * schedule.getLabMinPenalty();
     	}
     	
     	// return weighted result
-    	return (int) (wLMin*result);
+    	return (int) (schedule.getLabMinWeight()*result);
 	}
 	
 	/**
 	 * Get preference eval component
 	 * (penalty if course not assigned to preferred slot)
 	 * 
+	 * @param schedule
 	 * @return Penalty for violating preferences
 	 */
-	public int getPrefEval() {
+	public static int getPrefEval(Schedule schedule) {
 		double result = 0.0;
 		
 		// for each assignment
@@ -247,16 +187,17 @@ public class Eval {
 		}
     	
     	// return weighted result
-    	return (int) (wPref*result);
+    	return (int) (schedule.getPrefWeight()*result);
 	}
 	 
 	/**
 	 * Get pair eval component
 	 * (penalty if courses not assigned to same slot)
 	 * 
+	 * @param schedule
 	 * @return Penalty for violating pairs
 	 */
-	public int getPairEval() {
+	public static int getPairEval(Schedule schedule) {
 		double result = 0.0;
 		
 		// TODO: the values are double what the spec says
@@ -302,11 +243,11 @@ public class Eval {
 			
 			// return false if slots overlap
 			if (!s1.equals(s2))
-				result += pen_notpaired;
+				result += schedule.getPairPenalty();
 		}
     	
     	// return weighted result
-		return (int) (wPair*result);
+		return (int) (schedule.getPairWeight()*result);
 	}
 	
 	/**
@@ -314,9 +255,10 @@ public class Eval {
 	 * (penalty if courses of the same section are assigned to the same slot)
 	 * (department constraint)
 	 * 
+	 * @param schedule
 	 * @return Penalty for violating section difference
 	 */
-	public int getSecDiffEval() {
+	public static int getSecDiffEval(Schedule schedule) {
 		double result = 0.0;
 		
 		// for each course in the schedule
@@ -350,7 +292,7 @@ public class Eval {
 							
 							// add penalty if slots match
 							if (a.getS().equals(b.getS()))
-								result += pen_section;
+								result += schedule.getSecDiffPenalty();
 						}
 					}
 				}
@@ -358,205 +300,6 @@ public class Eval {
 		}
 		
 		// return weighted result
-		return (int) (wSecDiff*result);
-	}
-	
-    /*
-     * Getters, setters
-     * 
-     */
-	
-	/**
-	 * Sets the weight values for the different evaluations
-	 * 
-	 * @param cmin
-	 * @param lmin
-	 * @param pref
-	 * @param pair
-	 * @param secdiff
-	 */
-	public void setWeights(double cmin, double lmin, double pref, double pair, double secdiff) {
-		wCMin = cmin;
-		wLMin = lmin;
-		wPref = pref;
-		wPair = pair;
-		wSecDiff = secdiff;
-	}
-	
-	/**
-	 * Set weight for coursemin
-	 * 
-	 * @param weight Weight value
-	 */
-	public void setCourseMinWeight(double weight) {
-		wCMin = weight;
-	}	
-	
-	/**
-	 * Set weight for labmin
-	 * 
-	 * @param weight Weight value
-	 */
-	public void setLabMinWeight(double weight) {
-		wLMin = weight;
-	}
-	
-	/**
-	 * Set weight for preferences
-	 * 
-	 * @param weight Weight value
-	 */
-	public void setPrefWeight(double weight) {
-		wPref = weight;
-	}
-	
-	/**
-	 * Set weight for pairs
-	 * 
-	 * @param weight Weight value
-	 */
-	public void setPairWeight(double weight) {
-		wPair = weight;
-	}
-	
-	/**
-	 * Set weight for section difference
-	 * 
-	 * @param weight Weight value
-	 */
-	public void setSecDiffWeight(double weight) {
-		wSecDiff = weight;
-	}
-	
-	/**
-	 * Get course min weight
-	 * 
-	 * @return Weight value
-	 */
-	public double getCourseMinWeight() {
-		return wCMin;
-	}
-	
-	/**
-	 * Get lab min weight
-	 * 
-	 * @return Weight value
-	 */
-	public double getLabMinWeight() {
-		return wLMin;
-	}
-	
-	/**
-	 * Get preference weight
-	 * 
-	 * @return Weight value
-	 */
-	public double getPrefWeight() {
-		return wPref;
-	}
-	
-	/**
-	 * Get pair weight
-	 * 
-	 * @return Weight value
-	 */
-	public double getPairWeight() {
-		return wPair;
-	}
-	
-	/**
-	 * Get section difference weight
-	 * 
-	 * @return Weight value
-	 */
-	public double getSecDiffWeight() {
-		return wSecDiff;
-	}
-	
-	/**
-	 * Sets the penalty values for the different evaluations
-	 * 
-	 * @param cmin pen_coursemin
-	 * @param lmin pen_labmin
-	 * @param pair pen_notpaired
-	 * @param secdiff pen_section
-	 */
-	public void setPenalties(double cmin, double lmin, double pair, double secdiff) {
-		pen_coursemin = cmin;
-		pen_labmin = lmin;
-		pen_notpaired = pair;
-		pen_section = secdiff;
-	}
-	
-	/**
-	 * Set penalty for coursemin
-	 * 
-	 * @param p Penalty
-	 */
-	public void setCourseMinPenalty(double p) {
-		pen_coursemin = p;
-	}	
-	
-	/**
-	 * Set penalty for labmin
-	 * 
-	 * @param p Penalty
-	 */
-	public void setLabMinPenalty(double p) {
-		pen_labmin = p;
-	}
-	
-	/**
-	 * Set penalty for pairs
-	 * 
-	 * @param p Penalty
-	 */
-	public void setPairPenalty(double p) {
-		pen_notpaired = p;
-	}
-	
-	/**
-	 * Set penalty for section difference
-	 * 
-	 * @param p Penalty
-	 */
-	public void setSecDiffPenalty(double p) {
-		pen_section = p;
-	}
-	
-	/**
-	 * Get course min penalty
-	 * 
-	 * @return Penalty
-	 */
-	public double getCourseMinPenalty() {
-		return pen_coursemin;
-	}
-	
-	/**
-	 * Get lab min penalty
-	 * 
-	 * @return Penalty
-	 */
-	public double getLabMinPenalty() {
-		return pen_labmin;
-	}
-	
-	/**
-	 * Get pair penalty
-	 * 
-	 * @return Penalty
-	 */
-	public double getPairPenalty() {
-		return pen_notpaired;
-	}
-	
-	/**
-	 * Get section difference penalty
-	 * 
-	 * @return Penalty
-	 */
-	public double getSecDiffPenalty() {
-		return pen_section;
+		return (int) (schedule.getSecDiffWeight()*result);
 	}
 }

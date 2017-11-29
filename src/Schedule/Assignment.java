@@ -38,6 +38,18 @@ public class Assignment implements Comparable{
         ap = null;
     }
     
+    /**
+     * Make a copy of an assignment
+     * 
+     * @param a The assignment
+     */
+    public Assignment(Assignment a) {
+    	m = a.getM();
+    	s = a.getS();
+    	m.setAssignment(this);
+    	ap = a.getAp();
+    }
+    
     /*
      *  Getters and Setters
      */
@@ -94,10 +106,10 @@ public class Assignment implements Comparable{
             System.out.println("Problem with objects in assignment arraylist");
             System.exit(1);
         }
-        System.out.println("("+this.getM().toString()+") ["+this.getAp().toString()+"]");
-        System.out.println("("+((Assignment) a2).getM().toString()+") ["+((Assignment) a2).getAp().toString()+"]");
-        int value = AssignmentPriority.compare(this.ap, ((Assignment) a2).getAp());
-        System.out.println("Result: "+value);
+        //System.out.println("["+this.getAp().toString()+"]("+this.getM().toString()+")");
+        //System.out.println("["+((Assignment) a2).getAp().toString()+"] ("+((Assignment) a2).getM().toString()+")");
+        int value = AssignmentPriority.compare(((Assignment) a2).getAp(), this.ap);
+        //System.out.println("Result: "+value);
         return value;
     }
     

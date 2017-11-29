@@ -103,4 +103,23 @@ public class NonLectureSlot extends Slot {
         this.labmin = labmin;
     }
     
+    /**
+     * equals() Overrides the default implementation.
+     * compares two NonLectureSlots for equality
+     * TODO may want to add functionality for comparing labmin labmax
+     * @param o
+     * @return 
+     */
+    public boolean equals(Object o){
+        NonLectureSlot nls;
+        try{
+            nls = (NonLectureSlot) o;
+        }catch(ClassCastException cce){
+            return false;
+        }
+        return this.day.equals(nls.day) && this.hour == nls.hour
+                && this.minute == nls.minute && this.endhour == nls.endhour 
+                && this.endminute == nls.endminute;
+    }
+    
 }

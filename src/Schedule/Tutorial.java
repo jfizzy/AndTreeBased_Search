@@ -65,4 +65,27 @@ public class Tutorial extends NonLecture {
         }
     }
 
+    public boolean equals(Object o) {
+        Tutorial t;
+        try {
+            t = (Tutorial) o;
+        } catch (ClassCastException cce) {
+            return false;
+        }
+        if (this.tutNum.equals(t.getTutNum())) {
+            if (this.getParentSection() != null && t.getParentSection() != null) {
+                return this.getParentSection().getSectionNum().equals(t.getParentSection().getSectionNum())
+                        && this.getParentSection().getParentCourse().getDepartment().equals(t.getParentSection().getParentCourse().getDepartment())
+                        && this.getParentSection().getParentCourse().getNumber().equals(t.getParentSection().getParentCourse().getNumber());
+            } else if (this.getParentSection() == null && t.getParentSection() == null) {
+                return this.getParentCourse().getDepartment().equals(t.getParentCourse().getDepartment())
+                        && this.getParentCourse().getNumber().equals(t.getParentCourse().getNumber());
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    
 }
