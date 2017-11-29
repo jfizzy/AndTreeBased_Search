@@ -110,7 +110,7 @@ public class Node {
     	//schedule.printAssignments();
     	
     	// check if the schedule is complete, if so return it
-        if (start == null || schedule.isComplete()) {
+        if (schedule.isValid() && (start == null || schedule.isComplete())) {
             System.out.println("the schedule is full!");
             
             // if the eval is better than bound, reset the bound
@@ -122,7 +122,7 @@ public class Node {
         
         // generate child nodes if we didn't yet for this node
         // and if this node is not solved yet
-        if (children.size() == 0 && !this.isSolved()) {
+        if (children.size() == 0) {
         	
         	// if we are assigning a lecture
 	        if (start.getM() instanceof Lecture) {
@@ -216,7 +216,7 @@ public class Node {
 	        		
 	        		//System.out.println("x "+depth);
 	        		solEntry = true;
-	        		children.clear();
+	        		//children.clear();
 	        		return null;
 	        	}
 	
@@ -228,7 +228,6 @@ public class Node {
 	        		choice.setSolved();
 	        		//children.remove(choice);
 	        		System.out.println("- "+depth);
-	        		//if (parent != null) return null;
 	        	}
         	}
         		
@@ -260,11 +259,11 @@ public class Node {
         		int t;
         		if (tmp != null) {
         			
-        			if (tmp.isComplete() && (t = tmp.eval()) < bound) 
+        			if (tmp.isComplete() && tmp.isValid() && (t = tmp.eval()) < bound) 
         				bound = t;
         		
         			// save the best of the schedules
-        			if (best == null || tmp.eval() < best.eval())
+        			if (best == null || (tmp.eval() < best.eval() && tmp.isValid()))
         				best = tmp;
         		}
         		
@@ -276,11 +275,11 @@ public class Node {
         	// clear child nodes, and return to parent
         	if (best == null) {
         		solEntry = true;
-        		children.clear();
-        		return null;
+        		//children.clear();
+        		//return null;
         	}
         	
-        	solEntry = true;
+        	//solEntry = true;
 	        return best;
         }
     }

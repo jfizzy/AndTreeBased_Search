@@ -91,6 +91,8 @@ public class SearchManager {
 
             // print eval breakdown
             Eval.printBreakdown(optimal);
+            
+            //optimal.printAssignments();
         }
         
         else {

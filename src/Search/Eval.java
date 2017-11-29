@@ -182,12 +182,12 @@ public class Eval {
 				
 				// add preference value to penalty if slot doesn't match
 				if (!a.getS().equals(p.getSlot()))
-					result += p.getValue();
+					result += 0;//p.getValue();
 			}
 		}
     	
     	// return weighted result
-    	return 0;//(int) (schedule.getPrefWeight()*result);
+    	return (int) (schedule.getPrefWeight()*result);
 	}
 	 
 	/**
