@@ -15,6 +15,7 @@ package Search;
 
 import Schedule.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 
@@ -99,6 +100,7 @@ public class Node implements Comparable<Node> {
 		 * call, so that in the end the original function call will return the
 		 * solved schedule.
          */
+    	
         // print the assignments for this node
         //schedule.printAssignments();
         // get the current bound value
@@ -130,7 +132,9 @@ public class Node implements Comparable<Node> {
         // depth-first search (get the first solution quickly to get a bound value)
         if (bound == -1) {
             return depthFirstSearch();
-        } // normal search with bound value (go through the entire tree)
+        } 
+        
+        // normal search with bound value (go through the entire tree)
         else {
             return andTreeSearch(bound);
         }
@@ -142,7 +146,7 @@ public class Node implements Comparable<Node> {
     private void generateNodes(int bound) {
 
         // if we haven't generated the children yet and if the node isn't solved
-        if (children.size() == 0 && !solEntry) {
+        if (children.size() == 0) { // && !solEntry
 
             // if we are assigning a lecture
             if (start.getM() instanceof Lecture) {
@@ -173,7 +177,9 @@ public class Node implements Comparable<Node> {
                         this.addChildNode(n);
                     }
                 }
-            } // if we are assigning a nonlecture
+            } 
+            
+            // if we are assigning a nonlecture
             else {
                 NonLecture nl = (NonLecture) start.getM();
 
@@ -193,7 +199,7 @@ public class Node implements Comparable<Node> {
                         String id = nl.toString() + " " + nls.toString();
                         Node n = new Node(s, this, id, depth + 1);
 
-                        // skip making node if we have a bound value and the eval is greater
+                        // skip making node if we have a bound value and the eval is greater or equal
                         if (bound > -1 && n.getEval() >= bound) {
                             continue;
                         }
@@ -215,7 +221,8 @@ public class Node implements Comparable<Node> {
     private Schedule andTreeSearch(int bound) {
 
         // sort the child nodes by best eval
-        //children.sort(NodeComparator);
+        children.sort(NodeComparator);
+    	
         // try to get the best child node
         Schedule best = null;
         Iterator<Node> it = children.iterator();
@@ -243,17 +250,20 @@ public class Node implements Comparable<Node> {
                 if (result.isComplete() && resulteval < bound) {
                     bound = resulteval;
                     sm.setBound(bound);
-                } // if the result is worse than bound, set child solved and skip
-                else if (resulteval > bound) {
-                    n.setSolved();
-                    continue;
                 }
 
                 // save the best of the schedules
                 if (best == null || (resulteval < best.eval())) {
                     best = result;
                 }
-            } // if we got an invalid result
+                
+                // if the result is worse than bound, set child solved
+                if (resulteval > bound) {
+                    n.setSolved();
+                }
+            } 
+            
+            // if we got an invalid result
             else {
                 // remove child node
                 it.remove();
@@ -266,6 +276,7 @@ public class Node implements Comparable<Node> {
         // if no solutions clear children
         //if (best == null) 
         //	children.clear();
+        
         // set solved and return the best schedule from the child nodes (or null)
         this.setSolved();
         return best;
