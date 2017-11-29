@@ -91,6 +91,43 @@ public class Schedule {
         wPair = 1;
         wSecDiff = 1;
     }
+    
+    /**
+     * Constructor for copying a schedule
+     * 
+     * @param orig The schedule
+     */
+    public Schedule(Schedule orig) {
+    	
+    	// keep original lists
+        lslots = orig.getLectureSlots();
+        nlslots = orig.getNonLectureSlots();
+        courses = orig.getCourses();
+        lectures = orig.getLectures();
+        labs = orig.getLabs();
+        tuts = orig.getTuts();
+        pairs = orig.getPairs();
+        noncompatible = orig.getNoncompatible();
+
+        // keep original penalties and weights
+        pen_coursemin = orig.getCourseMinPenalty();
+        pen_labmin = orig.getLabMinPenalty();
+        pen_notpaired = orig.getPairPenalty();
+        pen_section = orig.getSecDiffPenalty();
+        wCMin = orig.getCourseMinWeight();
+        wLMin = orig.getLabMinWeight();
+        wPref = orig.getPrefWeight();
+        wPair = orig.getPairWeight();
+        wSecDiff = orig.getSecDiffWeight();
+        
+        // make a copy of assignments list
+        if (orig.getAssignments() != null) {
+	        assignments = new ArrayList<>();
+	        for (int i = 0; i < orig.getAssignments().size(); i++) {
+	        	assignments.add(new Assignment(orig.getAssignments().get(i)));
+	        }
+        }
+    }
 
     /**
      * Constructor for Constr/Eval
