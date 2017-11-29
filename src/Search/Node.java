@@ -27,6 +27,8 @@ public class Node {
 	
     // A search tree is composed of a schedule, and it's sub tree, these need to be parameters
     // Additionally, there is a parent to the tree, and root should have a null parent
+	
+	private static int bound;
 
 	private final ArrayList<Node> children;	// list of child nodes
     private Schedule schedule;	// schedule for this node
@@ -35,6 +37,7 @@ public class Node {
     private Assignment start;	// the assignment to try for this node's branches
     private String id;			// identifier string for the node
     private int depth;			// level of the tree the node is at
+    private int eval;
 
     /**
      * Constructor for the root node
@@ -49,6 +52,11 @@ public class Node {
         start = schedule.findFirstNull(); // get first null assignment
         id = "ROOT";
         depth = 0;
+        eval = -1;
+        bound = -1;
+        
+        //Collections.shuffle(schedule.getLectureSlots());
+        //Collections.shuffle(schedule.getNonLectureSlots());
     }
     
     /**
@@ -67,6 +75,7 @@ public class Node {
         start = schedule.findFirstNull(); // get first null assignment
         this.id = id;
         this.depth = depth;
+        eval = -1;
     }
     
     /**
@@ -75,7 +84,7 @@ public class Node {
      * @param bound Bound value
      * @return The schedule
      */
-    Schedule runSearch(int bound) {
+    Schedule runSearch(int boundVal) {
     	
     	/*
 		 * The first time, it is run on the root node.
@@ -94,18 +103,26 @@ public class Node {
 		 * solved schedule.
     	 */
     	
+    	if (bound > boundVal || bound == -1) 
+    		bound = boundVal;
+    	
     	// print the assignments for this node
     	//schedule.printAssignments();
     	
     	// check if the schedule is complete, if so return it
-        if (start == null || schedule.isComplete()) {
+        if (schedule.isValid() && (start == null || schedule.isComplete())) {
             System.out.println("the schedule is full!");
+            
+            // if the eval is better than bound, reset the bound
+            if (bound > this.getEval() || bound == -1) 
+        		bound = this.getEval();
+            
             return schedule;
         }
         
         // generate child nodes if we didn't yet for this node
         // and if this node is not solved yet
-        if (children.size() == 0 && !this.isSolved()) {
+        if (children.size() == 0) {
         	
         	// if we are assigning a lecture
 	        if (start.getM() instanceof Lecture) {
@@ -122,10 +139,16 @@ public class Node {
 	            	// check if the schedule would be valid if we made the assignment
 	            	if (schedule.isValidWith(l, ls)) {
 	            		
-	            		// add the new child node if valid
+	            		// make the new child node if valid
 	            		Schedule s = new Schedule(schedule, l, ls);
 	            		String id = l.toString()+" "+ls.toString();
 	            		Node n = new Node(s, this, id, depth+1);
+	            		
+	            		// skip making node if we have a bound value and the eval is greater
+	            		if (bound > -1 && n.getEval() >= bound)
+	            			continue;
+	            		
+	            		// add the new node
 	            		this.addChildNode(n);
 	            	}
 	            }
@@ -144,10 +167,16 @@ public class Node {
 	        		// check if the schedule would be valid if we made the assignment
 	            	if (schedule.isValidWith(nl, nls)) {
 	            		
-	            		// add the new child node if valid
+	            		// make the new child node if valid
 	            		Schedule s = new Schedule(schedule, nl, nls);
 	            		String id = nl.toString()+" "+nls.toString();
 	            		Node n = new Node(s, this, id, depth+1);
+	            		
+	            		// skip making node if we have a bound value and the eval is greater
+	            		if (bound > -1 && n.getEval() >= bound)
+	            			continue;
+	            		
+	            		// add the new node
 	            		this.addChildNode(n);
 	            	}
 	            }
@@ -155,7 +184,7 @@ public class Node {
         }
         
         // depth-first search (get the first solution quickly to get a bound value)
-        if (bound == 0) {
+        if (bound == -1) {
         	
         	// print :
         	// number of children,
@@ -187,19 +216,18 @@ public class Node {
 	        		
 	        		//System.out.println("x "+depth);
 	        		solEntry = true;
-	        		children.clear();
+	        		//children.clear();
 	        		return null;
 	        	}
 	
 	        	// recurse search on chosen child node:
 	        	// 	if result is null (meaning all branches of that node are solved),
 	        	// 	we will loop to the next choice (if any remain)
-	        	result = choice.runSearch(0);
+	        	result = choice.runSearch(-1);
 	        	if (result == null) {
 	        		choice.setSolved();
 	        		//children.remove(choice);
 	        		System.out.println("- "+depth);
-	        		//if (parent != null) return null;
 	        	}
         	}
         		
@@ -207,25 +235,52 @@ public class Node {
         	return result;
         }
         
-        // normal search (go through entire tree)
+        // normal search with bound value (go through the entire tree)
         else {
         	
-        	// TODO
-        	/*
-        	SubNode choice = null;
-	        for (Node ch : this.getChildNodes()) {
-	        	
-	        	SubNode child = (SubNode) ch;
-	        	if (child.isSolved())
-	        		continue;
-	        	else if (choice == null) 
-	        		choice = child;
-	        	else if (choice.eval() > child.eval())
-	        		choice = child;
-	        }
-	        */
+        	// print :
+        	// number of children,
+        	// depth in tree, 
+        	// id of current node (meeting and slot)
+            System.out.println(children.size() +" "+depth+" "+id+" "+bound);
         	
-	        return schedule;
+        	// for each child node
+        	Schedule best = null;
+        	//Collections.shuffle(children);
+        	for (Node n : children) {
+        		
+        		// skip if solved
+        		if (n.isSolved()) continue;
+        		
+        		// run search for the node
+        		Schedule tmp = n.runSearch(bound);
+        		
+        		// reset bound value if complete and better
+        		int t;
+        		if (tmp != null) {
+        			
+        			if (tmp.isComplete() && tmp.isValid() && (t = tmp.eval()) < bound) 
+        				bound = t;
+        		
+        			// save the best of the schedules
+        			if (best == null || (tmp.eval() < best.eval() && tmp.isValid()))
+        				best = tmp;
+        		}
+        		
+        		// set the node to solved
+        		n.setSolved();
+        	}
+        	
+        	// if there are no unsolved child nodes, set solved,
+        	// clear child nodes, and return to parent
+        	if (best == null) {
+        		solEntry = true;
+        		//children.clear();
+        		//return null;
+        	}
+        	
+        	//solEntry = true;
+	        return best;
         }
     }
 
@@ -287,5 +342,15 @@ public class Node {
      */
     public Node getParent() {
     	return parent;
+    }
+    
+    /**
+     * @return
+     */
+    public int getEval() {
+    	
+    	if (eval == -1)
+    		eval = schedule.eval();
+    	return eval;
     }
 }

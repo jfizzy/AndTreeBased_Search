@@ -254,7 +254,7 @@ public class Schedule {
     }
 
     /**
-     * Check if the schedule is completely assigned
+     * Check if the schedule is completely assigned in a valid way
      * 
      * @return True if all courses have an assignment, false if there is work left to do
      */
@@ -269,7 +269,7 @@ public class Schedule {
 		}
 		
 		// if we got here no slots are null
-		return true;
+		return this.isValid();
     }
     
     /**
@@ -511,6 +511,8 @@ public class Schedule {
     		// skip if meeting doesn't match
     		if (a.getM() != m)
     			continue;
+    		
+    		a.getM().setAssignment(a);
     		
     		// otherwise set slot and return
     		a.setS(s);
