@@ -65,6 +65,10 @@ public class SearchManager {
     	// find the best solution
         if (schedule.isValid() && schedule.isPossible()) {
         	
+        	// convert assignments list to array
+        	//schedule.generateAssignmentArray();
+        	//schedule.clearAssignments();
+        	
         	// get the first solution quickly (depth-first search)
         	// runSearch arg: bound = 0 for first run
         	Node rootNode = new Node(schedule);
@@ -79,7 +83,7 @@ public class SearchManager {
             Eval.printBreakdown(first);
             
             // run the whole search using the bound value we got
-            Schedule optimal = rootNode.runSearch(bound);   
+            //Schedule optimal = rootNode.runSearch(bound);   
             
             // check if valid (meets hard constraints)
             //Constr.printViolations(optimal);

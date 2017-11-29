@@ -16,6 +16,7 @@ package Search;
 
 import Schedule.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Node class - defines the fields and methods for a node of an And-tree
@@ -45,7 +46,7 @@ public class Node {
         solEntry = false;
         children = new ArrayList<>();
         parent = null;
-        start = schedule.findFirstNull();
+        start = schedule.findFirstNull(); // get first null assignment
         id = "ROOT";
         depth = 0;
     }
@@ -56,13 +57,14 @@ public class Node {
      * @param s Schedule
      * @param n Parent node
      * @param id Node identifier string
+     * @param depth The depth within the tree
      */
     public Node(Schedule s, Node n, String id, int depth) {
         schedule = s;
         solEntry = false;
         children = new ArrayList<>();
         parent = n;
-        start = schedule.findFirstNull();
+        start = schedule.findFirstNull(); // get first null assignment
         this.id = id;
         this.depth = depth;
     }
@@ -70,9 +72,8 @@ public class Node {
     /**
      * Main recursive search function which is run on each node.
      * 
-     * @param depthFirst
-     * @param depth
-     * @return
+     * @param bound Bound value
+     * @return The schedule
      */
     Schedule runSearch(int bound) {
     	
@@ -82,7 +83,7 @@ public class Node {
 		 * The function calls itself on child nodes to progress down the tree.
 		 * 
 		 * If there are no options to go down the tree, the function returns null,
-		 * which is detected by the parent node (who called the function), then
+		 * which is detected by the parent node (which called the function), then
 		 * the next option at the parent node is taken.
 		 * 
 		 * If there are no other options to take, then the parent node's function
@@ -185,7 +186,7 @@ public class Node {
 	        	if (choice == null) {
 	        		
 	        		//System.out.println("x "+depth);
-	        		this.setSolved();
+	        		solEntry = true;
 	        		children.clear();
 	        		return null;
 	        	}
@@ -195,10 +196,10 @@ public class Node {
 	        	// 	we will loop to the next choice (if any remain)
 	        	result = choice.runSearch(0);
 	        	if (result == null) {
-	        		
 	        		choice.setSolved();
 	        		//children.remove(choice);
 	        		System.out.println("- "+depth);
+	        		//if (parent != null) return null;
 	        	}
         	}
         		
