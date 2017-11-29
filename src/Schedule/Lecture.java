@@ -38,4 +38,17 @@ public class Lecture extends Meeting{
         String sec = this.getParentSection().getSectionNum();
         return (dept + " " + cNum + " LEC " + sec);
     }  
+    
+    @Override
+    public boolean equals(Object o){
+        Lecture l;
+        try{
+            l = (Lecture) o;
+        }catch(ClassCastException cce){
+            return false;
+        }
+        return this.getParentSection().getSectionNum().equals(l.getParentSection().getSectionNum())
+                && this.getParentSection().getParentCourse().getDepartment().equals(l.getParentSection().getParentCourse().getDepartment())
+                && this.getParentSection().getParentCourse().getNumber().equals(l.getParentSection().getParentCourse().getNumber());
+    }
 }
