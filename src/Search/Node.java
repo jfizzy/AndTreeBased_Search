@@ -53,7 +53,10 @@ public class Node {
         id = "ROOT";
         depth = 0;
         eval = -1;
-        bound = 0;
+        bound = -1;
+        
+        //Collections.shuffle(schedule.getLectureSlots());
+        //Collections.shuffle(schedule.getNonLectureSlots());
     }
     
     /**
@@ -100,7 +103,7 @@ public class Node {
 		 * solved schedule.
     	 */
     	
-    	if (bound > boundVal || bound == 0) 
+    	if (bound > boundVal || bound == -1) 
     		bound = boundVal;
     	
     	// print the assignments for this node
@@ -111,7 +114,7 @@ public class Node {
             System.out.println("the schedule is full!");
             
             // if the eval is better than bound, reset the bound
-            if (bound > this.getEval() || bound == 0) 
+            if (bound > this.getEval() || bound == -1) 
         		bound = this.getEval();
             
             return schedule;
@@ -142,7 +145,7 @@ public class Node {
 	            		Node n = new Node(s, this, id, depth+1);
 	            		
 	            		// skip making node if we have a bound value and the eval is greater
-	            		if (bound > 0 && n.getEval() >= bound)
+	            		if (bound > -1 && n.getEval() >= bound)
 	            			continue;
 	            		
 	            		// add the new node
@@ -170,7 +173,7 @@ public class Node {
 	            		Node n = new Node(s, this, id, depth+1);
 	            		
 	            		// skip making node if we have a bound value and the eval is greater
-	            		if (bound > 0 && n.getEval() >= bound)
+	            		if (bound > -1 && n.getEval() >= bound)
 	            			continue;
 	            		
 	            		// add the new node
@@ -181,7 +184,7 @@ public class Node {
         }
         
         // depth-first search (get the first solution quickly to get a bound value)
-        if (bound == 0) {
+        if (bound == -1) {
         	
         	// print :
         	// number of children,
@@ -220,7 +223,7 @@ public class Node {
 	        	// recurse search on chosen child node:
 	        	// 	if result is null (meaning all branches of that node are solved),
 	        	// 	we will loop to the next choice (if any remain)
-	        	result = choice.runSearch(0);
+	        	result = choice.runSearch(-1);
 	        	if (result == null) {
 	        		choice.setSolved();
 	        		//children.remove(choice);
@@ -273,7 +276,7 @@ public class Node {
         	// clear child nodes, and return to parent
         	if (best == null) {
         		solEntry = true;
-        		//children.clear();
+        		children.clear();
         		return null;
         	}
         	

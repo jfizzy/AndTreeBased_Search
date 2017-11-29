@@ -187,7 +187,7 @@ public class Eval {
 		}
     	
     	// return weighted result
-    	return (int) (schedule.getPrefWeight()*result);
+    	return 0;//(int) (schedule.getPrefWeight()*result);
 	}
 	 
 	/**
