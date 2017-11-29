@@ -38,6 +38,18 @@ public class Assignment implements Comparable{
         ap = null;
     }
     
+    /**
+     * Make a copy of an assignment
+     * 
+     * @param a The assignment
+     */
+    public Assignment(Assignment a) {
+    	m = a.getM();
+    	s = a.getS();
+    	m.setAssignment(this);
+    	ap = a.getAp();
+    }
+    
     /*
      *  Getters and Setters
      */

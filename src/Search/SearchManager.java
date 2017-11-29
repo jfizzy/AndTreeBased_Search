@@ -24,9 +24,26 @@ public class SearchManager {
 
     //----------------------------------------------------------------
     // TODO for the actual search:
+	
     // create tree/node classes, data structures, done, AndSearchTreeNode
     // create functions for adding/removing nodes, traversing tree, in AndSearchTreeNode
     // implement a way to tell if the goal condition is met, done, in Schedule
+	
+	//implement and-tree search (branch and bound):
+	// start at the rootNode node with no assignments - done
+	// generate all possible branches - each represents one added assignment
+	//	     (branches must satisfy Constr) 
+	//don't want to do this, it will take too long to generate everything first. You can generate locally. 
+	// do a depth-first search to determine the bound value
+	//	     (find the first valid solution quickly, then set bound to its Eval value)
+	// go back to the rootNode node
+	// take branch with the lowest Eval
+	//	     (close off branches if Eval greater than bound)
+	// generate all possible branches for the new node
+	// if solution Eval < bound, set bound to new Eval value
+	// return to rootNode node, evaluate all possible solutions with Eval < bound
+	//	     (final solution = lowest Eval leaf)
+	
     //----------------------------------------------------------------
     private Schedule schedule; 	// all the data required for the search
     private int bound;			// the bound value
@@ -44,20 +61,41 @@ public class SearchManager {
      * Run the search
      */
     public void run() {
-        // print the assignments
-        this.schedule.printAssignments();
 
-        // check if valid (meets hard constraints)
-        Constr.printViolations(this.schedule);
+    	// find the best solution
+        if (schedule.isValid() && schedule.isPossible()) {
+        	
+        	// convert assignments list to array
+        	//schedule.generateAssignmentArray();
+        	//schedule.clearAssignments();
+        	
+        	// get the first solution quickly (depth-first search)
+        	// runSearch arg: bound = 0 for first run
+        	Node rootNode = new Node(schedule);
+            Schedule first = rootNode.runSearch(0);
+            int bound = first.eval();
+            first.printAssignments();
+            
+            // check if valid (meets hard constraints)
+            Constr.printViolations(first);
 
-        // print eval breakdown
-        Eval.printBreakdown(this.schedule);
+            // print eval breakdown
+            Eval.printBreakdown(first);
+            
+            // run the whole search using the bound value we got
+            //Schedule optimal = rootNode.runSearch(bound);   
+            
+            // check if valid (meets hard constraints)
+            //Constr.printViolations(optimal);
 
-        if (schedule.isValid()) {
-            SearchProcess sp = new SearchProcess(this.schedule);
-            Schedule sol = sp.run(); // find the best solution
+            // print eval breakdown
+            //Eval.printBreakdown(optimal);
         }
-
+        
+        else {
+        	System.out.println("Impossible starting schedule");
+        	return;
+        }
     }
 
     /**
@@ -88,16 +126,15 @@ public class SearchManager {
                     // make a random assignment for the course
                     int rand = ThreadLocalRandom.current().nextInt(0, schedule.getLectureSlots().size());
                     Slot slot = schedule.getLectureSlots().get(rand);
-                    Assignment a = new Assignment(l, slot);
 
                     // add the assignment, checking if it is valid
-                    if (Constr.check(this.schedule, a)) {
-                        schedule.addAssignment(a);
+                    if (Constr.check(this.schedule, l, slot)) {
+                        schedule.addAssignment(l, slot);
                         break;
                     }
                     if (i == max - 1) {
                         System.out.println("Course violated Constr");
-                        schedule.addAssignment(a); // add anyway
+                        schedule.addAssignment(l, slot); // add anyway
                     }
 
                 }
@@ -113,16 +150,15 @@ public class SearchManager {
                 // make a random assignment for the nonlecture
                 int rand = ThreadLocalRandom.current().nextInt(0, schedule.getNonLectureSlots().size());
                 Slot slot = schedule.getNonLectureSlots().get(rand);
-                Assignment a = new Assignment(nl, slot);
 
                 // add the assignment, checking if it is valid
-                if (Constr.check(this.schedule, a)) {
-                    schedule.addAssignment(a);
+                if (Constr.check(this.schedule, nl, slot)) {
+                    schedule.addAssignment(nl, slot);
                     break;
                 }
                 if (i == max - 1) {
                     System.out.println("Lab violated Constr");
-                    schedule.addAssignment(a); // add anyway
+                    schedule.addAssignment(nl, slot); // add anyway
                 }
             }
         }
