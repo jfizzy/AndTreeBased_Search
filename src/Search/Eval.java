@@ -60,7 +60,7 @@ public class Eval {
 	public static int getEval(Schedule s) {
 		return getCourseMinEval(s) 
 				+ getLabMinEval(s) 
-				+ getPrefEval(s) 
+				//+ getPrefEval(s) 
 				+ getPairEval(s) 
 				+ getSecDiffEval(s);
 	}
@@ -182,7 +182,7 @@ public class Eval {
 				
 				// add preference value to penalty if slot doesn't match
 				if (!a.getS().equals(p.getSlot()))
-					result += 0;//p.getValue();
+					result += p.getValue();
 			}
 		}
     	

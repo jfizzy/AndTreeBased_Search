@@ -359,9 +359,8 @@ public class Constr {
 				NonLecture nl = (NonLecture) a.getM();
 				Section nlsec = nl.getParentSection();
 				if (lsec.equals(nlsec))
-						//|| (lsec.getParentCourse().equals(nl.getParentCourse())
-						//		&& (lsec.getParentCourse().getOpenLabs().contains(a.getM())
-						//				|| lsec.getParentCourse().getOpenTuts().contains(a.getM()))));
+						//|| lsec.getParentCourse().getOpenLabs().contains(a.getM())
+						//|| lsec.getParentCourse().getOpenTuts().contains(a.getM()));
 					return false;
 			}
 		}
