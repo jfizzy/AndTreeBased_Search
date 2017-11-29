@@ -39,6 +39,14 @@ public class InputParser {
         schedule.setNoncompatible(generateIncompatibilities(courses));
         generateUnwanted(courses, lecSlots, nonlecSlots);
         generatePreferences(schedule, lecSlots, nonlecSlots);
+        System.out.println("Preferences that exist:");
+        for(Assignment a : schedule.getAssignments()){
+            Meeting m = a.getM();
+            System.out.println("Relating to "+m.toString());
+            for(Preference p : m.getPreferences()){
+                System.out.println(p.toString());
+            }
+        }
         schedule.setPairs(generatePairs(courses));
         applyPartialAssignments(schedule);
         orderAssignments(schedule);
@@ -224,16 +232,16 @@ public class InputParser {
                         if (ls == null) {
                             System.out.println("[!Preference - no such lecture slot was found]");
                             problem = true;
-                        }
-                        if (!ls.isActive()) {
+                        } else if (!ls.isActive()) {
                             System.out.println("[!Preference - no such active lecture slot was found]");
                             problem = true;
-                        }
-                        // check for duplicates
-                        for (Preference p : assignment.getM().getPreferences()) {
-                            if (p.getSlot().equals(ls)) {
-                                System.out.println("[!Preference - duplicate preference declaration]");
-                                problem = true;
+                        } else {
+                            // check for duplicates
+                            for (Preference p : assignment.getM().getPreferences()) {
+                                if (p.getSlot().equals(ls)) {
+                                    System.out.println("[!Preference - duplicate preference declaration]");
+                                    problem = true;
+                                }
                             }
                         }
                         if (!problem) {
@@ -245,16 +253,16 @@ public class InputParser {
                         if (nls == null) {
                             System.out.println("[!Preference - no such lab slot was found]");
                             problem = true;
-                        }
-                        if (!nls.isActive()) {
+                        } else if (!nls.isActive()) {
                             System.out.println("[!Preference - no such active lab slot was found]");
                             problem = true;
-                        }
-                        // check for duplicates
-                        for (Preference p : assignment.getM().getPreferences()) {
-                            if (p.getSlot().equals(nls)) {
-                                System.out.println("[!Preference - duplicate preference declaration]");
-                                problem = true;
+                        } else {
+                            // check for duplicates
+                            for (Preference p : assignment.getM().getPreferences()) {
+                                if (p.getSlot().equals(nls)) {
+                                    System.out.println("[!Preference - duplicate preference declaration]");
+                                    problem = true;
+                                }
                             }
                         }
                         if (!problem) {
