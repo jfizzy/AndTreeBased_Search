@@ -59,4 +59,9 @@ public class Preference {
 	public void setValue(int value) {
 		this.value = value;
 	}
+        
+        @Override
+        public String toString(){
+            return this.s.toString() + " = (" + this.value+")";
+        }
 }
