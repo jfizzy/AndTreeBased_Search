@@ -133,18 +133,15 @@ public class InputParser {
                 ls = ScheduleUtils.findLectureSlot(schedule.getLectureSlots(), slotString);
                 if (ls == null) {
                     System.out.println("[!Partial assignment - no such lecture slot was found]");
-                    return;
                 } else {
                     //set assignment to this slot
                     m.getAssignment().setS(ls);
                     System.out.println("[Partial assignment - " + ((Lecture) m).toString() + " <=> " + ls.toString() + "]");
-                    return;
                 }
             } else if (m instanceof NonLecture) {
                 nls = ScheduleUtils.findNonLectureSlot(schedule.getNonLectureSlots(), slotString);
                 if (nls == null) {
                     System.out.println("[!Partial assignment - no such non lecture slot was found]");
-                    return;
                 } else {
                     // set assignment to this slot
                     m.getAssignment().setS(nls);
@@ -167,10 +164,23 @@ public class InputParser {
             Meeting r = ScheduleUtils.findMeeting(courses, parts[1]);
 
             if (l != null && r != null) { // if both are found
-                l.addPaired(r);
-                r.addPaired(l);
-                result.add(new MeetingPair(l, r));
-                System.out.println("[Pair - " + l.toString() + " === " + r.toString() + "]");
+                boolean duplicate = false;
+                for (Meeting m : l.getPaired()) {
+                    if (m.equals(r)) {
+                        for (Meeting n : r.getPaired()) {
+                            if (n.equals(l)) {
+                                duplicate = true;
+                                System.out.println("[!Pair - duplicate declaration of pair]");
+                            }
+                        }
+                    }
+                }
+                if (!duplicate) {
+                    l.addPaired(r);
+                    r.addPaired(l);
+                    result.add(new MeetingPair(l, r));
+                    System.out.println("[Pair - " + l.toString() + " === " + r.toString() + "]");
+                }
             } else {
                 System.out.println("[!Pair - could not find at least one meeting]");
             }
@@ -275,11 +285,18 @@ public class InputParser {
             } else if (m == null) {
                 System.out.println("Could not find the meeting");
             } else {
-                if(m.getUnwanted().contains(s)){
-                    System.out.println("[!Unwanted - duplicate unwanted declaration]");
+                boolean same = false;
+                for (Slot os : m.getUnwanted()) {
+                    if (os.equals(s)) {
+                        same = true;
+                    }
                 }
-                m.addUnwanted(s); // set it
-                System.out.println("[Unwanted - " + m.toString() + " & " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + "]");
+                if (same) {
+                    System.out.println("[!Unwanted - duplicate unwanted declaration]");
+                } else {
+                    m.addUnwanted(s); // set it
+                    System.out.println("[Unwanted - " + m.toString() + " & " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + "]");
+                }
             }
         });
     }
@@ -306,10 +323,18 @@ public class InputParser {
 
             if (l != null && r != null) { // if both are found
                 // check for duplicate
-                if (l.getIncompatibility().contains(r) && r.getIncompatibility().contains(l)) {
-                    // duplicate incompatibility
-                    System.out.println("[!Not compatible - duplicate declaration of incompatibility]");
-                } else {
+                boolean duplicate = false;
+                for (Meeting m : l.getIncompatibility()) {
+                    if (m.equals(r)) {
+                        for (Meeting n : r.getIncompatibility()) {
+                            if (n.equals(l)) {
+                                duplicate = true;
+                                System.out.println("[!Not compatible - duplicate declaration of incompatibility]");
+                            }
+                        }
+                    }
+                }
+                if (!duplicate) {
                     l.addIncompatibility(r); // give them 
                     r.addIncompatibility(l); // the same incompatibility
                     result.add(new MeetingPair(l, r));

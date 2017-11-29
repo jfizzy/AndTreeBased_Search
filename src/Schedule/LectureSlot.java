@@ -105,4 +105,24 @@ public class LectureSlot extends Slot {
         this.coursemin = cmin;
     }
     
+    /**
+     * equals() Overrides the default implementation.
+     * compares two NonLectureSlots for equality
+     * TODO may want to add functionality for comparing coursemin
+     * coursemax
+     * @param o
+     * @return true if same, false otherwise
+     */
+    public boolean equals(Object o){
+        LectureSlot ls;
+        try{
+            ls = (LectureSlot) o;
+        }catch(ClassCastException cce){
+            return false;
+        }
+        return this.day.equals(ls.day) && this.hour == ls.hour
+                && this.minute == ls.minute && this.endhour == ls.endhour 
+                && this.endminute == ls.endminute;
+    }
+    
 }
