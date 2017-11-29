@@ -84,7 +84,7 @@ public class Node implements Comparable<Node> {
      * @param bound Bound value
      * @return The schedule
      */
-    Schedule runSearch() {
+    public Schedule runSearch() {
     	
     	/*
 		 * The first time, it is run on the root node.
@@ -213,7 +213,7 @@ public class Node implements Comparable<Node> {
 	private Schedule andTreeSearch(int bound) {
 		
 		// sort the child nodes by best eval
-		children.sort(NodeComparator);
+		//children.sort(NodeComparator);
 		
 		// try to get the best child node
 		Schedule best = null;
@@ -226,18 +226,18 @@ public class Node implements Comparable<Node> {
 			// skip if solved
 			if (n.isSolved()) continue;
 
-			// print the child node's depth and id string, the current bound value
+			// print the child node's depth + id string + the current bound value
 			System.out.println(n.depth+" "+n.id+" "+bound);
 			
 			// run the search for the child node
-			Schedule tmp = n.runSearch();
+			Schedule result = n.runSearch();
 			
 			// if we got a valid result
-			if (tmp != null && tmp.isValid()) {
+			if (result != null && result.isValid()) {
 				
 				// set the bound value if the result is complete and better
-				int resulteval = tmp.eval();
-				if (tmp.isComplete() && resulteval < bound) {
+				int resulteval = result.eval();
+				if (result.isComplete() && resulteval < bound) {
 					bound = resulteval;
 					sm.setBound(bound);
 				}
@@ -250,13 +250,13 @@ public class Node implements Comparable<Node> {
 			
 				// save the best of the schedules
 				if (best == null || (resulteval < best.eval()))
-					best = tmp;
+					best = result;
 			}
 			
 			// if we got an invalid result
 			else {
 				// remove child node
-				//it.remove();
+				it.remove();
 			}
 			
 			// set the node to solved
