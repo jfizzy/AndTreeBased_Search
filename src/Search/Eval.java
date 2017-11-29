@@ -60,7 +60,7 @@ public class Eval {
 	public static int getEval(Schedule s) {
 		return getCourseMinEval(s) 
 				+ getLabMinEval(s) 
-				//+ getPrefEval(s) 
+				+ getPrefEval(s) 
 				+ getPairEval(s) 
 				+ getSecDiffEval(s);
 	}

@@ -69,11 +69,12 @@ public class SearchManager {
         	//schedule.generateAssignmentArray();
         	//schedule.clearAssignments();
         	
+        	// create the root node
+        	Node rootNode = new Node(schedule, this);
+        	
         	// get the first solution quickly (depth-first search)
         	bound = -1;
-        	Node rootNode = new Node(schedule, this);
             Schedule first = rootNode.runSearch();
-            bound = first.eval();
             first.printAssignments();
             
             // check if valid (meets hard constraints)
@@ -83,6 +84,7 @@ public class SearchManager {
             Eval.printBreakdown(first);
             
             // run the whole search using the bound value we got
+            bound = first.eval();
             Schedule optimal = rootNode.runSearch();
             optimal.printAssignments();
             
@@ -91,8 +93,6 @@ public class SearchManager {
 
             // print eval breakdown
             Eval.printBreakdown(optimal);
-            
-            //optimal.printAssignments();
         }
         
         else {
