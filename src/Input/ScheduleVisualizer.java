@@ -23,11 +23,16 @@ public class ScheduleVisualizer {
     public static final int NUM_ROWS = 16;
     public static final int NUM_COLUMNS = 6;
     
-   
+    private Schedule finalSchedule;
+    
+   public ScheduleVisualizer(Schedule fs)
+   {
+       this.finalSchedule = fs;
+   }
     
     Schedule schedule;
     
-    public void run(Schedule finalSchedule)
+    public void run()
     {
         try{
             StringBuilder htmlSB = new StringBuilder();
@@ -121,6 +126,9 @@ public class ScheduleVisualizer {
             
             // Print Meetings
             
+            printAssignments(htmlSB, this.finalSchedule);
+            System.out.println("test_outside");
+            
             //printMeeting(htmlSB, MARGIN_WIDTH, MARGIN_WIDTH, "CPSC 313 LEC 01 TUT 04");
             
             
@@ -184,7 +192,7 @@ public class ScheduleVisualizer {
     }
     
    
-/*
+
     private void printAssignments(StringBuilder htmlSB, Schedule schedule)
     {
         String colour;
@@ -193,31 +201,55 @@ public class ScheduleVisualizer {
         int width;
         int height;
         ArrayList<Assignment> assignments = schedule.getAssignments();
-        ArrayList<Slot> slots;
+        ArrayList<Slot> slots = new ArrayList<>();
+        Slot s;
         
+        
+        //Make an arraylist of all the slots used in this schedule.
         for(Assignment a : assignments)
         {
+            System.out.println(a.toString());
             if(a.getS() instanceof LectureSlot)
             {
-                LectureSlot s = new LectureSlot(a.getS());
+                s = (LectureSlot)a.getS();
             }
             else
-            if(!existsInArray(slots, s))
             {
-                
+                s = (NonLectureSlot)a.getS();
+            }
+            if(!existsInArray(slots, s) | slots.isEmpty())
+            {
+                slots.add(s);
             }
      
         }
+        
+        System.out.println("test1");
+        
+        for(Slot a : slots)
+        {
+            System.out.println("test");
+            if(a != null)
+            System.out.println(a.toString());
+            
+            
+            System.out.println("Length of slots array is " + slots.size());
+        }
+        
+        
     }
-*/
+
     
     private boolean existsInArray(ArrayList<Slot> slots, Slot slot)
     {
         boolean exists = false;
         for (Slot s : slots)
         {
-            if(s.equals(slot))
-                exists = true;
+            if(s != null)
+            {
+                if(s.equals(slot))
+                    exists = true;
+            }
         }
         
         return exists;
