@@ -83,7 +83,7 @@ public class SearchManager {
             Eval.printBreakdown(first);
             
             // run the whole search using the bound value we got
-            //Schedule optimal = rootNode.runSearch(bound);   
+            //Schedule optimal = rootNode.runSearch(bound);
             
             // check if valid (meets hard constraints)
             //Constr.printViolations(optimal);
