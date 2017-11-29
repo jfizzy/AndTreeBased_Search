@@ -201,7 +201,7 @@ public class InputParser {
             String meetingS = parts[2];
             int penalty = Integer.parseInt(parts[3]);
 
-            //System.out.println("Slot: " + slotS + ", Meeting: " + meetingS + ", Penalty: " + penalty);
+            System.out.println("Slot: " + slotS + ", Meeting: " + meetingS + ", Penalty: " + penalty);
             Meeting m = ScheduleUtils.findMeeting(sched.getCourses(), meetingS);
             if (m == null) {
                 System.out.println("[!Preference - no such lecture or lab was found]");
@@ -222,7 +222,6 @@ public class InputParser {
                 NonLectureSlot nls = null;
 
                 if (m instanceof Lecture) {
-                    //System.out.println("Meeting is a Lecture");
                     ls = ScheduleUtils.findLectureSlot(lSlots, slotS);
                     if (ls == null) {
                         System.out.println("[!Preference - no such lecture slot was found]");
@@ -230,13 +229,18 @@ public class InputParser {
                     }
                     if (!ls.isActive()) {
                         System.out.println("[!Preference - no such active lecture slot was found]");
-                        //System.out.println("that lecture slot is inactive");
                         return;
+                    }
+                    // check for duplicates
+                    for(Preference p : assignment.getM().getPreferences()){
+                        if(p.getSlot().equals(ls)){
+                            System.out.println("[!Preference - duplicate preference declaration]");
+                            return;
+                        }
                     }
                     Preference p = assignment.getM().addPreference(ls, penalty);
                     System.out.println("[Preference - " + assignment.getM().toString() + " -> " + p.getSlot().toString() + " " + p.getValue() + "]");
                 } else if (m instanceof NonLecture) {
-                    //System.out.println("Meeting is a NonLecture");
                     nls = ScheduleUtils.findNonLectureSlot(nlSlots, slotS);
                     if (nls == null) {
                         System.out.println("[!Preference - no such lab slot was found]");
@@ -244,13 +248,19 @@ public class InputParser {
                     }
                     if (!nls.isActive()) {
                         System.out.println("[!Preference - no such active lab slot was found]");
-                        //System.out.println("that non lecture slot is inactive");
                         return;
+                    }
+                    // check for duplicates
+                    for(Preference p : assignment.getM().getPreferences()){
+                        if(p.getSlot().equals(nls)){
+                            System.out.println("[!Preference - duplicate preference declaration]");
+                            return;
+                        }
                     }
                     Preference p = assignment.getM().addPreference(nls, penalty);
                     System.out.println("[Preference - " + assignment.getM().toString() + " -> " + p.getSlot().toString() + " = " + p.getValue() + "]");
                 } else {
-                    System.out.println("Wierd error, not a lecture or a non lecture");
+                    System.out.println("[!Preference - wierd error, not a lecture or a non lecture]");
                 }
 
             }
