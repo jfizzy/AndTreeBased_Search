@@ -236,6 +236,7 @@ public class InputParser {
                             System.out.println("[!Preference - no such active lecture slot was found]");
                             problem = true;
                         } else {
+                        	//System.out.println(ls.toString());
                             // check for duplicates
                             for (Preference p : assignment.getM().getPreferences()) {
                                 if (p.getSlot().equals(ls)) {

@@ -85,23 +85,22 @@ public class SearchManager {
             Constr.printViolations(first);
 
             // print eval breakdown
-            //Eval.printBreakdown(first);
-            for (Schedule s : solutions) {
-            	Eval.printBreakdown(s);
-            }
+            Eval.printBreakdown(first);
             
             // run the whole search using the bound value we got
             bound = first.eval();
-            Schedule optimal = rootNode.runSearch();
+            rootNode.runSearch();
             
-            // 
+            Schedule optimal = null;
+            for (Schedule s : solutions) {
+            	if (optimal == null || s.eval() < optimal.eval())
+            		optimal = s;
+            }
+            
+            // print optimal stuff
             optimal.printAssignments();
             Constr.printViolations(optimal);
-            //Eval.printBreakdown(optimal);
-            
-            for (Schedule s : solutions) {
-            	Eval.printBreakdown(s);
-            }
+            Eval.printBreakdown(optimal);
         }
         
         else {

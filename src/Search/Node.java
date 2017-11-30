@@ -103,6 +103,7 @@ public class Node implements Comparable<Node> {
     	
         // print the assignments for this node
         //schedule.printAssignments();
+    	
         // get the current bound value
         int bound = sm.getBound();
 
@@ -115,7 +116,7 @@ public class Node implements Comparable<Node> {
             }
 
             // set this node solved
-            //this.setSolved();
+            this.setSolved();
             if (schedule.isComplete() && schedule.isValid()) {
             	sm.addSolution(schedule);
             }
@@ -139,7 +140,7 @@ public class Node implements Comparable<Node> {
         
         // normal search with bound value (go through the entire tree)
         else {
-            return andTreeSearch(bound);
+            return andTreeSearch2(bound);
         }
     }
 
@@ -149,7 +150,7 @@ public class Node implements Comparable<Node> {
     private void generateNodes(int bound) {
 
         // if we haven't generated the children yet and if the node isn't solved
-        if (children.size() == 0) { // && !solEntry
+        if (children.size() == 0 && !solEntry) { // && !solEntry
 
             // if we are assigning a lecture
             if (start.getM() instanceof Lecture) {
@@ -213,6 +214,70 @@ public class Node implements Comparable<Node> {
                 }
             }
         }
+    }
+    
+    /**
+     * Run the And-Tree search at this node
+     *
+     * @param bound Bound value
+     * @return The found schedule
+     */
+    private Schedule andTreeSearch2(int bound) {
+
+        // sort the child nodes by best eval
+        children.sort(NodeComparator);
+    	
+        // try to get the best child node
+        Schedule best = null;
+        Iterator<Node> it = children.iterator();
+        while (it.hasNext()) {
+
+            // get the next child node
+            Node n = it.next();
+
+            // skip if eval worse than bound
+            if (n.getEval() > bound) {
+            	n.setSolved();
+                //continue;
+            }
+
+            // print the child node's depth + id string + the current bound value
+            System.out.println(n.depth + " " + n.id + " " + bound);
+
+            // run the search for the child node
+            Schedule result = n.runSearch();
+
+            // if we got a valid result
+            if (result != null && result.isComplete() && result.isValid()) {
+
+                // set the bound value if the result is complete and better
+                int resulteval = result.eval();
+                if (resulteval < bound) {
+                    bound = resulteval;
+                    sm.setBound(bound);
+                }
+                
+                //if (resulteval > bound) continue;
+
+                // save the best of the schedules
+                if (best == null || (resulteval < best.eval())) {
+                    best = result;
+                }
+            } 
+            
+            // if we got an invalid result
+            else {
+                // remove child node
+                it.remove();
+            }
+
+            // set the node to solved
+            n.setSolved();
+        }
+        
+        // set solved and return the best schedule from the child nodes (or null)
+        this.setSolved();
+        return best;
     }
 
     /**
