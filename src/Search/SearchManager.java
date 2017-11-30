@@ -64,7 +64,7 @@ public class SearchManager {
     /**
      * Run the search
      */
-    public void run() {
+    public Schedule run() {
 
     	// find the best solution
         if (schedule.isValid() && schedule.isPossible()) {
@@ -101,6 +101,8 @@ public class SearchManager {
             optimal.printAssignments();
             Constr.printViolations(optimal);
             Eval.printBreakdown(optimal);
+            
+            return optimal;
         }
         
         else {
