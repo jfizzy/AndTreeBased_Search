@@ -14,6 +14,8 @@
 package Search;
 
 import Schedule.*;
+
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -47,6 +49,7 @@ public class SearchManager {
     //----------------------------------------------------------------
     private Schedule schedule; 	// all the data required for the search
     private int bound;			// the bound value
+    private ArrayList<Schedule> solutions;
 
     /**
      * Constructor
@@ -55,6 +58,7 @@ public class SearchManager {
      */
     public SearchManager(Schedule schedule) {
         this.schedule = schedule;
+        solutions = new ArrayList<>();
     }
 
     /**
@@ -81,18 +85,23 @@ public class SearchManager {
             Constr.printViolations(first);
 
             // print eval breakdown
-            Eval.printBreakdown(first);
+            //Eval.printBreakdown(first);
+            for (Schedule s : solutions) {
+            	Eval.printBreakdown(s);
+            }
             
             // run the whole search using the bound value we got
             bound = first.eval();
             Schedule optimal = rootNode.runSearch();
-            optimal.printAssignments();
             
-            // check if valid (meets hard constraints)
+            // 
+            optimal.printAssignments();
             Constr.printViolations(optimal);
-
-            // print eval breakdown
-            Eval.printBreakdown(optimal);
+            //Eval.printBreakdown(optimal);
+            
+            for (Schedule s : solutions) {
+            	Eval.printBreakdown(s);
+            }
         }
         
         else {
@@ -126,5 +135,16 @@ public class SearchManager {
      */
     public void setBound(int bound) {
     	this.bound = bound;
+    }
+    
+    /**
+     * @param s
+     */
+    public void addSolution(Schedule s) {
+    	solutions.add(s);
+    }
+    
+    public ArrayList<Schedule> getSolutions() {
+    	return solutions;
     }
 }

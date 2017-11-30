@@ -107,15 +107,18 @@ public class Node implements Comparable<Node> {
         int bound = sm.getBound();
 
         // check if the schedule is valid and complete, if so return it
-        if (schedule.isValid() && (start == null || schedule.isComplete())) {
+        if (start == null) {
 
             // if the eval is better than bound, reset the bound
-            if (bound > getEval() || bound == -1) {
+            if (schedule.isComplete() && (bound > getEval() || bound == -1)) {
                 sm.setBound(getEval());
             }
 
             // set this node solved
-            this.setSolved();
+            //this.setSolved();
+            if (schedule.isComplete() && schedule.isValid()) {
+            	sm.addSolution(schedule);
+            }
 
             System.out.println("the schedule is full!");
             return schedule;
@@ -123,7 +126,7 @@ public class Node implements Comparable<Node> {
 
         // return null if we already solved this node
         if (this.isSolved()) {
-            return null;
+            //return null;
         }
 
         // generate child nodes if we didn't yet for this node
@@ -243,23 +246,20 @@ public class Node implements Comparable<Node> {
             Schedule result = n.runSearch();
 
             // if we got a valid result
-            if (result != null && result.isValid()) {
+            if (result != null && result.isComplete() && result.isValid()) {
 
                 // set the bound value if the result is complete and better
                 int resulteval = result.eval();
-                if (result.isComplete() && resulteval < bound) {
+                if (resulteval < bound) {
                     bound = resulteval;
                     sm.setBound(bound);
                 }
+                
+                //if (resulteval > bound) continue;
 
                 // save the best of the schedules
                 if (best == null || (resulteval < best.eval())) {
                     best = result;
-                }
-                
-                // if the result is worse than bound, set child solved
-                if (resulteval > bound) {
-                    n.setSolved();
                 }
             } 
             
@@ -272,10 +272,6 @@ public class Node implements Comparable<Node> {
             // set the node to solved
             n.setSolved();
         }
-
-        // if no solutions clear children
-        //if (best == null) 
-        //	children.clear();
         
         // set solved and return the best schedule from the child nodes (or null)
         this.setSolved();
@@ -314,7 +310,7 @@ public class Node implements Comparable<Node> {
             // if we did not find an unsolved branch, set this node solved,
             // 	clear this node's children, and return to parent
             if (choice == null) {
-                this.setSolved();
+                //this.setSolved();
                 //children.clear();
                 return null;
             }
@@ -324,7 +320,7 @@ public class Node implements Comparable<Node> {
             // 	we will loop to the next choice (if any remain)
             result = choice.runSearch();
             if (result == null) {
-                choice.setSolved();
+                //choice.setSolved();
                 //children.remove(choice);
                 System.out.println("- " + depth);
             }
