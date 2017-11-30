@@ -84,15 +84,16 @@ public class AssignmentPriority{
      */
     public static int compare(AssignmentPriority ap1, AssignmentPriority ap2) {
         
+    	int result = 0;
+    	
     	// compare evening
         if(ap1.evening != ap2.evening){
             if(ap1.evening)
-                return 1; // ap1 > ap2
+                result += 1000; // ap1 > ap2
             else
-                return -1; // ap1 < ap2
+                result -= 1000; // ap1 < ap2
         }
         
-    	int result = 0;
     	// compare sum of preference penalties
         if(ap1.preferencePenaltySum != ap2.preferencePenaltySum){
             result += Integer.compare(ap1.preferencePenaltySum, ap2.preferencePenaltySum);

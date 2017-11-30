@@ -64,7 +64,7 @@ public class SearchManager {
     /**
      * Run the search
      */
-    public Schedule run() {
+    public void run() {
 
     	// find the best solution
         if (schedule.isValid() && schedule.isPossible()) {
@@ -89,7 +89,11 @@ public class SearchManager {
             
             // run the whole search using the bound value we got
             bound = first.eval();
-            rootNode.runSearch();
+            Schedule tmp = null;
+            do {
+            	tmp = rootNode.runSearch();
+            	System.out.println("DONE");
+            } while (!rootNode.isSolved());
             
             Schedule optimal = null;
             for (Schedule s : solutions) {
@@ -102,7 +106,7 @@ public class SearchManager {
             Constr.printViolations(optimal);
             Eval.printBreakdown(optimal);
             
-            return optimal;
+            System.out.println(solutions.size());
         }
         
         else {

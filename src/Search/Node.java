@@ -120,15 +120,16 @@ public class Node implements Comparable<Node> {
             if (schedule.isComplete() && schedule.isValid()) {
             	sm.addSolution(schedule);
             }
+            this.getParent().getChildNodes().remove(this);
 
             System.out.println("the schedule is full!");
             return schedule;
         }
 
         // return null if we already solved this node
-        if (this.isSolved()) {
-            //return null;
-        }
+        //if (this.isSolved()) {
+        //	return null;
+        //}
 
         // generate child nodes if we didn't yet for this node
         generateNodes(bound);
@@ -140,7 +141,7 @@ public class Node implements Comparable<Node> {
         
         // normal search with bound value (go through the entire tree)
         else {
-            return andTreeSearch();
+            return andTreeSearch2();
         }
     }
 
@@ -213,7 +214,65 @@ public class Node implements Comparable<Node> {
                     }
                 }
             }
+            
+            children.sort(NodeComparator);
         }
+    }
+    
+    /**
+     * Run the And-Tree search at this node
+     *
+     * @param bound Bound value
+     * @return The found schedule
+     */
+    private Schedule andTreeSearch2() {
+
+    	// sort the child nodes by best eval
+        //children.sort(NodeComparator);
+        
+    	int bound = sm.getBound();
+    	
+    	// print: 
+        System.out.println("["+depth+"] " + id + " ("+sm.getSolutions().size()+" solns) bound="+bound);
+
+        // loop until we get a result or we run out of unsolved child nodes to try
+        // 	(either result will be set to a non-null schedule
+        // 	or it will run out of choices and return out of the function)
+        Schedule result = null;
+        while (result == null) {
+
+            // choose the first unsolved branch
+            Node choice = null;
+            Iterator<Node> it = children.iterator();
+            while (it.hasNext()) {
+                Node n = it.next();
+                if (n.isSolved()) continue;
+                if (n.getEval() > bound) continue;
+                choice = n;
+                break;
+            }
+
+            // if we did not find an unsolved branch, set this node solved,
+            // 	clear this node's children, and return to parent
+            if (choice == null) {
+                this.setSolved();
+                children.clear();
+                return null;
+            }
+
+            // recurse search on chosen child node:
+            // 	if result is null (meaning all branches of that node are solved),
+            // 	we will loop to the next choice (if any remain)
+            result = choice.runSearch();
+            if (result == null) {
+                //choice.setSolved();
+                //children.remove(choice);
+                //System.out.println("- " + depth);
+            }
+        }
+
+        // return the result we got
+        return result;
     }
     
     /**
@@ -225,7 +284,7 @@ public class Node implements Comparable<Node> {
     private Schedule andTreeSearch() {
 
         // sort the child nodes by best eval
-        children.sort(NodeComparator);
+        //children.sort(NodeComparator);
     	
         // try to get the best child node
         Schedule best = null;
@@ -316,8 +375,8 @@ public class Node implements Comparable<Node> {
             // if we did not find an unsolved branch, set this node solved,
             // 	clear this node's children, and return to parent
             if (choice == null) {
-                //this.setSolved();
-                //children.clear();
+                this.setSolved();
+                children.clear();
                 return null;
             }
 
@@ -326,8 +385,8 @@ public class Node implements Comparable<Node> {
             // 	we will loop to the next choice (if any remain)
             result = choice.runSearch();
             if (result == null) {
-                //choice.setSolved();
-                //children.remove(choice);
+                choice.setSolved();
+                children.remove(choice);
                 System.out.println("- " + depth);
             }
         }
@@ -425,5 +484,6 @@ public class Node implements Comparable<Node> {
     public int compareTo(Node o) {
 
         return this.getEval() - o.getEval();
+    	//return this.getChildNodes().size() - o.getChildNodes().size();
     }
 }
