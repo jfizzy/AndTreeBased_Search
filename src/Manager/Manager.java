@@ -73,8 +73,8 @@ class Manager {
         }
     }
 
-    private static void usage() { // TODO make this clearer
-        System.out.println("Acceptable args are: inputfile [CourseMin weight] [LabMin weight] [Pref weight] [Pair weight]  [Diff weight]");
+    private static void usage() { 
+        System.out.println("Acceptable args are: inputfile [CourseMin weight] [LabMin weight] [Pref weight] [Pair weight] [Diff weight]");
         exit();
     }
 
