@@ -201,7 +201,7 @@ public class Eval {
 		double result = 0.0;
 		
 		// TODO: the values are double what the spec says
-		
+		/*
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
 			
@@ -226,9 +226,9 @@ public class Eval {
 				}
 			}
 		}
-		
+		*/
 		// TODO delete above or below
-		/*
+		
 		// for each pair in the pairs list
 		for (MeetingPair mp : schedule.getPairs()) {
 				
@@ -245,7 +245,7 @@ public class Eval {
 			if (!s1.equals(s2))
 				result += schedule.getPairPenalty();
 		}
-    	*/
+    	
     	// return weighted result
 		return (int) (schedule.getPairWeight()*result);
 	}

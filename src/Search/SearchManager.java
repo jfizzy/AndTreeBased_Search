@@ -64,7 +64,7 @@ public class SearchManager {
     /**
      * Run the search
      */
-    public void run() {
+    public Schedule run() {
 
     	// find the best solution
         if (schedule.isValid() && schedule.isPossible()) {
@@ -79,22 +79,25 @@ public class SearchManager {
         	// get the first solution quickly (depth-first search)
         	bound = -1;
             Schedule first = rootNode.runSearch();
-            first.printAssignments();
+            solutions.get(0).printAssignments();
             
             // check if valid (meets hard constraints)
-            Constr.printViolations(first);
+            Constr.printViolations(solutions.get(0));
 
             // print eval breakdown
-            Eval.printBreakdown(first);
+            Eval.printBreakdown(solutions.get(0));
             
             // run the whole search using the bound value we got
-            bound = first.eval();
+            // 	best-first search repeatedly until root node is solved (i.e. whole tree solved)
+            // 	(each complete valid solution is added to the solutions list)
+            bound = solutions.get(0).eval();//first.eval();
             Schedule tmp = null;
             do {
             	tmp = rootNode.runSearch();
             	System.out.println("DONE");
             } while (!rootNode.isSolved());
             
+            // get the optimal solution
             Schedule optimal = null;
             for (Schedule s : solutions) {
             	if (optimal == null || s.eval() < optimal.eval())
@@ -106,12 +109,18 @@ public class SearchManager {
             Constr.printViolations(optimal);
             Eval.printBreakdown(optimal);
             
-            System.out.println(solutions.size());
+            //for (Node child : rootNode.getChildNodes()) {
+            //	System.out.println("\n"+child.getID());
+            //	Eval.printBreakdown(child.getSchedule());
+            //}
+            
+            System.out.println("Got "+solutions.size()+" solns total");
+            return optimal;
         }
         
         else {
         	System.out.println("Impossible starting schedule");
-        	return;
+        	return null;
         }
     }
     

@@ -101,37 +101,39 @@ public class Node implements Comparable<Node> {
 		 * solved schedule.
          */
     	
-        // print the assignments for this node
-        //schedule.printAssignments();
-    	
         // get the current bound value
         int bound = sm.getBound();
+    	
+    	// print: 
+        System.out.println("["+depth+"] " + id + " ("+sm.getSolutions().size()+" solns) bound="+bound);
+        
+        // print the assignments for this node
+        //schedule.printAssignments();
 
         // check if the schedule is valid and complete, if so return it
-        if (start == null) {
+        if (schedule.isComplete()) {
 
             // if the eval is better than bound, reset the bound
-            if (schedule.isComplete() && (bound > getEval() || bound == -1)) {
+            if (bound > getEval() || bound == -1) {
                 sm.setBound(getEval());
             }
 
             // set this node solved
             this.setSolved();
-            if (schedule.isComplete() && schedule.isValid()) {
+            
+            // add the schedule to the solutions list
+            if (schedule.isValid() && (getEval() < bound || bound == -1)) {
             	sm.addSolution(schedule);
             }
-            this.getParent().getChildNodes().remove(this);
+            
+            // remove this node
+            //this.getParent().getChildNodes().remove(this);
 
             System.out.println("the schedule is full!");
-            return schedule;
+            return null;
         }
 
-        // return null if we already solved this node
-        //if (this.isSolved()) {
-        //	return null;
-        //}
-
-        // generate child nodes if we didn't yet for this node
+        // generate child nodes if we didn't yet for this node, sort by lowest eval
         generateNodes(bound);
 
         // depth-first search (get the first solution quickly to get a bound value)
@@ -151,7 +153,7 @@ public class Node implements Comparable<Node> {
     private void generateNodes(int bound) {
 
         // if we haven't generated the children yet and if the node isn't solved
-        if (children.size() == 0 && !solEntry) { // && !solEntry
+        if (children.size() == 0 && !solEntry) {
 
             // if we are assigning a lecture
             if (start.getM() instanceof Lecture) {
@@ -174,8 +176,8 @@ public class Node implements Comparable<Node> {
                         Node n = new Node(s, this, id, depth + 1);
 
                         // skip making node if we have a bound value and the eval is greater
-                        if (bound > -1 && n.getEval() >= bound) {
-                            continue;
+                        if (bound > -1 && n.getEval() > bound) {
+                            //continue;
                         }
 
                         // add the new node
@@ -205,8 +207,8 @@ public class Node implements Comparable<Node> {
                         Node n = new Node(s, this, id, depth + 1);
 
                         // skip making node if we have a bound value and the eval is greater or equal
-                        if (bound > -1 && n.getEval() >= bound) {
-                            continue;
+                        if (bound > -1 && n.getEval() > bound) {
+                            //continue;
                         }
 
                         // add the new node
@@ -226,14 +228,8 @@ public class Node implements Comparable<Node> {
      * @return The found schedule
      */
     private Schedule andTreeSearch2() {
-
-    	// sort the child nodes by best eval
-        //children.sort(NodeComparator);
-        
+    	if (parent != null && getEval() > parent.getEval()) return null;
     	int bound = sm.getBound();
-    	
-    	// print: 
-        System.out.println("["+depth+"] " + id + " ("+sm.getSolutions().size()+" solns) bound="+bound);
 
         // loop until we get a result or we run out of unsolved child nodes to try
         // 	(either result will be set to a non-null schedule
@@ -246,8 +242,9 @@ public class Node implements Comparable<Node> {
             Iterator<Node> it = children.iterator();
             while (it.hasNext()) {
                 Node n = it.next();
+            	//System.out.println(" --> "+n.getEval());
                 if (n.isSolved()) continue;
-                if (n.getEval() > bound) continue;
+                //if (n.getEval() >= bound) continue;
                 choice = n;
                 break;
             }
@@ -256,7 +253,7 @@ public class Node implements Comparable<Node> {
             // 	clear this node's children, and return to parent
             if (choice == null) {
                 this.setSolved();
-                children.clear();
+                //children.clear();
                 return null;
             }
 
@@ -282,9 +279,8 @@ public class Node implements Comparable<Node> {
      * @return The found schedule
      */
     private Schedule andTreeSearch() {
-
-        // sort the child nodes by best eval
-        //children.sort(NodeComparator);
+    	
+    	/* THIS VERSION IS NOT IN USE */
     	
         // try to get the best child node
         Schedule best = null;
@@ -298,15 +294,9 @@ public class Node implements Comparable<Node> {
 
             // skip if eval worse than bound
             if (n.getEval() > bound) {
-            	n.setSolved();
-                continue;
+            	//n.setSolved();
+                //continue;
             }
-
-            // print the child node's depth 
-            // + id string 
-            // + the current bound value 
-            // + num of solutions so far
-            System.out.println(n.depth + " " + n.id + " " + bound + " " + sm.getSolutions().size());
 
             // run the search for the child node
             Schedule result = n.runSearch();
@@ -350,9 +340,6 @@ public class Node implements Comparable<Node> {
      */
     private Schedule depthFirstSearch() {
 
-        // print: number of children, depth in tree, id of current node (meeting and slot)
-        System.out.println(children.size() + " " + depth + " " + id);
-
         // loop until we get a result or we run out of unsolved child nodes to try
         // 	(either result will be set to a non-null schedule
         // 	or it will run out of choices and return out of the function)
@@ -376,7 +363,7 @@ public class Node implements Comparable<Node> {
             // 	clear this node's children, and return to parent
             if (choice == null) {
                 this.setSolved();
-                children.clear();
+                //children.clear();
                 return null;
             }
 
@@ -386,7 +373,7 @@ public class Node implements Comparable<Node> {
             result = choice.runSearch();
             if (result == null) {
                 choice.setSolved();
-                children.remove(choice);
+                //children.remove(choice);
                 System.out.println("- " + depth);
             }
         }
@@ -470,6 +457,13 @@ public class Node implements Comparable<Node> {
      */
     public SearchManager getSM() {
         return this.sm;
+    }
+    
+    /**
+     * @return
+     */
+    public String getID() {
+    	return id;
     }
 
     /**

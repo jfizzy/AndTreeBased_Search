@@ -84,39 +84,43 @@ public class AssignmentPriority{
      */
     public static int compare(AssignmentPriority ap1, AssignmentPriority ap2) {
         
-    	int result = 0;
-    	
+    	// compare sum of preference penalties
+        if(ap1.preferencePenaltySum != ap2.preferencePenaltySum){
+            return Integer.compare(ap1.preferencePenaltySum, ap2.preferencePenaltySum);
+        }
+        
     	// compare evening
         if(ap1.evening != ap2.evening){
             if(ap1.evening)
-                result += 1000; // ap1 > ap2
+                return 1000; // ap1 > ap2
             else
-                result -= 1000; // ap1 < ap2
+                return -1000; // ap1 < ap2
         }
         
-    	// compare sum of preference penalties
-        if(ap1.preferencePenaltySum != ap2.preferencePenaltySum){
-            result += Integer.compare(ap1.preferencePenaltySum, ap2.preferencePenaltySum);
+    	int result = 0;
+    	
+        // compare number of incompatibilities
+        if(ap1.incompatibilities != ap2.incompatibilities){
+            return Integer.compare(ap1.incompatibilities, ap2.incompatibilities);
+        }
+        
+        // compare num of pairs
+        if(ap1.pairs != ap2.pairs){
+            result += Integer.compare(ap1.pairs, ap2.pairs);
         }
         
         // compare num of unwanted
         if(ap1.unwanted != ap2.unwanted){
             result += Integer.compare(ap1.unwanted, ap2.unwanted);
         }
-        // compare num of pairs
-        if(ap1.pairs != ap2.pairs){
-            result += Integer.compare(ap1.pairs, ap2.pairs);
-        }
+
         if (result != 0) return result;
         
         // compare type
         if(ap1.type != ap2.type){
             return Integer.compare(ap1.type, ap2.type);
         }
-        // compare number of incompatibilities
-        if(ap1.incompatibilities != ap2.incompatibilities){
-            return Integer.compare(ap1.incompatibilities, ap2.incompatibilities);
-        }
+        
         // compare course number
         if(ap1.courseNum != ap2.courseNum){
             return Integer.compare(ap1.courseNum, ap2.courseNum);
