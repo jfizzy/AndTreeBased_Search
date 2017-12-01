@@ -97,24 +97,20 @@ public class AssignmentPriority{
                 return -1000; // ap1 < ap2
         }
         
-    	int result = 0;
+        // compare num of pairs
+        if(ap1.pairs != ap2.pairs){
+            return Integer.compare(ap1.pairs, ap2.pairs);
+        }
     	
         // compare number of incompatibilities
         if(ap1.incompatibilities != ap2.incompatibilities){
             return Integer.compare(ap1.incompatibilities, ap2.incompatibilities);
         }
         
-        // compare num of pairs
-        if(ap1.pairs != ap2.pairs){
-            result += Integer.compare(ap1.pairs, ap2.pairs);
-        }
-        
         // compare num of unwanted
         if(ap1.unwanted != ap2.unwanted){
-            result += Integer.compare(ap1.unwanted, ap2.unwanted);
+            return Integer.compare(ap1.unwanted, ap2.unwanted);
         }
-
-        if (result != 0) return result;
         
         // compare type
         if(ap1.type != ap2.type){

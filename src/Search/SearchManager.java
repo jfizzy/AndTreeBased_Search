@@ -109,6 +109,7 @@ public class SearchManager {
             Constr.printViolations(optimal);
             Eval.printBreakdown(optimal);
             
+            // print eval breakdown for all children of the root node
             //for (Node child : rootNode.getChildNodes()) {
             //	System.out.println("\n"+child.getID());
             //	Eval.printBreakdown(child.getSchedule());
