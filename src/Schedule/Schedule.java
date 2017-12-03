@@ -26,15 +26,15 @@ import Search.Eval;
  */
 public class Schedule {
 
-    private ArrayList<Assignment> assignments;	// list of assignments
+    private ArrayList<Assignment> assignments;          // list of assignments
     private Assignment[] assignArray;			// array of assignments
     private ArrayList<LectureSlot> lslots;		// list of lecture slots
-    private ArrayList<NonLectureSlot> nlslots;	// list of nonlecture slots
-    private ArrayList<Course> courses;		// list of courses
-    private ArrayList<Lecture> lectures;	// list of lectures (filled from courses)
+    private ArrayList<NonLectureSlot> nlslots;      	// list of nonlecture slots
+    private ArrayList<Course> courses;                  // list of courses
+    private ArrayList<Lecture> lectures;                // list of lectures (filled from courses)
     private ArrayList<Lab> labs;			// list of labs (filled from courses)
-    private ArrayList<Tutorial> tuts;		// list of tutorials (filled from courses)
-    private ArrayList<MeetingPair> pairs;			// list of paired courses
+    private ArrayList<Tutorial> tuts;                   // list of tutorials (filled from courses)
+    private ArrayList<MeetingPair> pairs;		// list of paired courses
     private ArrayList<MeetingPair> noncompatible;	// list of incompatible courses
     
 	// penalties

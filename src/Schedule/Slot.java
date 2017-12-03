@@ -51,6 +51,8 @@ public abstract class Slot {
     public boolean equals(Slot s) {
     	
     	if (s == null) return false;
+        else if ((s instanceof LectureSlot && this instanceof NonLectureSlot) || (s instanceof NonLectureSlot && this instanceof LectureSlot))
+            return false;
     	else if (this == s) return true;
     	else if (day == s.getDay() && hour == s.getHour() && minute == s.getMinute()
                 && endhour == s.getEndHour() && endminute == s.getEndMinute())
