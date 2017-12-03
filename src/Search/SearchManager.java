@@ -64,7 +64,7 @@ public class SearchManager {
     /**
      * Run the search
      */
-    public Schedule run() {
+    public void run() {
 
     	// find the best solution
         if (schedule.isValid() && schedule.isPossible()) {
@@ -116,12 +116,13 @@ public class SearchManager {
             //}
             
             System.out.println("Got "+solutions.size()+" solns total");
-            return optimal;
+            //return optimal;
+            schedule = optimal;
         }
         
         else {
         	System.out.println("Impossible starting schedule");
-        	return null;
+        	return;
         }
     }
     
