@@ -34,7 +34,7 @@ class Manager {
      */
     public static void main(String[] args) {
 
-        // one argument or 5
+        // one argument or 6 (the file name and then 5 weights) 
         try {
             if (args.length == 1 || args.length == 6) {
 
@@ -74,8 +74,8 @@ class Manager {
         }
     }
 
-    private static void usage() { // TODO make this clearer
-        System.out.println("Acceptable args are: inputfile [weight] [weight] [weight] [weight] [weight]");
+    private static void usage() { 
+        System.out.println("Acceptable args are: inputfile [CourseMin weight] [LabMin weight] [Pref weight] [Pair weight] [Diff weight]");
         exit();
     }
 

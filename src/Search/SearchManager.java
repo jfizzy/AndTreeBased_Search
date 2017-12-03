@@ -14,6 +14,8 @@
 package Search;
 
 import Schedule.*;
+
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -47,6 +49,7 @@ public class SearchManager {
     //----------------------------------------------------------------
     private Schedule schedule; 	// all the data required for the search
     private int bound;			// the bound value
+    private ArrayList<Schedule> solutions;
 
     /**
      * Constructor
@@ -55,12 +58,13 @@ public class SearchManager {
      */
     public SearchManager(Schedule schedule) {
         this.schedule = schedule;
+        solutions = new ArrayList<>();
     }
 
     /**
      * Run the search
      */
-    public void run() {
+    public Schedule run() {
 
     	// find the best solution
         if (schedule.isValid() && schedule.isPossible()) {
@@ -69,35 +73,58 @@ public class SearchManager {
         	//schedule.generateAssignmentArray();
         	//schedule.clearAssignments();
         	
+        	// create the root node
+        	Node rootNode = new Node(schedule, this);
+        	
         	// get the first solution quickly (depth-first search)
-        	// runSearch arg: bound = 0 for first run
-        	Node rootNode = new Node(schedule);
-            Schedule first = rootNode.runSearch(0);
-            int bound = first.eval();
-            first.printAssignments();
+        	bound = -1;
+            Schedule first = rootNode.runSearch();
+            solutions.get(0).printAssignments();
             
             // check if valid (meets hard constraints)
-            Constr.printViolations(first);
+            Constr.printViolations(solutions.get(0));
 
             // print eval breakdown
-            Eval.printBreakdown(first);
+            Eval.printBreakdown(solutions.get(0));
             
             // run the whole search using the bound value we got
-            //Schedule optimal = rootNode.runSearch(bound);   
+            // 	best-first search repeatedly until root node is solved (i.e. whole tree solved)
+            // 	(each complete valid solution is added to the solutions list)
+            bound = solutions.get(0).eval();//first.eval();
+            Schedule tmp = null;
+            do {
+            	tmp = rootNode.runSearch();
+            	System.out.println("DONE");
+            } while (!rootNode.isSolved());
             
-            // check if valid (meets hard constraints)
-            //Constr.printViolations(optimal);
-
-            // print eval breakdown
-            //Eval.printBreakdown(optimal);
+            // get the optimal solution
+            Schedule optimal = null;
+            for (Schedule s : solutions) {
+            	if (optimal == null || s.eval() < optimal.eval())
+            		optimal = s;
+            }
+            
+            // print optimal stuff
+            optimal.printAssignments();
+            Constr.printViolations(optimal);
+            Eval.printBreakdown(optimal);
+            
+            // print eval breakdown for all children of the root node
+            //for (Node child : rootNode.getChildNodes()) {
+            //	System.out.println("\n"+child.getID());
+            //	Eval.printBreakdown(child.getSchedule());
+            //}
+            
+            System.out.println("Got "+solutions.size()+" solns total");
+            return optimal;
         }
         
         else {
         	System.out.println("Impossible starting schedule");
-        	return;
+        	return null;
         }
     }
-
+    
     /**
      * Return the schedule
      *
@@ -106,125 +133,33 @@ public class SearchManager {
     public Schedule getSchedule() {
         return this.schedule;
     }
-
+    
     /**
-     * Fill the timetable randomly for testing
+     * Get the bound value
+     * 
+     * @return Bound value
      */
-    private void assignRandom() {
-        int max = 50;	// number of times to try to get a valid assignment
-
-        // for each course in schedule
-        for (Course c : schedule.getCourses()) {
-
-            // for each section in the course
-            for (Section s : c.getSections()) {
-                Lecture l = s.getLecture();
-
-                // try max times to fulfill constr
-                for (int i = 0; i < max; i++) {
-
-                    // make a random assignment for the course
-                    int rand = ThreadLocalRandom.current().nextInt(0, schedule.getLectureSlots().size());
-                    Slot slot = schedule.getLectureSlots().get(rand);
-
-                    // add the assignment, checking if it is valid
-                    if (Constr.check(this.schedule, l, slot)) {
-                        schedule.addAssignment(l, slot);
-                        break;
-                    }
-                    if (i == max - 1) {
-                        System.out.println("Course violated Constr");
-                        schedule.addAssignment(l, slot); // add anyway
-                    }
-
-                }
-            }
-        }
-
-        // for each nonlecture in schedule
-        for (NonLecture nl : schedule.getNonLectures()) {
-
-            // try max times to fulfill constr
-            for (int i = 0; i < max; i++) {
-
-                // make a random assignment for the nonlecture
-                int rand = ThreadLocalRandom.current().nextInt(0, schedule.getNonLectureSlots().size());
-                Slot slot = schedule.getNonLectureSlots().get(rand);
-
-                // add the assignment, checking if it is valid
-                if (Constr.check(this.schedule, nl, slot)) {
-                    schedule.addAssignment(nl, slot);
-                    break;
-                }
-                if (i == max - 1) {
-                    System.out.println("Lab violated Constr");
-                    schedule.addAssignment(nl, slot); // add anyway
-                }
-            }
-        }
+    public int getBound() {
+    	return bound;
     }
-
+    
     /**
-     * Add a random entry to each special input list (noncompatible, etc)
-     *
+     * Set the bound value
+     * 
+     * @param bound Bound value
      */
-    private void addRandomInput() {
-
-        // noncompatible (random course, random course)
-        int rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
-        Course c = schedule.getCourses().get(rand);
-        rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
-        Section s = c.getSections().get(rand);
-        Lecture l1 = s.getLecture();
-        rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
-        c = schedule.getCourses().get(rand);
-        rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
-        s = c.getSections().get(rand);
-        Lecture l2 = s.getLecture();
-        l1.addIncompatibility(l2);
-
-        // pair (random course, random course)
-        rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
-        c = schedule.getCourses().get(rand);
-        rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
-        s = c.getSections().get(rand);
-        l1 = s.getLecture();
-        rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
-        c = schedule.getCourses().get(rand);
-        rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
-        s = c.getSections().get(rand);
-        l2 = s.getLecture();
-        l1.addPaired(l2);
-
-        // unwanted (random course, random slot)
-        rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
-        c = schedule.getCourses().get(rand);
-        rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
-        s = c.getSections().get(rand);
-        l1 = s.getLecture();
-        rand = ThreadLocalRandom.current().nextInt(0, schedule.getLectureSlots().size());
-        LectureSlot ls = schedule.getLectureSlots().get(rand);
-        l1.addUnwanted(ls);
-
-        // partassign (random course, random slot)
-        rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
-        c = schedule.getCourses().get(rand);
-        rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
-        s = c.getSections().get(rand);
-        l1 = s.getLecture();
-        rand = ThreadLocalRandom.current().nextInt(0, schedule.getLectureSlots().size());
-        ls = schedule.getLectureSlots().get(rand);
-        l1.setPartassign(ls);
-
-        // preference (random course, random slot, value)
-        int pref = 100;
-        rand = ThreadLocalRandom.current().nextInt(0, schedule.getCourses().size());
-        c = schedule.getCourses().get(rand);
-        rand = ThreadLocalRandom.current().nextInt(0, c.getSections().size());
-        s = c.getSections().get(rand);
-        l1 = s.getLecture();
-        rand = ThreadLocalRandom.current().nextInt(0, schedule.getLectureSlots().size());
-        ls = schedule.getLectureSlots().get(rand);
-        l1.addPreference(ls, pref);
+    public void setBound(int bound) {
+    	this.bound = bound;
+    }
+    
+    /**
+     * @param s
+     */
+    public void addSolution(Schedule s) {
+    	solutions.add(s);
+    }
+    
+    public ArrayList<Schedule> getSolutions() {
+    	return solutions;
     }
 }

@@ -359,9 +359,8 @@ public class Constr {
 				NonLecture nl = (NonLecture) a.getM();
 				Section nlsec = nl.getParentSection();
 				if (lsec.equals(nlsec))
-						//|| (lsec.getParentCourse().equals(nl.getParentCourse())
-						//		&& (lsec.getParentCourse().getOpenLabs().contains(a.getM())
-						//				|| lsec.getParentCourse().getOpenTuts().contains(a.getM()))));
+						//|| lsec.getParentCourse().getOpenLabs().contains(a.getM())
+						//|| lsec.getParentCourse().getOpenTuts().contains(a.getM()));
 					return false;
 			}
 		}
@@ -422,7 +421,7 @@ public class Constr {
 	 * @return True if non-compatible constraint is met
 	 */
 	public static boolean checkNoncompatible(Schedule schedule) {
-		/*
+		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
 			
@@ -442,11 +441,11 @@ public class Constr {
 				}
 			}
 		}
-		*/
-		// TODO delete above
+		
+		// TODO delete one
 		
 		// for each pair in the noncompatible list
-		for (MeetingPair mp : schedule.getNoncompatible()) {
+		/*for (MeetingPair mp : schedule.getNoncompatible()) {
 			
 			// skip if unassigned
 			if (mp.getFirst().getAssignment() == null
@@ -458,9 +457,11 @@ public class Constr {
 				continue;
 			
 			// return false if slots overlap
-			if (s1.overlaps(s2))
+			if (s1.overlaps(s2)) {
+				System.out.println(mp.getFirst().toString() + "   " + mp.getSecond().toString() + "   " + s1.toString() + "   " + s2.toString());
 				return false;
-		}
+			}
+		}*/
 		
 		// if this is reached the constraint is satisfied
 		return true;

@@ -58,10 +58,10 @@ public class Eval {
 	 * @return Total evaluation of search instance
 	 */
 	public static int getEval(Schedule s) {
-		return getCourseMinEval(s) 
-				+ getLabMinEval(s) 
-				+ getPrefEval(s) 
-				+ getPairEval(s) 
+		return //getCourseMinEval(s) 
+				//+ getLabMinEval(s) 
+				 getPrefEval(s) 
+				+ getPairEval(s) // TODO find and fix problem
 				+ getSecDiffEval(s);
 	}
 	
@@ -201,7 +201,7 @@ public class Eval {
 		double result = 0.0;
 		
 		// TODO: the values are double what the spec says
-		/*
+		
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
 			
@@ -211,24 +211,18 @@ public class Eval {
 			// for each pair entry of the assignment's meeting
 			for (Meeting m : a.getM().getPaired()) {
 				
-				// for each other assignment
-				for (Assignment b : schedule.getAssignments()) {
-					if (a == b) continue;
+				Assignment b = m.getAssignment();
+				if (b == null || b.getS() == null) continue;
 					
-					// skip if unassigned or meeting doesn't match
-					if (b.getS() == null || b.getM() != m) continue;
-					
-					// add penalty if slot doesn't match
-					if (!a.getS().equals(b.getS())) {
-						result += pen_notpaired;
-						//System.out.println(a.getM().toString() + "   " + b.getM().toString());
-					}
+				// add penalty if slot doesn't match
+				if (!a.getS().equals(b.getS())) {
+					result += 0.5 * schedule.getPairPenalty();
 				}
 			}
 		}
-		*/
-		// TODO delete above
 		
+		// TODO delete above or below
+		/*
 		// for each pair in the pairs list
 		for (MeetingPair mp : schedule.getPairs()) {
 				
@@ -245,7 +239,7 @@ public class Eval {
 			if (!s1.equals(s2))
 				result += schedule.getPairPenalty();
 		}
-    	
+    	*/
     	// return weighted result
 		return (int) (schedule.getPairWeight()*result);
 	}
