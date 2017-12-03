@@ -17,6 +17,7 @@ import java.io.File;
 
 import Input.InputManager;
 import Schedule.Schedule;
+import Input.ScheduleVisualizer;
 import Search.SearchManager;
 import java.io.FileNotFoundException;
 
@@ -101,6 +102,9 @@ class Manager {
         //    throw e;
         //}
         System.out.println(">>> Done");
+        
+        ScheduleVisualizer vis = new ScheduleVisualizer(schedule);
+        vis.run();
     }
 
     /**
