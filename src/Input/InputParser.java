@@ -39,14 +39,6 @@ public class InputParser {
         schedule.setNoncompatible(generateIncompatibilities(courses));
         generateUnwanted(courses, lecSlots, nonlecSlots);
         generatePreferences(schedule, lecSlots, nonlecSlots);
-        System.out.println("Preferences that exist:");
-        for (Assignment a : schedule.getAssignments()) {
-            Meeting m = a.getM();
-            System.out.println("Relating to " + m.toString());
-            for (Preference p : m.getPreferences()) {
-                System.out.println(p.toString());
-            }
-        }
         schedule.setPairs(generatePairs(courses));
         if (applyPartialAssignments(schedule)) {
             orderAssignments(schedule);
