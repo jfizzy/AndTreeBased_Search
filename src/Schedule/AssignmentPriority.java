@@ -91,7 +91,7 @@ public class AssignmentPriority{
     	// compare sum of preference penalties
         if(ap1.preferencePenaltySum != ap2.preferencePenaltySum){
             //result += 250*Integer.compare(ap1.preferencePenaltySum, ap2.preferencePenaltySum);
-        	result += 250*(ap1.preferencePenaltySum - ap2.preferencePenaltySum);
+        	result += 500*(ap1.preferencePenaltySum - ap2.preferencePenaltySum);
         }
         
         // compare evening

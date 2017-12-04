@@ -22,38 +22,14 @@ import java.util.Stack;
  *
  */
 public class SearchManager {
-
-    //----------------------------------------------------------------
-    // TODO for the actual search:
 	
-    // create tree/node classes, data structures, done, AndSearchTreeNode
-    // create functions for adding/removing nodes, traversing tree, in AndSearchTreeNode
-    // implement a way to tell if the goal condition is met, done, in Schedule
-	
-	//implement and-tree search (branch and bound):
-	// start at the rootNode node with no assignments - done
-	// generate all possible branches - each represents one added assignment
-	//	     (branches must satisfy Constr) 
-	//don't want to do this, it will take too long to generate everything first. You can generate locally. 
-	// do a depth-first search to determine the bound value
-	//	     (find the first valid solution quickly, then set bound to its Eval value)
-	// go back to the rootNode node
-	// take branch with the lowest Eval
-	//	     (close off branches if Eval greater than bound)
-	// generate all possible branches for the new node
-	// if solution Eval < bound, set bound to new Eval value
-	// return to rootNode node, evaluate all possible solutions with Eval < bound
-	//	     (final solution = lowest Eval leaf)
-	
-    //----------------------------------------------------------------
-	
-    static double startEval;	// the eval of the initial schedule (root node schedule)
+    static double startEval;		// the eval of the initial schedule (root node schedule)
     
-    private Schedule schedule; 	// all the data required for the search
+    private Schedule schedule; 		// all the data required for the search
     private double bound;			// the bound value
-    private ArrayList<Schedule> solutions;
-    private Stack<Node> nodestack;
-    private Schedule best;
+    private Stack<Node> nodestack;	// stack for processing nodes
+    private Schedule best;			// the best schedule found so far
+    private ArrayList<Schedule> solutions;	// list of found solutions
 
     /**
      * Constructor
@@ -65,6 +41,7 @@ public class SearchManager {
         solutions = new ArrayList<>();
         nodestack = new Stack<>();
         best = null;
+        bound = -1;
     }
 
     /**
@@ -72,36 +49,31 @@ public class SearchManager {
      */
     public Schedule run() {
 
-    	// find the best solution
+    	// check if initial schedule is valid and solvable
         if (schedule.isValid() && schedule.isPossible()) {
-        	
-        	// convert assignments list to array
-        	//schedule.generateAssignmentArray();
-        	//schedule.clearAssignments();
         	
         	// create the root node
         	Node rootNode = new Node(schedule, this);
-        	bound = -1;
         	
         	// solve with stack method
         	nodestack.push(rootNode);
-        	Schedule result = stackSolve(); // see below this function
+        	Schedule result = stackSolve(); // see below for this function
         	
         	Eval.printBreakdown(result);
         	
         	/* THIS IS FOR THE RECURSIVE METHOD
-        	 * 
+        	 * (currently not in use)
+        	 
         	// get the first solution quickly (depth-first search)
-            //Schedule first = rootNode.runSearch();
-            //solutions.get(0).printAssignments();
+            Schedule first = rootNode.runSearch();
+            solutions.get(0).printAssignments();
             Constr.printViolations(solutions.get(0));
             Eval.printBreakdown(solutions.get(0));
             
             // run the whole search using the bound value we got
             // 	best-first search repeatedly until root node is solved (i.e. whole tree solved)
             // 	(each complete valid solution is added to the solutions list)
-        	Schedule tmp = rootNode.runSearch();
-        	System.out.println("DONE");
+        	Schedule result = rootNode.runSearch();
         	*/
             
             // get the best solution in the list
@@ -122,7 +94,7 @@ public class SearchManager {
         // started with an invalid schedule
         else {
         	System.out.println("Impossible starting schedule");
-        	return null;
+        	return schedule;
         }
     }
     
@@ -131,22 +103,18 @@ public class SearchManager {
      * 
      * @return Optimal schedule
      */
-    public Schedule stackSolve() { // TODO rename function probably
+    public Schedule stackSolve() {
     	
     	long startTime = System.currentTimeMillis();
     	long maxTime = 5 * 60 * 1000; // 5 minutes in milliseconds
     	
-    	// repeat until stack is empty (begins with root node)
+    	// repeat until stack is empty (begins with just root node on the stack)
     	while (!nodestack.isEmpty()) {
-    		
-    		// end if we have run out of time
-    		//if (System.currentTimeMillis() - startTime > maxTime) 
-    		//	break;
     		
     		// pop the top node off the stack
     		Node n = nodestack.pop();
         	
-        	// if we have a bound, skip if the node is worse
+        	// if we have a bound, drop node if worse than bound and initial eval
         	if (bound > -1 && n.getEval() >= bound && n.getEval() > startEval) 
         		continue;
         	
@@ -159,7 +127,7 @@ public class SearchManager {
     		if (n.getSchedule().isComplete()) {
     			
     			// set the new bound, add the solution to the list
-    			bound = n.getEval();
+    			if (bound == -1 || n.getEval() < bound) bound = n.getEval();
     			solutions.add(n.getSchedule());
     			//System.out.println("GOT SOLUTION   eval="+n.getEval()+"   ("+solutions.size()+" solns)");
     			
@@ -174,6 +142,10 @@ public class SearchManager {
     			n.generateNodes(bound);
     			nodestack.addAll(n.getChildNodes());
     		}
+    		
+    		// end if we have run out of time
+    		//if (System.currentTimeMillis() - startTime > maxTime) 
+    		//	break;
     	}
     	
     	// return the best complete valid schedule we got

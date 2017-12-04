@@ -113,7 +113,7 @@ public class Node implements Comparable<Node> {
                         Node n = new Node(s, this, ls, id, depth + 1);
 
                         // skip making node if we have a bound value and the eval is greater
-                        if (bound > -1 && n.getEval() >= bound && n.getEval() > SearchManager.startEval) {
+                        if (bound > -1 && n.getEval() >= bound && n.getEval() >= SearchManager.startEval) {
                             continue;
                         }
 
@@ -144,7 +144,7 @@ public class Node implements Comparable<Node> {
                         Node n = new Node(s, this, nls, id, depth + 1);
 
                         // skip making node if we have a bound value and the eval is greater or equal
-                        if (bound > -1 && n.getEval() >= bound && n.getEval() > SearchManager.startEval) {
+                        if (bound > -1 && n.getEval() >= bound && n.getEval() >= SearchManager.startEval) {
                             continue;
                         }
 
@@ -161,9 +161,9 @@ public class Node implements Comparable<Node> {
     
     /* 
      * NOTE: Functions below are for the recursive method,
-     * 			these are currently not in use!
+     * 			**these are currently not in use!**
      * 
-     * See SearchManager for stack based method which is much simpler
+     * See SearchManager for stack based method
      */
     
     /**
@@ -412,6 +412,6 @@ public class Node implements Comparable<Node> {
     @Override
     public int compareTo(Node o) {
 
-        return (int)-(this.getEval() - o.getEval());// + this.getChildNodes().size() - o.getChildNodes().size();
+        return (int) -(this.getEval() - o.getEval());// + this.getChildNodes().size() - o.getChildNodes().size();
     }
 }
