@@ -96,13 +96,14 @@ class Manager {
         System.out.println(">>> Done");
         System.out.println(">>> Finding optimal assignments ...");
         SearchManager sm = new SearchManager(schedule);
-        sm.run();
+        //Run the schedule, and instantiate finalSchedule to its result.
+        Schedule finalSchedule = new Schedule(sm.run());
         //} catch(FileNotFoundException e){
         //    throw e;
         //}
         System.out.println(">>> Done");
         
-        ScheduleVisualizer vis = new ScheduleVisualizer(schedule);
+        ScheduleVisualizer vis = new ScheduleVisualizer(finalSchedule);
         vis.run();
     }
 
