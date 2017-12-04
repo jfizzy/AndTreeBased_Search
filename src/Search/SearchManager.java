@@ -46,10 +46,12 @@ public class SearchManager {
 	//	     (final solution = lowest Eval leaf)
 	
     //----------------------------------------------------------------
+	
+    static double startEval;	// the eval of the initial schedule (root node schedule)
+    
     private Schedule schedule; 	// all the data required for the search
     private double bound;			// the bound value
     private ArrayList<Schedule> solutions;
-    
     private Stack<Node> nodestack;
     private Schedule best;
 
@@ -83,7 +85,9 @@ public class SearchManager {
         	
         	// solve with stack method
         	nodestack.push(rootNode);
-        	Schedule test = stackSolve(); // see below this function
+        	Schedule result = stackSolve(); // see below this function
+        	
+        	Eval.printBreakdown(result);
         	
         	/* THIS IS FOR THE RECURSIVE METHOD
         	 * 
@@ -100,7 +104,7 @@ public class SearchManager {
         	System.out.println("DONE");
         	*/
             
-            // get the optimal solution
+            // get the best solution in the list
             Schedule optimal = null;
             for (Schedule s : solutions) {
             	if (optimal == null || s.eval() < optimal.eval())
@@ -108,7 +112,7 @@ public class SearchManager {
             }
             
             // print optimal stuff
-            optimal.printAssignments();
+            optimal.printAssignments(); // TODO print in alphabetical order
             Constr.printViolations(optimal);
             Eval.printBreakdown(optimal);
             System.out.println("Got "+solutions.size()+" solns total");
@@ -124,36 +128,48 @@ public class SearchManager {
     
     /**
      * Get the optimal solution using the stack method
+     * 
      * @return Optimal schedule
      */
-    public Schedule stackSolve() {
+    public Schedule stackSolve() { // TODO rename function probably
+    	
+    	long startTime = System.currentTimeMillis();
+    	long maxTime = 5 * 60 * 1000; // 5 minutes in milliseconds
     	
     	// repeat until stack is empty (begins with root node)
     	while (!nodestack.isEmpty()) {
     		
+    		// end if we have run out of time
+    		//if (System.currentTimeMillis() - startTime > maxTime) 
+    		//	break;
+    		
     		// pop the top node off the stack
     		Node n = nodestack.pop();
-    		
-    		// print node info
-        	System.out.println("["+n.getDepth()+"] "+n.getID()+" ("+solutions.size()
-        						+" solns) best="+bound+" stacksize="+nodestack.size());
         	
         	// if we have a bound, skip if the node is worse
-        	if (bound > -1 && n.getEval() >= bound && n.getEval() < Node.startEval) continue;
+        	if (bound > -1 && n.getEval() >= bound && n.getEval() > startEval) 
+        		continue;
+        	
+    		// print node info
+        	System.out.println("["+n.getDepth()+"] "+n.getID()+" ("+solutions.size()
+        						+" solns)  stacksize="+nodestack.size()+"  best="+bound
+        						+"  eval="+n.getEval());
         		
-        	// if the node's schedule is fully assigned
+        	// check if the node's schedule is fully assigned
     		if (n.getSchedule().isComplete()) {
     			
     			// set the new bound, add the solution to the list
     			bound = n.getEval();
     			solutions.add(n.getSchedule());
+    			//System.out.println("GOT SOLUTION   eval="+n.getEval()+"   ("+solutions.size()+" solns)");
     			
     			// save the best schedule
     			if (best == null || best.eval() > n.getEval())
     				best = n.getSchedule();
     		}
     		
-    		// otherwise generate child nodes and add them to the stack
+    		// otherwise generate child nodes and add them to the top of the stack
+    		// (create all valid children that have eval < bound)
     		else {
     			n.generateNodes(bound);
     			nodestack.addAll(n.getChildNodes());

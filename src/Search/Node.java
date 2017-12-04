@@ -39,7 +39,6 @@ public class Node implements Comparable<Node> {
     private int depth;			// level of the tree the node is at
     private double eval;		// eval for this node (only calcd the first time, otherwise this var is checked)
     private Slot slot;			// the slot we are attempting to assign for this node
-    static double startEval;	// the eval of the initial schedule (root node schedule)
     
     /**
      * Constructor for the root node
@@ -57,7 +56,7 @@ public class Node implements Comparable<Node> {
         eval = Eval.getEval(s);
         children = new ArrayList<>();
         start = schedule.findFirstNull(); // get first null assignment
-        startEval = getEval();
+        SearchManager.startEval = getEval();
         
         //Collections.shuffle(schedule.getAssignments());
     }
@@ -114,7 +113,7 @@ public class Node implements Comparable<Node> {
                         Node n = new Node(s, this, ls, id, depth + 1);
 
                         // skip making node if we have a bound value and the eval is greater
-                        if (bound > -1 && n.getEval() >= bound) {
+                        if (bound > -1 && n.getEval() >= bound && n.getEval() > SearchManager.startEval) {
                             continue;
                         }
 
@@ -145,7 +144,7 @@ public class Node implements Comparable<Node> {
                         Node n = new Node(s, this, nls, id, depth + 1);
 
                         // skip making node if we have a bound value and the eval is greater or equal
-                        if (bound > -1 && n.getEval() >= bound) {
+                        if (bound > -1 && n.getEval() >= bound && n.getEval() > SearchManager.startEval) {
                             continue;
                         }
 
@@ -161,8 +160,10 @@ public class Node implements Comparable<Node> {
     }
     
     /* 
-     * Functions below are for the recursive method,
-     * see SearchManager for stack based method which is much simpler
+     * NOTE: Functions below are for the recursive method,
+     * 			these are currently not in use!
+     * 
+     * See SearchManager for stack based method which is much simpler
      */
     
     /**
@@ -194,7 +195,7 @@ public class Node implements Comparable<Node> {
         double bound = sm.getBound();
         
         // abort and return null if eval is worse than current bound
-        if (bound > -1 && getEval() >= bound && getEval() < startEval) return null;
+        if (bound > -1 && getEval() >= bound && getEval() < SearchManager.startEval) return null;
     	
     	// print node stuff 
         System.out.println("["+depth+"] " + id + " ("+sm.getSolutions().size()+" solns) bound="+bound);
@@ -251,7 +252,7 @@ public class Node implements Comparable<Node> {
         	double bound = sm.getBound();
         	
         	// skip child node if worse than current bound
-        	if (n.getEval() > bound && n.getEval() < startEval) {
+        	if (n.getEval() > bound && n.getEval() < SearchManager.startEval) {
         		n.setSolved();
         		continue;
         	}
@@ -412,60 +413,5 @@ public class Node implements Comparable<Node> {
     public int compareTo(Node o) {
 
         return (int)-(this.getEval() - o.getEval());// + this.getChildNodes().size() - o.getChildNodes().size();
-    }
-    
-    /**
-     * Run the And-Tree search at this node
-     *
-     * @param bound Bound value
-     * @return The found schedule
-     */
-    private Schedule andTreeSearch2() {
-    	
-    	/* THIS VERSION IS NOT IN USE */
-    	
-    	System.out.print("a");
-
-        // loop until we get a result or we run out of unsolved child nodes to try
-        // 	(either result will be set to a non-null schedule
-        // 	or it will run out of choices and return out of the function)
-        Schedule result = null;
-        while (result == null) {
-
-            // choose the first unsolved branch with eval less than bound
-            Node choice = null;
-            Iterator<Node> it = children.iterator();
-            while (it.hasNext()) {
-                Node n = it.next();
-                if (n.isSolved()) continue;
-                if (n.getEval() >= sm.getBound()) { 
-                	n.setSolved();
-                	continue;
-                }
-                choice = n;
-                break;
-            }
-
-            // if we did not find a branch, set this node solved,
-            // 	clear this node's children, and return to parent
-            if (choice == null) {
-                this.setSolved();
-                //children.clear();
-                return null;
-            }
-
-            // recurse search on chosen child node:
-            // 	if result is null (meaning all branches of that node are solved),
-            // 	we will loop to the next choice (if any remain)
-            result = choice.runSearch();
-            if (result == null) {
-                //choice.setSolved();
-                //children.remove(choice);
-                //System.out.println("- " + depth);
-            }
-        }
-
-        // return the result we got
-        return result;
     }
 }
