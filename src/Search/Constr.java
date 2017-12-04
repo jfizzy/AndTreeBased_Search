@@ -57,9 +57,9 @@ public class Constr {
 	 */
 	public static boolean check(Schedule s) {
 		// TODO reorder by most likely to be violated/running time cost
-		return checkEveningClasses(s) && checkSpecificTimes(s) && checkPartassign(s) 
+		return checkEveningClasses(s) && checkSpecificTimes(s) && checkNoncompatible(s)
 				&& checkUnwanted(s) && checkCourseMax(s) && checkLabMax(s) 
-				&& checkLabsDifferent(s) && checkNoncompatible(s)
+				&& checkLabsDifferent(s) //&& checkPartassign(s) 
 				&& checkOver500Classes(s) && checkSpecialClasses(s);
 	}
 	
@@ -70,9 +70,9 @@ public class Constr {
 	 */
 	public static boolean checkArr(Schedule s) {
 		// TODO reorder by most likely to be violated/running time cost
-		return checkEveningClassesArr(s) && checkSpecificTimesArr(s) && checkPartassignArr(s) 
+		return checkEveningClassesArr(s) && checkNoncompatibleArr(s) && checkSpecificTimesArr(s) 
 				&& checkUnwantedArr(s) && checkCourseMaxArr(s) && checkLabMaxArr(s) 
-				&& checkLabsDifferentArr(s) && checkNoncompatibleArr(s)
+				&& checkLabsDifferentArr(s) //&& checkPartassignArr(s) 
 				&& checkOver500ClassesArr(s) && checkSpecialClassesArr(s);
 	}
 	

@@ -14,9 +14,8 @@
 package Search;
 
 import Schedule.*;
-
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Stack;
 
 /**
  * Object for managing and executing the search
@@ -50,6 +49,7 @@ public class SearchManager {
     private Schedule schedule; 	// all the data required for the search
     private int bound;			// the bound value
     private ArrayList<Schedule> solutions;
+    
 
     /**
      * Constructor
@@ -90,12 +90,9 @@ public class SearchManager {
             // run the whole search using the bound value we got
             // 	best-first search repeatedly until root node is solved (i.e. whole tree solved)
             // 	(each complete valid solution is added to the solutions list)
-            bound = solutions.get(0).eval();//first.eval();
-            Schedule tmp = null;
-            do {
-            	tmp = rootNode.runSearch();
-            	System.out.println("DONE");
-            } while (!rootNode.isSolved());
+            
+        	Schedule tmp = rootNode.runSearch();
+        	System.out.println("DONE");
             
             // get the optimal solution
             Schedule optimal = null;
@@ -108,12 +105,6 @@ public class SearchManager {
             optimal.printAssignments();
             Constr.printViolations(optimal);
             Eval.printBreakdown(optimal);
-            
-            // print eval breakdown for all children of the root node
-            //for (Node child : rootNode.getChildNodes()) {
-            //	System.out.println("\n"+child.getID());
-            //	Eval.printBreakdown(child.getSchedule());
-            //}
             
             System.out.println("Got "+solutions.size()+" solns total");
             return optimal;
@@ -159,6 +150,9 @@ public class SearchManager {
     	solutions.add(s);
     }
     
+    /**
+     * @return
+     */
     public ArrayList<Schedule> getSolutions() {
     	return solutions;
     }

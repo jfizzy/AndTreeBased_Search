@@ -32,28 +32,29 @@ public class AssignmentPriority{
      */
     public AssignmentPriority (Meeting m){
         
+    	// check if evening
         this.evening = false;
         if (m.getParentSection() != null) {
             if (m.getParentSection().isEvening()) {
                 this.evening = true;
             }
         }
-        //check how many incompatibilities
-        this.incompatibilities = 0;
-        incompatibilities = m.getIncompatibility().stream().map((_item) -> 1).reduce(this.incompatibilities, Integer::sum);
+        // check how many incompatibilities
+        //this.incompatibilities = 0;
+        incompatibilities = m.getIncompatibility().size();//.stream().map((_item) -> 1).reduce(this.incompatibilities, Integer::sum);
         
         // check preference penalties
         this.preferencePenaltySum = 0;
         m.getPreferences().forEach((p) -> {
-            this.preferencePenaltySum= this.preferencePenaltySum + p.getValue();
+            this.preferencePenaltySum += p.getValue() * m.getPreferences().size();
         });
         
         // check how many unwanteds
-        this.unwanted = 0;
-        this.unwanted = m.getUnwanted().stream().map((_item) -> 1).reduce(this.unwanted, Integer::sum);
+        //this.unwanted = 0;
+        this.unwanted = m.getUnwanted().size();//.stream().map((_item) -> 1).reduce(this.unwanted, Integer::sum);
         
-        this.pairs = 0;
-        this.pairs = m.getPaired().stream().map((_item) -> 1).reduce(this.pairs, Integer::sum);
+        //this.pairs = 0;
+        this.pairs = m.getPaired().size();//.stream().map((_item) -> 1).reduce(this.pairs, Integer::sum);
         
         if(m instanceof Lecture)
             this.type = 2; // lecture
@@ -62,10 +63,11 @@ public class AssignmentPriority{
         else
             this.type = 0; // tutorial
         
-        if(m.getParentSection() != null){
+        if (m.getParentSection() != null) {
             this.courseNum = Integer.parseInt(m.getParentSection().getParentCourse().getNumber());
             this.secNum = Integer.parseInt(m.getParentSection().getSectionNum());
-        }else{
+        }
+        else {
             NonLecture nl = ((NonLecture) m);
             this.courseNum = Integer.parseInt(nl.getCourseNum());
             this.secNum = -1;
@@ -83,34 +85,38 @@ public class AssignmentPriority{
      * @return
      */
     public static int compare(AssignmentPriority ap1, AssignmentPriority ap2) {
+    	
+    	int result = 0;
         
     	// compare sum of preference penalties
         if(ap1.preferencePenaltySum != ap2.preferencePenaltySum){
-            return Integer.compare(ap1.preferencePenaltySum, ap2.preferencePenaltySum);
+            result += 250*Integer.compare(ap1.preferencePenaltySum, ap2.preferencePenaltySum);
         }
         
-    	// compare evening
+        // compare evening
         if(ap1.evening != ap2.evening){
             if(ap1.evening)
-                return 1000; // ap1 > ap2
+                result += 1000; // ap1 > ap2
             else
-                return -1000; // ap1 < ap2
+                result += -1000; // ap1 < ap2
         }
         
         // compare num of pairs
         if(ap1.pairs != ap2.pairs){
-            return Integer.compare(ap1.pairs, ap2.pairs);
+            result += 100*Integer.compare(ap1.pairs, ap2.pairs);
         }
-    	
+        
         // compare number of incompatibilities
         if(ap1.incompatibilities != ap2.incompatibilities){
-            return Integer.compare(ap1.incompatibilities, ap2.incompatibilities);
+            result += 10*Integer.compare(ap1.incompatibilities, ap2.incompatibilities);
         }
         
         // compare num of unwanted
         if(ap1.unwanted != ap2.unwanted){
-            return Integer.compare(ap1.unwanted, ap2.unwanted);
+            result += Integer.compare(ap1.unwanted, ap2.unwanted);
         }
+        
+        if (result != 0) return result;
         
         // compare type
         if(ap1.type != ap2.type){

@@ -58,10 +58,10 @@ public class Eval {
 	 * @return Total evaluation of search instance
 	 */
 	public static int getEval(Schedule s) {
-		return //getCourseMinEval(s) 
-				//+ getLabMinEval(s) 
-				 getPrefEval(s) 
-				+ getPairEval(s) // TODO find and fix problem
+		return getCourseMinEval(s) 
+				+ getLabMinEval(s) 
+				+ getPrefEval(s) 
+				+ getPairEval(s)
 				+ getSecDiffEval(s);
 	}
 	
