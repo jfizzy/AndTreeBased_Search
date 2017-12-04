@@ -82,20 +82,6 @@ public class Node implements Comparable<Node> {
         children = new ArrayList<>();
         start = schedule.findFirstNull(); // get first null assignment
     }
-    
-    public Schedule runSearchThreaded() {
-    	
-    	SearchThread st = new SearchThread(this);
-    	try {
-	    	Thread t = new Thread(st);
-	    	t.start();
-	    	t.join();
-    	}
-    	catch (Exception e) {
-    		
-    	}
-    	return st.getResult();
-    }
 
     /**
      * Main recursive search function which is run on each node
