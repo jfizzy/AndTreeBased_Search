@@ -44,8 +44,7 @@ public class Schedule {
 	private double pen_section;
 	
 	// weights
-	private double wCMin;
-	private double wLMin;
+	private double wMin;
 	private double wPref;
 	private double wPair;
 	private double wSecDiff;
@@ -85,8 +84,7 @@ public class Schedule {
         pen_labmin = 1;
         pen_notpaired = 1;
         pen_section = 1;
-        wCMin = 1;
-        wLMin = 1;
+        wMin = 1;
         wPref = 1;
         wPair = 1;
         wSecDiff = 1;
@@ -114,8 +112,7 @@ public class Schedule {
         pen_labmin = orig.getLabMinPenalty();
         pen_notpaired = orig.getPairPenalty();
         pen_section = orig.getSecDiffPenalty();
-        wCMin = orig.getCourseMinWeight();
-        wLMin = orig.getLabMinWeight();
+        wMin = orig.getMinWeight();
         wPref = orig.getPrefWeight();
         wPair = orig.getPairWeight();
         wSecDiff = orig.getSecDiffWeight();
@@ -154,8 +151,7 @@ public class Schedule {
         pen_labmin = orig.getLabMinPenalty();
         pen_notpaired = orig.getPairPenalty();
         pen_section = orig.getSecDiffPenalty();
-        wCMin = orig.getCourseMinWeight();
-        wLMin = orig.getLabMinWeight();
+        wMin = orig.getMinWeight();
         wPref = orig.getPrefWeight();
         wPair = orig.getPairWeight();
         wSecDiff = orig.getSecDiffWeight();
@@ -380,7 +376,7 @@ public class Schedule {
      *
      * @return The evaluation of the schedule
      */
-    public int eval() {
+    public double eval() {
         return Eval.getEval(this);
     }
 
@@ -390,7 +386,7 @@ public class Schedule {
      * @param a The assignment
      * @return The evaluation of the schedule with the assignment
      */
-    public int evalWith(Assignment a) {
+    public double evalWith(Assignment a) {
         return Eval.getEval(this, a.getM(), a.getS());
     }
     
@@ -401,7 +397,7 @@ public class Schedule {
      * @param s
      * @return The evaluation of the schedule with the assignment
      */
-    public int evalWith(Meeting m, Slot s) {
+    public double evalWith(Meeting m, Slot s) {
         return Eval.getEval(this, m, s);
     }
 
@@ -812,9 +808,8 @@ public class Schedule {
 	 * @param pair
 	 * @param secdiff
 	 */
-	public void setWeights(double cmin, double lmin, double pref, double pair, double secdiff) {
-		wCMin = cmin;
-		wLMin = lmin;
+	public void setWeights(double min, double pref, double pair, double secdiff) {
+		wMin = min;
 		wPref = pref;
 		wPair = pair;
 		wSecDiff = secdiff;
@@ -825,18 +820,9 @@ public class Schedule {
 	 * 
 	 * @param weight Weight value
 	 */
-	public void setCourseMinWeight(double weight) {
-		wCMin = weight;
+	public void setMinWeight(double weight) {
+		wMin = weight;
 	}	
-	
-	/**
-	 * Set weight for labmin
-	 * 
-	 * @param weight Weight value
-	 */
-	public void setLabMinWeight(double weight) {
-		wLMin = weight;
-	}
 	
 	/**
 	 * Set weight for preferences
@@ -870,17 +856,8 @@ public class Schedule {
 	 * 
 	 * @return Weight value
 	 */
-	public double getCourseMinWeight() {
-		return wCMin;
-	}
-	
-	/**
-	 * Get lab min weight
-	 * 
-	 * @return Weight value
-	 */
-	public double getLabMinWeight() {
-		return wLMin;
+	public double getMinWeight() {
+		return wMin;
 	}
 	
 	/**

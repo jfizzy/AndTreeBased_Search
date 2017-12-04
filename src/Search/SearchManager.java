@@ -47,9 +47,11 @@ public class SearchManager {
 	
     //----------------------------------------------------------------
     private Schedule schedule; 	// all the data required for the search
-    private int bound;			// the bound value
+    private double bound;			// the bound value
     private ArrayList<Schedule> solutions;
     
+    private Stack<Node> nodestack;
+    private Schedule best;
 
     /**
      * Constructor
@@ -59,6 +61,8 @@ public class SearchManager {
     public SearchManager(Schedule schedule) {
         this.schedule = schedule;
         solutions = new ArrayList<>();
+        nodestack = new Stack<>();
+        best = null;
     }
 
     /**
@@ -75,24 +79,25 @@ public class SearchManager {
         	
         	// create the root node
         	Node rootNode = new Node(schedule, this);
-        	
-        	// get the first solution quickly (depth-first search)
         	bound = -1;
-            Schedule first = rootNode.runSearch();
-            solutions.get(0).printAssignments();
-            
-            // check if valid (meets hard constraints)
+        	
+        	// solve with stack method
+        	nodestack.push(rootNode);
+        	Schedule test = stackSolve();
+        	
+        	/* THIS IS FOR THE RECURSIVE METHOD
+        	// get the first solution quickly (depth-first search)
+            //Schedule first = rootNode.runSearch();
+            //solutions.get(0).printAssignments();
             Constr.printViolations(solutions.get(0));
-
-            // print eval breakdown
             Eval.printBreakdown(solutions.get(0));
             
             // run the whole search using the bound value we got
             // 	best-first search repeatedly until root node is solved (i.e. whole tree solved)
             // 	(each complete valid solution is added to the solutions list)
-            
         	Schedule tmp = rootNode.runSearch();
         	System.out.println("DONE");
+        	*/
             
             // get the optimal solution
             Schedule optimal = null;
@@ -105,11 +110,11 @@ public class SearchManager {
             optimal.printAssignments();
             Constr.printViolations(optimal);
             Eval.printBreakdown(optimal);
-            
             System.out.println("Got "+solutions.size()+" solns total");
             return optimal;
         }
         
+        // started with an invalid schedule
         else {
         	System.out.println("Impossible starting schedule");
         	return null;
@@ -117,43 +122,75 @@ public class SearchManager {
     }
     
     /**
+     * Get the optimal solution using the stack method
+     * @return Optimal schedule
+     */
+    public Schedule stackSolve() {
+    	
+    	// repeat until stack is empty (begins with root node)
+    	while (!nodestack.isEmpty()) {
+    		
+    		// pop the top node
+    		Node n = nodestack.pop();
+    		
+    		// print node stuff
+        	System.out.println("["+n.getDepth()+"] "+n.getID()+" ("+solutions.size()
+        						+" solns) best="+bound+" stacksize="+nodestack.size());
+        	
+        	// skip if worse than bound
+        	if (bound > -1 && n.getEval() >= bound && n.getEval() < Node.startEval) continue;
+        		
+        	// if schedule is fully assigned
+    		if (n.getSchedule().isComplete()) {
+    			
+    			// set the new bound, add the solution to the list
+    			bound = n.getEval();
+    			solutions.add(n.getSchedule());
+    			
+    			// save the best schedule
+    			if (best == null || best.eval() > n.getEval())
+    				best = n.getSchedule();
+    		}
+    		
+    		// otherwise generate child nodes and add them to the stack
+    		else {
+    			n.generateNodes(bound);
+    			nodestack.addAll(n.getChildNodes());
+    		}
+    	}
+    	
+    	// return the best complete valid schedule we got
+    	return best;
+    }
+    
+    /**
      * Return the schedule
      *
      * @return Schedule
      */
-    public Schedule getSchedule() {
-        return this.schedule;
-    }
+    public Schedule getSchedule() { return this.schedule; }
     
     /**
      * Get the bound value
      * 
      * @return Bound value
      */
-    public int getBound() {
-    	return bound;
-    }
+    public double getBound() { return bound; }
     
     /**
      * Set the bound value
      * 
      * @param bound Bound value
      */
-    public void setBound(int bound) {
-    	this.bound = bound;
-    }
+    public void setBound(double bound) { this.bound = bound; }
     
     /**
      * @param s
      */
-    public void addSolution(Schedule s) {
-    	solutions.add(s);
-    }
+    public void addSolution(Schedule s) { solutions.add(s); }
     
     /**
      * @return
      */
-    public ArrayList<Schedule> getSolutions() {
-    	return solutions;
-    }
+    public ArrayList<Schedule> getSolutions() { return solutions; }
 }

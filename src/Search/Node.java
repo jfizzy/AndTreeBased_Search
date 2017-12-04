@@ -37,9 +37,9 @@ public class Node implements Comparable<Node> {
     private Assignment start;	// the assignment to try for this node's branches
     private String id;			// identifier string for the node
     private int depth;			// level of the tree the node is at
-    private int eval;			// eval for this node (only calcd the first time, otherwise this var is checked)
+    private double eval;			// eval for this node (only calcd the first time, otherwise this var is checked)
     private Slot slot;
-    static int startEval;
+    static double startEval;
     
     /**
      * Constructor for the root node
@@ -82,84 +82,16 @@ public class Node implements Comparable<Node> {
         children = new ArrayList<>();
         start = schedule.findFirstNull(); // get first null assignment
     }
-
-    /**
-     * Main recursive search function which is run on each node
-     *
-     * @param bound Bound value
-     * @return The schedule
-     */
-    public Schedule runSearch() {
-
-        /*
-		 * The first time, it is run on the root node.
-		 * 
-		 * The function calls itself on child nodes to progress down the tree.
-		 * 
-		 * If there are no options to go down the tree, the function returns null,
-		 * which is detected by the parent node (which called the function), then
-		 * the next option at the parent node is taken.
-		 * 
-		 * If there are no other options to take, then the parent node's function
-		 * returns null and ITS parent takes another option.
-		 * 
-		 * Each recursive call ultimately returns the schedule found by its recursive
-		 * call, so that in the end the original function call will return the
-		 * solved schedule.
-         */
-    	
-        // get the current bound value
-        int bound = sm.getBound();
-        
-        // abort and return null if eval is worse than current bound
-        if (bound > -1 && getEval() >= bound && getEval() < startEval) return null;
-    	
-    	// print node stuff 
-        System.out.println("["+depth+"] " + id + " ("+sm.getSolutions().size()+" solns) bound="+bound);
-        
-        // print the assignments for this node
-        //schedule.printAssignments();
-
-        // check if the schedule is valid and complete, if so return it
-        if (schedule.isComplete()) {
-
-            // set this node solved
-            this.setSolved();
-            
-            // add the schedule to the solutions list
-            if (schedule.isValid()) { // && (getEval() < bound || bound == -1)) {
-            	sm.addSolution(schedule);
-            	
-            	// if the eval is better than bound, reset the bound
-                if (bound > getEval() || bound == -1) {
-                    sm.setBound(getEval());
-                    bound = getEval();
-                }
-            }
-
-            System.out.println("the schedule is done!");
-            return schedule;
-        }
-
-        // generate child nodes if we didn't yet for this node, sort by lowest eval
-        generateNodes(bound);
-
-        // depth-first search (get the first solution quickly to get a bound value)
-        if (sm.getBound() == -1)
-            return depthFirstSearch();
-        
-        // normal search with bound value (go through the entire tree)
-        else return andTreeSearch();
-    }
-
+    
     /**
      * Generate all valid child nodes for this node.
      * If bound value is set, don't add nodes that are worse or equal
      */
-    private void generateNodes(int bound) {
+    public void generateNodes(double bound) {
 
         // if we haven't generated the children yet and if the node isn't solved
         if (children.size() == 0 && !solEntry) {
+        	
 
             // if we are assigning a lecture
             if (start.getM() instanceof Lecture) {
@@ -228,6 +160,80 @@ public class Node implements Comparable<Node> {
         }
     }
     
+    /* 
+     * Functions below are for the recursive method,
+     * see SearchManager for stack based method which is much simpler
+     */
+    
+    /**
+     * Main recursive search function which is run on each node
+     *
+     * @param bound Bound value
+     * @return The schedule
+     */
+    public Schedule runSearch() {
+
+        /*
+		 * The first time, it is run on the root node.
+		 * 
+		 * The function calls itself on child nodes to progress down the tree.
+		 * 
+		 * If there are no options to go down the tree, the function returns null,
+		 * which is detected by the parent node (which called the function), then
+		 * the next option at the parent node is taken.
+		 * 
+		 * If there are no other options to take, then the parent node's function
+		 * returns null and ITS parent takes another option.
+		 * 
+		 * Each recursive call ultimately returns the schedule found by its recursive
+		 * call, so that in the end the original function call will return the
+		 * solved schedule.
+         */
+    	
+        // get the current bound value
+        double bound = sm.getBound();
+        
+        // abort and return null if eval is worse than current bound
+        if (bound > -1 && getEval() >= bound && getEval() < startEval) return null;
+    	
+    	// print node stuff 
+        System.out.println("["+depth+"] " + id + " ("+sm.getSolutions().size()+" solns) bound="+bound);
+        
+        // print the assignments for this node
+        //schedule.printAssignments();
+
+        // check if the schedule is valid and complete, if so return it
+        if (schedule.isComplete()) {
+
+            // set this node solved
+            this.setSolved();
+            
+            // add the schedule to the solutions list
+            if (schedule.isValid()) { // && (getEval() < bound || bound == -1)) {
+            	sm.addSolution(schedule);
+            	
+            	// if the eval is better than bound, reset the bound
+                if (bound > getEval() || bound == -1) {
+                    sm.setBound(getEval());
+                    bound = getEval();
+                }
+            }
+
+            System.out.println("the schedule is done!");
+            return schedule;
+        }
+
+        // generate child nodes if we didn't yet for this node, sort by lowest eval
+        generateNodes(bound);
+
+        // depth-first search (get the first solution quickly to get a bound value)
+        if (sm.getBound() == -1)
+            return depthFirstSearch();
+        
+        // normal search with bound value (go through the entire tree)
+        else return andTreeSearch();
+    }
+    
     /**
      * Run the And-Tree search at this node
      *
@@ -242,7 +248,7 @@ public class Node implements Comparable<Node> {
         for (Node n : children) {
         	
         	// get the current bound value
-        	int bound = sm.getBound();
+        	double bound = sm.getBound();
         	
         	// skip child node if worse than current bound
         	if (n.getEval() > bound && n.getEval() < startEval) {
@@ -260,7 +266,7 @@ public class Node implements Comparable<Node> {
                 n.setSolved();
             	
             	// set the bound value if the result is complete and better
-                int resulteval = result.eval();
+                double resulteval = result.eval();
             	if (result.isComplete() && result.isValid() && resulteval < bound) 
 	                sm.setBound(resulteval);
 
@@ -332,7 +338,7 @@ public class Node implements Comparable<Node> {
     /**
      * @return
      */
-    public int getEval() { return eval; }
+    public double getEval() { return eval; }
     
     /**
      * @return
@@ -405,7 +411,7 @@ public class Node implements Comparable<Node> {
     @Override
     public int compareTo(Node o) {
 
-        return this.getEval() - o.getEval();// + this.getChildNodes().size() - o.getChildNodes().size();
+        return (int)-(this.getEval() - o.getEval());// + this.getChildNodes().size() - o.getChildNodes().size();
     }
     
     /**

@@ -57,7 +57,7 @@ public class Eval {
 	 * @param s
 	 * @return Total evaluation of search instance
 	 */
-	public static int getEval(Schedule s) {
+	public static double getEval(Schedule s) {
 		return getCourseMinEval(s) 
 				+ getLabMinEval(s) 
 				+ getPrefEval(s) 
@@ -73,7 +73,7 @@ public class Eval {
 	 * @param a
 	 * @return Total evaluation of search instance
 	 */
-	public static int getEval(Schedule s1, Meeting m, Slot s) {
+	public static double getEval(Schedule s1, Meeting m, Slot s) {
 		Schedule s2 = new Schedule(s1, m, s);
 		return getEval(s2);
 	}
@@ -99,7 +99,7 @@ public class Eval {
 	 * @param schedule
 	 * @return Penalty for violating coursemin
 	 */
-	public static int getCourseMinEval(Schedule schedule) {
+	public static double getCourseMinEval(Schedule schedule) {
     	double result = 0.0;
     	
     	// for each lecture slot in schedule
@@ -124,7 +124,7 @@ public class Eval {
     	}
     	
     	// return weighted result
-    	return (int) (schedule.getCourseMinWeight()*result);		
+    	return schedule.getMinWeight()*result;		
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public class Eval {
 	 * @param schedule
 	 * @return Penalty for violating labmin
 	 */
-	public static int getLabMinEval(Schedule schedule) {
+	public static double getLabMinEval(Schedule schedule) {
     	double result = 0.0;
     	
     	// for each nonlecture slot in schedule
@@ -158,7 +158,7 @@ public class Eval {
     	}
     	
     	// return weighted result
-    	return (int) (schedule.getLabMinWeight()*result);
+    	return schedule.getMinWeight()*result;
 	}
 	
 	/**
@@ -168,7 +168,7 @@ public class Eval {
 	 * @param schedule
 	 * @return Penalty for violating preferences
 	 */
-	public static int getPrefEval(Schedule schedule) {
+	public static double getPrefEval(Schedule schedule) {
 		double result = 0.0;
 		
 		// for each assignment
@@ -187,7 +187,7 @@ public class Eval {
 		}
     	
     	// return weighted result
-    	return (int) (schedule.getPrefWeight()*result);
+    	return schedule.getPrefWeight()*result;
 	}
 	 
 	/**
@@ -197,7 +197,7 @@ public class Eval {
 	 * @param schedule
 	 * @return Penalty for violating pairs
 	 */
-	public static int getPairEval(Schedule schedule) {
+	public static double getPairEval(Schedule schedule) {
 		double result = 0.0;
 		
 		// TODO: the values are double what the spec says
@@ -241,7 +241,7 @@ public class Eval {
 		}
     	*/
     	// return weighted result
-		return (int) (schedule.getPairWeight()*result);
+		return schedule.getPairWeight()*result;
 	}
 	
 	/**
@@ -252,7 +252,7 @@ public class Eval {
 	 * @param schedule
 	 * @return Penalty for violating section difference
 	 */
-	public static int getSecDiffEval(Schedule schedule) {
+	public static double getSecDiffEval(Schedule schedule) {
 		double result = 0.0;
 		
 		// for each course in the schedule
@@ -294,6 +294,6 @@ public class Eval {
 		}
 		
 		// return weighted result
-		return (int) (schedule.getSecDiffWeight()*result);
+		return schedule.getSecDiffWeight()*result;
 	}
 }
