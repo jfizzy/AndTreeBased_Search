@@ -37,9 +37,9 @@ public class Node implements Comparable<Node> {
     private Assignment start;	// the assignment to try for this node's branches
     private String id;			// identifier string for the node
     private int depth;			// level of the tree the node is at
-    private double eval;			// eval for this node (only calcd the first time, otherwise this var is checked)
-    private Slot slot;
-    static double startEval;
+    private double eval;		// eval for this node (only calcd the first time, otherwise this var is checked)
+    private Slot slot;			// the slot we are attempting to assign for this node
+    static double startEval;	// the eval of the initial schedule (root node schedule)
     
     /**
      * Constructor for the root node
