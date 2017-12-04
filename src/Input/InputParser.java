@@ -40,17 +40,20 @@ public class InputParser {
         generateUnwanted(courses, lecSlots, nonlecSlots);
         generatePreferences(schedule, lecSlots, nonlecSlots);
         System.out.println("Preferences that exist:");
-        for(Assignment a : schedule.getAssignments()){
+        for (Assignment a : schedule.getAssignments()) {
             Meeting m = a.getM();
-            System.out.println("Relating to "+m.toString());
-            for(Preference p : m.getPreferences()){
+            System.out.println("Relating to " + m.toString());
+            for (Preference p : m.getPreferences()) {
                 System.out.println(p.toString());
             }
         }
         schedule.setPairs(generatePairs(courses));
-        applyPartialAssignments(schedule);
-        orderAssignments(schedule);
-        return schedule;
+        if (applyPartialAssignments(schedule)) {
+            orderAssignments(schedule);
+            return schedule;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -125,12 +128,14 @@ public class InputParser {
     /**
      * @param schedule
      */
-    private void applyPartialAssignments(Schedule schedule) {
-        iw.partialAssignmentLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
+    private boolean applyPartialAssignments(Schedule schedule) {
+        for (String line : iw.partialAssignmentLines) {
+            String[] parts = line.split("\\s*,\\s*");
+
             Meeting m = ScheduleUtils.findMeeting(schedule.getCourses(), parts[0]);
             if (m == null) {
                 System.out.println("[!Partial assignment - could not find the specified meeting]");
-                return;
+                return false;
             }
             String slotString = parts[1] + ", " + parts[2];
 
@@ -138,9 +143,11 @@ public class InputParser {
             NonLectureSlot nls = null;
 
             if (m instanceof Lecture) {
+                //TODO check for cpsc 813, 913
                 ls = ScheduleUtils.findLectureSlot(schedule.getLectureSlots(), slotString);
                 if (ls == null) {
                     System.out.println("[!Partial assignment - no such lecture slot was found]");
+                    return false;
                 } else {
                     //set assignment to this slot
                     m.getAssignment().setS(ls);
@@ -150,13 +157,15 @@ public class InputParser {
                 nls = ScheduleUtils.findNonLectureSlot(schedule.getNonLectureSlots(), slotString);
                 if (nls == null) {
                     System.out.println("[!Partial assignment - no such non lecture slot was found]");
+                    return false;
                 } else {
                     // set assignment to this slot
                     m.getAssignment().setS(nls);
                     System.out.println("[Partial assignment - " + ((NonLecture) m).toString() + " <=> " + nls.toString() + "]");
                 }
             }
-        });
+        }
+        return true;
     }
 
     /**
@@ -236,7 +245,7 @@ public class InputParser {
                             System.out.println("[!Preference - no such active lecture slot was found]");
                             problem = true;
                         } else {
-                        	//System.out.println(ls.toString());
+                            //System.out.println(ls.toString());
                             // check for duplicates
                             for (Preference p : assignment.getM().getPreferences()) {
                                 if (p.getSlot().equals(ls)) {
