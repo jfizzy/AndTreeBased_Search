@@ -90,7 +90,8 @@ public class AssignmentPriority{
         
     	// compare sum of preference penalties
         if(ap1.preferencePenaltySum != ap2.preferencePenaltySum){
-            result += 250*Integer.compare(ap1.preferencePenaltySum, ap2.preferencePenaltySum);
+            //result += 250*Integer.compare(ap1.preferencePenaltySum, ap2.preferencePenaltySum);
+        	result += 250*(ap1.preferencePenaltySum - ap2.preferencePenaltySum);
         }
         
         // compare evening
@@ -103,17 +104,20 @@ public class AssignmentPriority{
         
         // compare num of pairs
         if(ap1.pairs != ap2.pairs){
-            result += 100*Integer.compare(ap1.pairs, ap2.pairs);
+            //result += 100*Integer.compare(ap1.pairs, ap2.pairs);
+        	result += 100*(ap1.pairs - ap2.pairs);
         }
         
         // compare number of incompatibilities
         if(ap1.incompatibilities != ap2.incompatibilities){
-            result += 10*Integer.compare(ap1.incompatibilities, ap2.incompatibilities);
+            //result += 10*Integer.compare(ap1.incompatibilities, ap2.incompatibilities);
+        	result += 10*(ap1.incompatibilities - ap2.incompatibilities);
         }
         
         // compare num of unwanted
         if(ap1.unwanted != ap2.unwanted){
-            result += Integer.compare(ap1.unwanted, ap2.unwanted);
+            //result += Integer.compare(ap1.unwanted, ap2.unwanted);
+        	result += (ap1.unwanted - ap2.unwanted);
         }
         
         if (result != 0) return result;
@@ -127,6 +131,7 @@ public class AssignmentPriority{
         if(ap1.courseNum != ap2.courseNum){
             return Integer.compare(ap1.courseNum, ap2.courseNum);
         }
+        
         // compare section number
         boolean ap1NoSec = (ap1.courseNum < 1);
         boolean ap2NoSec = (ap2.courseNum < 1);
@@ -141,10 +146,14 @@ public class AssignmentPriority{
         }else{ // both have sections
             return Integer.compare(ap1.secNum, ap2.secNum);
         }
+        
         // tiebreaker - return the left item as better
         return 1;
     }
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString(){
         return this.evening+", "+this.incompatibilities+", "

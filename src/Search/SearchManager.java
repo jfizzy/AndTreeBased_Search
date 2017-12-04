@@ -83,9 +83,10 @@ public class SearchManager {
         	
         	// solve with stack method
         	nodestack.push(rootNode);
-        	Schedule test = stackSolve();
+        	Schedule test = stackSolve(); // see below this function
         	
         	/* THIS IS FOR THE RECURSIVE METHOD
+        	 * 
         	// get the first solution quickly (depth-first search)
             //Schedule first = rootNode.runSearch();
             //solutions.get(0).printAssignments();
@@ -130,17 +131,17 @@ public class SearchManager {
     	// repeat until stack is empty (begins with root node)
     	while (!nodestack.isEmpty()) {
     		
-    		// pop the top node
+    		// pop the top node off the stack
     		Node n = nodestack.pop();
     		
-    		// print node stuff
+    		// print node info
         	System.out.println("["+n.getDepth()+"] "+n.getID()+" ("+solutions.size()
         						+" solns) best="+bound+" stacksize="+nodestack.size());
         	
-        	// skip if worse than bound
+        	// if we have a bound, skip if the node is worse
         	if (bound > -1 && n.getEval() >= bound && n.getEval() < Node.startEval) continue;
         		
-        	// if schedule is fully assigned
+        	// if the node's schedule is fully assigned
     		if (n.getSchedule().isComplete()) {
     			
     			// set the new bound, add the solution to the list
