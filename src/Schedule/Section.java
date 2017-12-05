@@ -30,8 +30,10 @@ public class Section {
     
     /**
      * Constructor
+     * 
      * @param c Course
      * @param sNum Section number
+     * @param evening Evening flag
      */
     public Section(Course c, String sNum, boolean evening) {
         this.parentCourse = c;
@@ -41,7 +43,6 @@ public class Section {
         this.lecture = new Lecture(this);
         this.lecture.setParentSection(this);
         this.evening = evening;
-        
     }
     
     /*
@@ -53,91 +54,74 @@ public class Section {
      * 
      * @return Section number string
      */
-    public String getSectionNum() {
-        return sectionNum;
-    }
+    public String getSectionNum() { return sectionNum; }
 
     /**
      * Set the section number
      * 
-     * @param sectionNum Section number string
+     * @param sNum Section number string
      */
-    public void setSectionNum(String sectionNum) {
-        this.sectionNum = sectionNum;
-    }
+    public void setSectionNum(String sNum) { sectionNum = sNum; }
 
     /**
      * Get the labs list
      * 
      * @return Lab list
      */
-    public ArrayList<Lab> getLabs() {
-        return labs;
-    }
+    public ArrayList<Lab> getLabs() { return labs; }
     
     /**
      * Add a lab
      * 
      * @param l The lab
      */
-    public void addLab(Lab l) {
-        labs.add(l);
-    }
+    public void addLab(Lab l) { labs.add(l); }
     
     /**
      * Get the tutorials list
      * 
      * @return Tutorial lsit
      */
-    public ArrayList<Tutorial> getTuts() {
-        return tuts;
-    }
+    public ArrayList<Tutorial> getTuts() { return tuts; }
     
     /**
      * Add a tutorial
      * 
      * @param t The tutorial
      */
-    public void addTutorial(Tutorial t) {
-        tuts.add(t);
-    }
+    public void addTutorial(Tutorial t) { tuts.add(t); }
     
     /**
      * Get the parent course
      * 
      * @return The course
      */
-    public Course getParentCourse() {
-        return parentCourse;
-    }
+    public Course getParentCourse() { return parentCourse; }
 
     /**
      * Get the lecture
      * 
      * @return The lecture
      */
-    public Lecture getLecture() {
-        return lecture;
-    }
+    public Lecture getLecture() { return lecture; }
 
     /**
      * Set the lecture
      * 
      * @param lecture The lecture
      */
-    public void setLecture(Lecture lecture) {
-        this.lecture = lecture;
-    }
+    public void setLecture(Lecture lecture) { this.lecture = lecture; }
     
     /**
      * Check if evening
      * 
      * @return True if evening
      */
-    public boolean isEvening() {
-    	return this.evening;
-    }
+    public boolean isEvening() { return evening; }
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     public String toString()
     {
         // Lecture data:

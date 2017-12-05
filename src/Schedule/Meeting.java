@@ -48,6 +48,7 @@ public abstract class Meeting {
     /*
      *  Getters and setters
      */
+    
     /**
      * Get noncompatible list (may not be used)
      *

@@ -1,11 +1,15 @@
 package Schedule;
 
+import java.util.Comparator;
+
+import Search.Node;
+
 /**
  * Class representing a preferred slot and the preference value
  * (profs can say how much they prefer their lecture in a certain slot,
  * this is a soft constraint)
  */
-public class Preference {
+public class Preference implements Comparable<Preference> {
 	
 	private Slot s;		// the slot
 	private int value;	// the preference value
@@ -60,8 +64,21 @@ public class Preference {
 		this.value = value;
 	}
         
-        @Override
-        public String toString(){
-            return this.s.toString() + " = (" + this.value+")";
-        }
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString(){
+        return this.s.toString() + " = (" + this.value+")";
+    }
+    
+    /**
+    * Comparator for Preference class
+    */
+   public static Comparator<Preference> PrefComparator = (Preference p1, Preference p2) -> p1.compareTo(p2);
+
+	@Override
+	public int compareTo(Preference o) {
+		return this.getValue() - o.getValue();
+	}
 }

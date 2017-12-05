@@ -5,6 +5,8 @@ package Schedule;
  *
  */
 public class MeetingPair {
+	
+	/* THIS IS NOT CURRENTLY IN USE */
 
 	// the meetings
 	private Meeting m1, m2;

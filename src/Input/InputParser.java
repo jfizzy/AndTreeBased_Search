@@ -25,10 +25,17 @@ public class InputParser {
 
     private InputWrapper iw;
 
+    /**
+     * Constructor
+     */
     public InputParser() {
         iw = null;
     }
 
+    /**
+     * @param iw InputWrapper
+     * @return Schedule
+     */
     public Schedule run(InputWrapper iw) {
         this.iw = iw;
         ArrayList<LectureSlot> lecSlots = activateLectureSlots();
@@ -36,27 +43,24 @@ public class InputParser {
         ArrayList<Course> courses = generateSections();
         generateNonLectures(courses);
         Schedule schedule = new Schedule(lecSlots, nonlecSlots, courses);
-        schedule.setNoncompatible(generateIncompatibilities(courses));
+        //schedule.setNoncompatible(generateIncompatibilities(courses));
+        generateIncompatibilities(courses);
         generateUnwanted(courses, lecSlots, nonlecSlots);
         generatePreferences(schedule, lecSlots, nonlecSlots);
-        System.out.println("Preferences that exist:");
-        for(Assignment a : schedule.getAssignments()){
-            Meeting m = a.getM();
-            System.out.println("Relating to "+m.toString());
-            for(Preference p : m.getPreferences()){
-                System.out.println(p.toString());
-            }
+        //schedule.setPairs(generatePairs(courses));
+        generatePairs(courses);
+        if (applyPartialAssignments(schedule)) {
+            orderAssignments(schedule);
+            return schedule;
+        } else {
+            return null;
         }
-        schedule.setPairs(generatePairs(courses));
-        applyPartialAssignments(schedule);
-        orderAssignments(schedule);
-        return schedule;
     }
 
     /**
      * orderAssignments - takes a schedule and orders its list of assignments
      *
-     * @param s
+     * @param s Schedule
      */
     public void orderAssignments(Schedule s) {
         ArrayList<Assignment> orderedAssignments = new ArrayList<>();
@@ -96,8 +100,7 @@ public class InputParser {
      * prioritizeAssignments - takes a list of assignments and orders them based
      * on restrictive priority
      *
-     * @param assignments
-     * @return
+     * @param assignments Assignments list
      */
     private void prioritizeAssignments(ArrayList<Assignment> assignments) {
 
@@ -123,14 +126,16 @@ public class InputParser {
     }
 
     /**
-     * @param schedule
+     * @param schedule Schedule
      */
-    private void applyPartialAssignments(Schedule schedule) {
-        iw.partialAssignmentLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
+    private boolean applyPartialAssignments(Schedule schedule) {
+        for (String line : iw.partialAssignmentLines) {
+            String[] parts = line.split("\\s*,\\s*");
+
             Meeting m = ScheduleUtils.findMeeting(schedule.getCourses(), parts[0]);
             if (m == null) {
                 System.out.println("[!Partial assignment - could not find the specified meeting]");
-                return;
+                return false;
             }
             String slotString = parts[1] + ", " + parts[2];
 
@@ -138,9 +143,11 @@ public class InputParser {
             NonLectureSlot nls = null;
 
             if (m instanceof Lecture) {
+                //TODO check for cpsc 813, 913
                 ls = ScheduleUtils.findLectureSlot(schedule.getLectureSlots(), slotString);
                 if (ls == null) {
                     System.out.println("[!Partial assignment - no such lecture slot was found]");
+                    return false;
                 } else {
                     //set assignment to this slot
                     m.getAssignment().setS(ls);
@@ -150,18 +157,20 @@ public class InputParser {
                 nls = ScheduleUtils.findNonLectureSlot(schedule.getNonLectureSlots(), slotString);
                 if (nls == null) {
                     System.out.println("[!Partial assignment - no such non lecture slot was found]");
+                    return false;
                 } else {
                     // set assignment to this slot
                     m.getAssignment().setS(nls);
                     System.out.println("[Partial assignment - " + ((NonLecture) m).toString() + " <=> " + nls.toString() + "]");
                 }
             }
-        });
+        }
+        return true;
     }
 
     /**
-     * @param courses
-     * @return
+     * @param courses Courses list
+     * @return MeetingPair list
      */
     private ArrayList<MeetingPair> generatePairs(ArrayList<Course> courses) {
         ArrayList<MeetingPair> result = new ArrayList<>();
@@ -198,9 +207,9 @@ public class InputParser {
     }
 
     /**
-     * @param sched
-     * @param lSlots
-     * @param nlSlots
+     * @param sched Schedule
+     * @param lSlots Lecture slots list
+     * @param nlSlots Nonlecture slots list
      */
     private void generatePreferences(Schedule sched, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
         iw.preferencesLines.forEach((line) -> {
@@ -236,7 +245,7 @@ public class InputParser {
                             System.out.println("[!Preference - no such active lecture slot was found]");
                             problem = true;
                         } else {
-                        	//System.out.println(ls.toString());
+                            //System.out.println(ls.toString());
                             // check for duplicates
                             for (Preference p : assignment.getM().getPreferences()) {
                                 if (p.getSlot().equals(ls)) {
@@ -281,9 +290,9 @@ public class InputParser {
     }
 
     /**
-     * @param courses
-     * @param lSlots
-     * @param nlSlots
+     * @param courses Courses list
+     * @param lSlots Lecture slots list
+     * @param nlSlots Nonlecture slots list
      */
     private void generateUnwanted(ArrayList<Course> courses, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
         iw.unwantedLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
@@ -329,7 +338,8 @@ public class InputParser {
      * objects to their list of incompatible counterparts incompatibility is
      * symmetric
      *
-     * @param courses
+     * @param courses Courses list
+     * @return MeetingPair list
      */
     private ArrayList<MeetingPair> generateIncompatibilities(ArrayList<Course> courses) {
         ArrayList<MeetingPair> result = new ArrayList<>();
@@ -374,7 +384,7 @@ public class InputParser {
      * generateSections - takes the lecture specifying lines of the input file
      * and aims to create all of the sections that were listed by the input file
      *
-     * @return courses
+     * @return courses Courses list
      */
     private ArrayList<Course> generateSections() {
         ArrayList<Course> courses = new ArrayList<>();
@@ -389,6 +399,13 @@ public class InputParser {
         return courses;
     }
 
+    /**
+     * @param dept Department string
+     * @param courseNum Course number string
+     * @param section Section number string
+     * @param courses Courses list
+     * @return Section
+     */
     private Section generateSection(String dept, String courseNum, String section, ArrayList<Course> courses) {
         boolean existingDept = false;
         for (Course c : courses) {
@@ -464,7 +481,8 @@ public class InputParser {
      * sections that are specified by the input file, takes in the list of
      * courses with which to place each NonLecture
      *
-     * @param courses
+     * @param courses Courses list
+     * @return Nonlecture list
      */
     private ArrayList<NonLecture> generateNonLectures(ArrayList<Course> courses) {
         ArrayList<NonLecture> result = new ArrayList<>();
@@ -504,12 +522,12 @@ public class InputParser {
      * single 'NonLecture' and places it in its correct location as long as the
      * parent course exists
      *
-     * @param dept
-     * @param courseNum
-     * @param section
-     * @param nlType
-     * @param nlNum
-     * @param courses
+     * @param dept Department string
+     * @param courseNum Course number string
+     * @param section Section number string
+     * @param nlType Type string
+     * @param nlNum Nonlecture number string
+     * @param courses Courses list
      * @return the added NonLecture
      */
     private NonLecture generateNonLecture(String dept, String courseNum, String section, String nlType, String nlNum, ArrayList<Course> courses) {
@@ -677,7 +695,7 @@ public class InputParser {
     }
 
     /**
-     * @return
+     * @return Lecture slot list
      */
     private ArrayList<LectureSlot> generateGenericLectureSlots() {
         ArrayList<LectureSlot> slots = new ArrayList<>();
@@ -711,7 +729,7 @@ public class InputParser {
     }
 
     /**
-     * @return
+     * @return Nonlecture slot list
      */
     private ArrayList<NonLectureSlot> generateGenericNonLectureSlots() {
         ArrayList<NonLectureSlot> slots = new ArrayList<>();

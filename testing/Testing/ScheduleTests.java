@@ -116,8 +116,8 @@ public class ScheduleTests {
 		schedule.updateAssignment(t1, nls3);
 		schedule.updateAssignment(t2, nls4);
 		
-		schedule.addNoncompatible(b1, b2);
-		schedule.addPair(l1, l2);
+		//schedule.addNoncompatible(b1, b2);
+		//schedule.addPair(l1, l2);
 		
 		// test lecture slots
 		assertEquals(4, schedule.getLectureSlots().size());
@@ -192,10 +192,10 @@ public class ScheduleTests {
 		assertEquals(2, count);
 		
 		// test noncompatible
-		assertEquals(1, schedule.getNoncompatible().size());
+		//assertEquals(1, schedule.getNoncompatible().size());
 		
 		// test pair
-		assertEquals(1, schedule.getPairs().size());
+		//assertEquals(1, schedule.getPairs().size());
 		
 		// test iscomplete
 		//assertTrue(schedule.isComplete());

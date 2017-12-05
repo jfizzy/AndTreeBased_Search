@@ -34,9 +34,10 @@ class Manager {
      */
     public static void main(String[] args) {
 
-        // one argument or 6 (the file name and then 5 weights) 
+        // one argument or 5 (the file name and then 4 weights) 
+    	// TODO also have to read penalties as input (penalties and weights are different)
         try {
-            if (args.length == 1 || args.length == 6) {
+            if (args.length == 1 || args.length == 5) {
 
                 // parse input file arg
                 File f = new File(args[0]);
@@ -49,22 +50,20 @@ class Manager {
                 double w2 = 1;
                 double w3 = 1;
                 double w4 = 1;
-                double w5 = 1;
-                if (args.length == 6) {
+                if (args.length == 5) {
                     try {
                         w1 = Double.parseDouble(args[1]);
                         w2 = Double.parseDouble(args[2]);
                         w3 = Double.parseDouble(args[3]);
                         w4 = Double.parseDouble(args[4]);
-                        w5 = Double.parseDouble(args[5]);
                     } catch (NumberFormatException e) {
-                        // TODO
+                        // TODO specific error not usage
                         usage();
                     }
                 }
 
                 // run the search
-                search(args[0], w1, w2, w3, w4, w5);
+                search(args[0], w1, w2, w3, w4);
             } else {
                 usage();
             }
@@ -74,8 +73,11 @@ class Manager {
         }
     }
 
+    /**
+     * Prints the usage statement and exits
+     */
     private static void usage() { 
-        System.out.println("Acceptable args are: inputfile [CourseMin weight] [LabMin weight] [Pref weight] [Pair weight] [Diff weight]");
+        System.out.println("Acceptable args are: inputfile [MinFilled weight] [Pref weight] [Pair weight] [Diff weight]");
         exit();
     }
 
@@ -84,26 +86,30 @@ class Manager {
      *
      * @param fp File path
      */
-    private static void search(String fp, double w1, double w2, double w3, double w4, double w5) throws FileNotFoundException {
+    private static void search(String fp, double w1, double w2, double w3, double w4) throws FileNotFoundException {
+    	
         System.out.println(">>> Reading input file [" + fp + "] and parsing ...");
-        //try{
+        
+        // parse the input file
         InputManager im = new InputManager();
         Schedule schedule = im.run(fp);
         if(schedule == null){
             System.out.println("There were invalid lines in the input file.");
             exit();
         }
-        schedule.setWeights(w1, w2, w3, w4, w5);
+        
+        // set the weights for eval components
+        schedule.setWeights(w1, w2, w3, w4);
+        
         System.out.println(">>> Done");
         System.out.println(">>> Finding optimal assignments ...");
+        
+        // Run the schedule, and instantiate finalSchedule to its result.
         SearchManager sm = new SearchManager(schedule);
-        //Run the schedule, and instantiate finalSchedule to its result.
         Schedule finalSchedule = new Schedule(sm.run());
-        //} catch(FileNotFoundException e){
-        //    throw e;
-        //}
         System.out.println(">>> Done");
         
+        // produce graphical HTML schedule
         ScheduleVisualizer vis = new ScheduleVisualizer(finalSchedule);
         vis.run();
     }

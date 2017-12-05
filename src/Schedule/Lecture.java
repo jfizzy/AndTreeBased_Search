@@ -39,6 +39,9 @@ public class Lecture extends Meeting{
         return (dept + " " + cNum + " LEC " + sec);
     }  
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object o){
         Lecture l;
