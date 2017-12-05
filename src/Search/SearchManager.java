@@ -129,7 +129,7 @@ public class SearchManager {
     		
     		// otherwise generate child nodes and add them to the top of the stack
     		// (create all valid children that have eval < bound)
-    		else if (System.currentTimeMillis() - startTime < maxTime) {
+    		else if (bound == -1 || System.currentTimeMillis() - startTime < maxTime) {
     			n.generateNodes(bound);
     			nodeStack.addAll(n.getChildNodes());
     		}
