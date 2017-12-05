@@ -48,6 +48,8 @@ public class SearchManager {
      * Run the search
      */
     public Schedule run() {
+    	
+    	schedule.assignPreferences();
 
     	// check if initial schedule is valid and solvable
         if (schedule.isValid() && schedule.isPossible()) {
@@ -127,8 +129,10 @@ public class SearchManager {
     		if (n.getSchedule().isComplete()) {
     			
     			// set the new bound, add the solution to the list
-    			if (bound == -1 || n.getEval() < bound) bound = n.getEval();
-    			solutions.add(n.getSchedule());
+    			if (bound == -1 || n.getEval() < bound) {
+    				bound = n.getEval();
+        			solutions.add(n.getSchedule());
+    			}
     			//System.out.println("GOT SOLUTION   eval="+n.getEval()+"   ("+solutions.size()+" solns)");
     			
     			// save the best schedule
@@ -146,6 +150,9 @@ public class SearchManager {
     		// end if we have run out of time
     		//if (System.currentTimeMillis() - startTime > maxTime) 
     		//	break;
+    		
+    		// end if best eval is zero
+    		if (bound == 0) break;
     	}
     	
     	// return the best complete valid schedule we got

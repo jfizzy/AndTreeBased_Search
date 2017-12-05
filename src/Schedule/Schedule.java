@@ -251,6 +251,33 @@ public class Schedule {
     }
     
     /**
+     * Attempts to assign preferences according to their highest values
+     */
+    public void assignPreferences() {
+    	
+    	for (Assignment a : assignments) {
+    		
+    		ArrayList<Preference> prefs = a.getM().getPreferences();
+    		if (prefs.size() < 3)
+    			continue;
+    		
+    		prefs.sort(Preference.PrefComparator);
+    		Meeting m = a.getM();
+    		
+    		Slot best = null;
+    		for (Preference p : m.getPreferences()) {
+    			
+    			if (this.isValidWith(m, p.getSlot()) && (best == null || 
+    					this.evalWith(m, p.getSlot()) < this.evalWith(m, best))) {
+        			best = p.getSlot();
+    			}
+    		}
+    		if (best != null)
+    			updateAssignment(m, best);
+    	}
+    }
+    
+    /**
      * Get the first null assignment
      * 
      * @return The assignment or null if all assigned
