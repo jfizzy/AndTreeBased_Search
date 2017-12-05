@@ -31,8 +31,8 @@ public class Schedule {
     private ArrayList<Lecture> lectures;		// list of lectures (filled from courses)
     private ArrayList<Lab> labs;				// list of labs (filled from courses)
     private ArrayList<Tutorial> tuts;			// list of tutorials (filled from courses)
-    private ArrayList<MeetingPair> pairs;		// list of paired courses
-    private ArrayList<MeetingPair> noncompatible;	// list of incompatible courses
+    //private ArrayList<MeetingPair> pairs;		// list of paired courses
+    //private ArrayList<MeetingPair> noncompatible;	// list of incompatible courses
     
 	// penalties for eval components
 	private double pen_coursemin;
@@ -65,8 +65,8 @@ public class Schedule {
         labs = new ArrayList<>();
         tuts = new ArrayList<>();
         assignments = new ArrayList<>();
-        pairs = new ArrayList<>();
-        noncompatible = new ArrayList<>();
+        //pairs = new ArrayList<>();
+        //noncompatible = new ArrayList<>();
         
         // process the meetings from courses into lists
         processLectures();
@@ -101,8 +101,8 @@ public class Schedule {
         lectures = orig.getLectures();
         labs = orig.getLabs();
         tuts = orig.getTuts();
-        pairs = orig.getPairs();
-        noncompatible = orig.getNoncompatible();
+        //pairs = orig.getPairs();
+        //noncompatible = orig.getNoncompatible();
 
         // keep original penalties and weights
         pen_coursemin = orig.getCourseMinPenalty();
@@ -115,12 +115,10 @@ public class Schedule {
         wSecDiff = orig.getSecDiffWeight();
         
         // make a copy of assignments list
-        //if (orig.getAssignments() != null) {
         assignments = new ArrayList<>();
         for (int i = 0; i < orig.getAssignments().size(); i++) {
         	assignments.add(new Assignment(orig.getAssignments().get(i)));
         }
-        //}
     }
 
     /**
@@ -140,8 +138,8 @@ public class Schedule {
         lectures = orig.getLectures();
         labs = orig.getLabs();
         tuts = orig.getTuts();
-        pairs = orig.getPairs();
-        noncompatible = orig.getNoncompatible();
+        //pairs = orig.getPairs();
+        //noncompatible = orig.getNoncompatible();
 
         // keep original penalties and weights
         pen_coursemin = orig.getCourseMinPenalty();
@@ -507,29 +505,18 @@ public class Schedule {
     }
 
     /**
-     * Clear the assignments list
-     */
-    public void clearAssignments() {
-        assignments = null;
-    }
-
-    /**
      * Set the lecture slots list
      * 
      * @param lecslots LectureSlot list
      */
-    public void setLectureSlots(ArrayList<LectureSlot> lecslots) {
-        this.lslots = lecslots;
-    }
+    public void setLectureSlots(ArrayList<LectureSlot> lecslots) { lslots = lecslots; }
 
     /**
      * Get the lecture slots list
      * 
      * @return LectureSlot list
      */
-    public ArrayList<LectureSlot> getLectureSlots() {
-        return this.lslots;
-    }
+    public ArrayList<LectureSlot> getLectureSlots() { return lslots; }
     
     /**
      * Returns a lecture slot in the list that matches the day/time
@@ -561,18 +548,14 @@ public class Schedule {
      * 
      * @param labslots NonLectureSlot list
      */
-    public void setLabSlots(ArrayList<NonLectureSlot> labslots) {
-        this.nlslots = labslots;
-    }
+    public void setLabSlots(ArrayList<NonLectureSlot> labslots) { nlslots = labslots; }
 
     /**
      * Get the nonlecture slots list
      * 
      * @return NonLectureSlot list
      */
-    public ArrayList<NonLectureSlot> getNonLectureSlots() {
-        return this.nlslots;
-    }
+    public ArrayList<NonLectureSlot> getNonLectureSlots() { return nlslots; }
     
     /**
      * Returns a nonlecture slot in the list that matches the day/time
@@ -614,45 +597,35 @@ public class Schedule {
      * 
      * @return Course list
      */
-    public ArrayList<Course> getCourses() {
-        return this.courses;
-    }
+    public ArrayList<Course> getCourses() { return courses; }
 
     /**
      * Set the lectures list
      * 
      * @param lecs Lecture list
      */
-    public void setLectures(ArrayList<Lecture> lecs) {
-        this.lectures = lecs;
-    }
+    public void setLectures(ArrayList<Lecture> lecs) { lectures = lecs; }
 
     /**
      * Get the lectures list
      * 
      * @return Lecture list
      */
-    public ArrayList<Lecture> getLectures() {
-        return this.lectures;
-    }
+    public ArrayList<Lecture> getLectures() { return lectures; }
 
     /**
      * Get labs list
      * 
      * @return Lab list
      */
-    public ArrayList<Lab> getLabs() {
-        return labs;
-    }
+    public ArrayList<Lab> getLabs() { return labs; }
 
     /**
      * Get tutorials list
      * 
      * @return Tutorial list
      */
-    public ArrayList<Tutorial> getTuts() {
-        return tuts;
-    }
+    public ArrayList<Tutorial> getTuts() { return tuts; }
 
     /**
      * Get nonlectures list
@@ -675,9 +648,9 @@ public class Schedule {
      * 
      * @return List of MeetingPair
      */
-    public ArrayList<MeetingPair> getPairs() {
-    	return pairs;
-    }
+    //public ArrayList<MeetingPair> getPairs() {
+    //	return pairs;
+    //}
     
     /**
      * Add to the paired courses list
@@ -685,27 +658,27 @@ public class Schedule {
      * @param m1 First Meeting
      * @param m2 Second Meeting
      */
-    public void addPair(Meeting m1, Meeting m2) {
-    	pairs.add(new MeetingPair(m1, m2));
-    }
+    //public void addPair(Meeting m1, Meeting m2) {
+    //	pairs.add(new MeetingPair(m1, m2));
+    //}
     
     /**
      * Set paired courses list
      * 
      * @param pairs List of MeetingPair
      */
-    public void setPairs(ArrayList<MeetingPair> pairs) {
-    	this.pairs = pairs;
-    }
+    //public void setPairs(ArrayList<MeetingPair> pairs) {
+    //	this.pairs = pairs;
+    //}
     
     /**
      * Get the list of non-compatible courses
      * 
      * @return List of MeetingPair
      */
-    public ArrayList<MeetingPair> getNoncompatible() {
-    	return noncompatible;
-    }
+    //public ArrayList<MeetingPair> getNoncompatible() {
+    //	return noncompatible;
+    //}
     
     /**
      * Add to the non-compatible courses list
@@ -713,18 +686,18 @@ public class Schedule {
      * @param m1 First Meeting
      * @param m2 Second Meeting
      */
-    public void addNoncompatible(Meeting m1, Meeting m2) {
-    	noncompatible.add(new MeetingPair(m1, m2));
-    }
+    //public void addNoncompatible(Meeting m1, Meeting m2) {
+    //	noncompatible.add(new MeetingPair(m1, m2));
+    //}
     
     /**
      * Set the noncompatible courses list
      * 
      * @param noncompatible List of MeetingPair
      */
-    public void setNoncompatible(ArrayList<MeetingPair> noncompatible) {
-    	this.noncompatible = noncompatible;
-    }
+    //public void setNoncompatible(ArrayList<MeetingPair> noncompatible) {
+    //	this.noncompatible = noncompatible;
+    //}
     
     /**
 	 * Sets the weight values for the different evaluations
@@ -747,72 +720,56 @@ public class Schedule {
 	 * 
 	 * @param weight Weight value
 	 */
-	public void setMinWeight(double weight) {
-		wMin = weight;
-	}	
+	public void setMinWeight(double weight) { wMin = weight; }	
 	
 	/**
 	 * Set weight for preferences
 	 * 
 	 * @param weight Weight value
 	 */
-	public void setPrefWeight(double weight) {
-		wPref = weight;
-	}
+	public void setPrefWeight(double weight) { wPref = weight; }
 	
 	/**
 	 * Set weight for pairs
 	 * 
 	 * @param weight Weight value
 	 */
-	public void setPairWeight(double weight) {
-		wPair = weight;
-	}
+	public void setPairWeight(double weight) { wPair = weight; }
 	
 	/**
 	 * Set weight for section difference
 	 * 
 	 * @param weight Weight value
 	 */
-	public void setSecDiffWeight(double weight) {
-		wSecDiff = weight;
-	}
+	public void setSecDiffWeight(double weight) { wSecDiff = weight; }
 	
 	/**
 	 * Get course min weight
 	 * 
 	 * @return Weight value
 	 */
-	public double getMinWeight() {
-		return wMin;
-	}
+	public double getMinWeight() { return wMin; }
 	
 	/**
 	 * Get preference weight
 	 * 
 	 * @return Weight value
 	 */
-	public double getPrefWeight() {
-		return wPref;
-	}
+	public double getPrefWeight() { return wPref; }
 	
 	/**
 	 * Get pair weight
 	 * 
 	 * @return Weight value
 	 */
-	public double getPairWeight() {
-		return wPair;
-	}
+	public double getPairWeight() { return wPair; }
 	
 	/**
 	 * Get section difference weight
 	 * 
 	 * @return Weight value
 	 */
-	public double getSecDiffWeight() {
-		return wSecDiff;
-	}
+	public double getSecDiffWeight() { return wSecDiff; }
 	
 	/**
 	 * Sets the penalty values for the different evaluations
@@ -834,70 +791,54 @@ public class Schedule {
 	 * 
 	 * @param p Penalty
 	 */
-	public void setCourseMinPenalty(double p) {
-		pen_coursemin = p;
-	}	
+	public void setCourseMinPenalty(double p) { pen_coursemin = p; }	
 	
 	/**
 	 * Set penalty for labmin
 	 * 
 	 * @param p Penalty
 	 */
-	public void setLabMinPenalty(double p) {
-		pen_labmin = p;
-	}
+	public void setLabMinPenalty(double p) { pen_labmin = p; }
 	
 	/**
 	 * Set penalty for pairs
 	 * 
 	 * @param p Penalty
 	 */
-	public void setPairPenalty(double p) {
-		pen_notpaired = p;
-	}
+	public void setPairPenalty(double p) { pen_notpaired = p; }
 	
 	/**
 	 * Set penalty for section difference
 	 * 
 	 * @param p Penalty
 	 */
-	public void setSecDiffPenalty(double p) {
-		pen_section = p;
-	}
+	public void setSecDiffPenalty(double p) { pen_section = p; }
 	
 	/**
 	 * Get course min penalty
 	 * 
 	 * @return Penalty
 	 */
-	public double getCourseMinPenalty() {
-		return pen_coursemin;
-	}
+	public double getCourseMinPenalty() { return pen_coursemin; }
 	
 	/**
 	 * Get lab min penalty
 	 * 
 	 * @return Penalty
 	 */
-	public double getLabMinPenalty() {
-		return pen_labmin;
-	}
+	public double getLabMinPenalty() { return pen_labmin; }
 	
 	/**
 	 * Get pair penalty
 	 * 
 	 * @return Penalty
 	 */
-	public double getPairPenalty() {
-		return pen_notpaired;
-	}
+	public double getPairPenalty() { return pen_notpaired; }
 	
 	/**
 	 * Get section difference penalty
 	 * 
 	 * @return Penalty
 	 */
-	public double getSecDiffPenalty() {
-		return pen_section;
-	}
+	public double getSecDiffPenalty() { return pen_section; }
 }

@@ -57,7 +57,7 @@ class Manager {
                         w3 = Double.parseDouble(args[3]);
                         w4 = Double.parseDouble(args[4]);
                     } catch (NumberFormatException e) {
-                        // TODO
+                        // TODO specific error not usage
                         usage();
                     }
                 }

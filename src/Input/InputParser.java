@@ -36,10 +36,12 @@ public class InputParser {
         ArrayList<Course> courses = generateSections();
         generateNonLectures(courses);
         Schedule schedule = new Schedule(lecSlots, nonlecSlots, courses);
-        schedule.setNoncompatible(generateIncompatibilities(courses));
+        //schedule.setNoncompatible(generateIncompatibilities(courses));
+        generateIncompatibilities(courses);
         generateUnwanted(courses, lecSlots, nonlecSlots);
         generatePreferences(schedule, lecSlots, nonlecSlots);
-        schedule.setPairs(generatePairs(courses));
+        //schedule.setPairs(generatePairs(courses));
+        generatePairs(courses);
         if (applyPartialAssignments(schedule)) {
             orderAssignments(schedule);
             return schedule;
