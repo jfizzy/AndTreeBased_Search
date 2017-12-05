@@ -11,21 +11,23 @@
  * Luke Kissick
  * Sidney Shane Dizon
  */
+
 package Schedule;
 
 /**
- *
+ * Class for determining the relative priority of assignments
  * @author jmaci
  */
 public class AssignmentPriority{
     
-    public boolean evening;
-    public int incompatibilities;
-    public int preferencePenaltySum;
-    public int unwanted;
-    public int pairs;
-    public final int type;
-    public final int courseNum, secNum;
+    public boolean evening;				// evening flag
+    public int incompatibilities;		// number of incompatibilities
+    public int preferencePenaltySum;	// sum of preference penalties
+    public int unwanted;				// number of unwanted slots
+    public int pairs;					// number of paired courses
+    public final int type;				// type of meeting
+    public final int courseNum, secNum;	// course and section number
+    
     /**
      * Constructor 
      * @param m
@@ -39,6 +41,7 @@ public class AssignmentPriority{
                 this.evening = true;
             }
         }
+        
         // check how many incompatibilities
         //this.incompatibilities = 0;
         incompatibilities = m.getIncompatibility().size();//.stream().map((_item) -> 1).reduce(this.incompatibilities, Integer::sum);

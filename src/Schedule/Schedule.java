@@ -15,8 +15,6 @@
 package Schedule;
 
 import java.util.ArrayList;
-import java.util.Collections;
-
 import Search.Constr;
 import Search.Eval;
 
@@ -26,24 +24,23 @@ import Search.Eval;
  */
 public class Schedule {
 
-    private ArrayList<Assignment> assignments;          // list of assignments
-    private Assignment[] assignArray;			// array of assignments
+    private ArrayList<Assignment> assignments;	// list of assignments
     private ArrayList<LectureSlot> lslots;		// list of lecture slots
-    private ArrayList<NonLectureSlot> nlslots;      	// list of nonlecture slots
-    private ArrayList<Course> courses;                  // list of courses
-    private ArrayList<Lecture> lectures;                // list of lectures (filled from courses)
-    private ArrayList<Lab> labs;			// list of labs (filled from courses)
-    private ArrayList<Tutorial> tuts;                   // list of tutorials (filled from courses)
+    private ArrayList<NonLectureSlot> nlslots;	// list of nonlecture slots
+    private ArrayList<Course> courses;			// list of courses
+    private ArrayList<Lecture> lectures;		// list of lectures (filled from courses)
+    private ArrayList<Lab> labs;				// list of labs (filled from courses)
+    private ArrayList<Tutorial> tuts;			// list of tutorials (filled from courses)
     private ArrayList<MeetingPair> pairs;		// list of paired courses
     private ArrayList<MeetingPair> noncompatible;	// list of incompatible courses
     
-	// penalties
+	// penalties for eval components
 	private double pen_coursemin;
 	private double pen_labmin;
 	private double pen_notpaired;
 	private double pen_section;
 	
-	// weights
+	// weights for eval components
 	private double wMin;
 	private double wPref;
 	private double wPair;
@@ -71,7 +68,7 @@ public class Schedule {
         pairs = new ArrayList<>();
         noncompatible = new ArrayList<>();
         
-        // process the meetings into lists
+        // process the meetings from courses into lists
         processLectures();
         processLabs();
         processTuts();
@@ -118,12 +115,12 @@ public class Schedule {
         wSecDiff = orig.getSecDiffWeight();
         
         // make a copy of assignments list
-        if (orig.getAssignments() != null) {
-	        assignments = new ArrayList<>();
-	        for (int i = 0; i < orig.getAssignments().size(); i++) {
-	        	assignments.add(new Assignment(orig.getAssignments().get(i)));
-	        }
+        //if (orig.getAssignments() != null) {
+        assignments = new ArrayList<>();
+        for (int i = 0; i < orig.getAssignments().size(); i++) {
+        	assignments.add(new Assignment(orig.getAssignments().get(i)));
         }
+        //}
     }
 
     /**
@@ -163,16 +160,6 @@ public class Schedule {
 	        	assignments.add(new Assignment(orig.getAssignments().get(i)));
 	        }
 	        updateAssignment(m, s);
-        }
-        
-        // make a copy of assignments array and add the new assignment
-        if (orig.getAssignmentsArr() != null) {
-	        int n = orig.getAssignmentsArr().length;
-	        assignArray = new Assignment[n];
-	        for (int i = 0; i < n; i++) {
-	        	assignArray[i] = new Assignment(orig.getAssignmentsArr()[i]);
-	        }
-	        updateAssignmentArr(m, s);
         }
     }
 
@@ -294,24 +281,6 @@ public class Schedule {
     	
     	return null;
     }
-    
-    /**
-     * Get the first null assignment
-     * 
-     * @return The assignment or null if all assigned
-     */
-    public Assignment findFirstNullArr() {
-    	
-    	// for each assignment
-    	for (int i = 0; i < assignArray.length; i++) {
-    		
-    		// return the assignment if slot is null
-    		if (assignArray[i].getS() == null) 
-    			return assignArray[i];
-    	}
-    	
-    	return null;
-    }
 
     /**
      * Check if the schedule is completely assigned in a valid way
@@ -330,25 +299,6 @@ public class Schedule {
 		
 		// if we got here no slots are null
 		return this.isValid();
-    }
-    
-    /**
-     * Check if the schedule is completely assigned
-     * 
-     * @return True if all courses have an assignment, false if there is work left to do
-     */
-    public boolean isCompleteArr() {
-    	
-    	// for each assignment
-		for (int i = 0; i < assignArray.length; i++) {
-			
-			// return false if slot is null
-			if (assignArray[i].getS() == null)
-				return false;
-		}
-		
-		// if we got here no slots are null
-		return true;
     }
     
     /**
@@ -383,10 +333,6 @@ public class Schedule {
      */
     public boolean isValidWith(Meeting m, Slot s) {
         return Constr.check(this, m, s);
-    }
-    
-    public boolean isValidWithArr(Meeting m, Slot s) {
-        return Constr.checkArr(this, m, s);
     }
     
     /**
@@ -483,17 +429,6 @@ public class Schedule {
     		nlmax += nls.getLabMax();
     	return (lectures.size() <= lmax && (labs.size() + tuts.size()) <= nlmax);
     }
-    
-    /**
-     * Generate array of assignments from list
-     */
-    public void generateAssignmentArray() {
-    	int n = assignments.size();
-    	assignArray = new Assignment[n];
-    	for (int i = 0; i < n; i++) {
-    		assignArray[i] = assignments.get(i); 
-    	}
-    }
 
     /*
      *  Getters and setters
@@ -506,15 +441,6 @@ public class Schedule {
      */
     public ArrayList<Assignment> getAssignments() {
         return assignments;
-    }
-    
-    /**
-     * Get assignments list
-     * 
-     * @return Assignments list
-     */
-    public Assignment[] getAssignmentsArr() {
-        return assignArray;
     }
 
     /**
@@ -576,32 +502,6 @@ public class Schedule {
     		
     		// otherwise set slot and return
     		a.setS(s);
-    		return;
-    	}
-    }
-    
-    /**
-     * Update the assignment for a given meeting
-     * (do nothing if assignment not found)
-     * 
-     * @param m The meeting
-     * @param s The slot to assign it to
-     */
-    public void updateAssignmentArr(Meeting m, Slot s) {
-    	
-    	// don't assign if slot is not in list and not null
-    	if (s != null && !lslots.contains(s) && !nlslots.contains(s))
-    		return;
-    	
-    	// for each assignment
-    	for (int i = 0; i < assignArray.length; i++) {
-    		
-    		// skip if meeting doesn't match
-    		if (assignArray[i].getM() != m)
-    			continue;
-    		
-    		// otherwise set slot and return
-    		assignArray[i].setS(s);
     		return;
     	}
     }

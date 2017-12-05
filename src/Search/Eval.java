@@ -26,7 +26,7 @@ public class Eval {
 	 * --------------
 	 * 
 	 * Quick way:	schedule.eval();
-	 * 				schedule.evalWith(assignment);
+	 * 				schedule.evalWith(meeting, slot);
 	 * 				- returns the eval without actually adding the assignment
 	 * 
 	 * 				To use weights, add them to the end of the parameters
@@ -39,7 +39,7 @@ public class Eval {
 	 * 
 	 * Total eval of a schedule if an assignment was added:
 	 * --> this does not add the assignment to the schedule
-	 * 		int value = Eval.getEval(schedule, assignment);
+	 * 		int value = Eval.getEval(schedule, meeting, slot);
 	 * 
 	 * Weights are stored on the schedule
 	 * 
