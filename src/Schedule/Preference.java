@@ -64,13 +64,16 @@ public class Preference implements Comparable<Preference> {
 		this.value = value;
 	}
         
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString(){
         return this.s.toString() + " = (" + this.value+")";
     }
     
     /**
-    *
+    * Comparator for Preference class
     */
    public static Comparator<Preference> PrefComparator = (Preference p1, Preference p2) -> p1.compareTo(p2);
 

@@ -34,18 +34,20 @@ public class SearchManager {
     /**
      * Constructor
      *
-     * @param schedule
+     * @param schedule The schedule
      */
     public SearchManager(Schedule schedule) {
-        this.schedule = schedule;
-        solutions = new ArrayList<>();
-        nodeStack = new Stack<>();
-        best = null;
-        bound = -1;
+        this.schedule = schedule;		// set the schedule
+        solutions = new ArrayList<>();	// create solutions list
+        nodeStack = new Stack<>();		// create stack
+        best = null;	// initialize best solution
+        bound = -1;		// initialize bound value
     }
 
     /**
      * Run the search
+     * 
+     * @return Solved schedule
      */
     public Schedule run() {
     	
@@ -93,7 +95,7 @@ public class SearchManager {
     	
     	// get the initial time
     	long startTime = System.currentTimeMillis();
-    	long maxTime = 5 * 60 * 1000; // 5 minutes in milliseconds
+    	long maxTime = 1 * 60 * 1000; // 5 minutes in milliseconds
     	
     	// repeat until stack is empty (begins with just root node on the stack)
     	while (!nodeStack.isEmpty()) {
@@ -127,14 +129,13 @@ public class SearchManager {
     		
     		// otherwise generate child nodes and add them to the top of the stack
     		// (create all valid children that have eval < bound)
-    		else {
+    		else if (System.currentTimeMillis() - startTime < maxTime) {
     			n.generateNodes(bound);
     			nodeStack.addAll(n.getChildNodes());
     		}
     		
-    		// end if we have run out of time or if best eval is zero
-    		if (System.currentTimeMillis() - startTime > maxTime || bound == 0) 
-    			break;
+    		// end if best eval is zero
+    		if (bound == 0) break;
     	}
     	
     	// return the best complete valid schedule we got
@@ -163,12 +164,16 @@ public class SearchManager {
     public void setBound(double bound) { this.bound = bound; }
     
     /**
-     * @param s
+     * Add a solution to the list
+     * 
+     * @param s Solved schedule
      */
     public void addSolution(Schedule s) { solutions.add(s); }
     
     /**
-     * @return
+     * Get the solutions list
+     * 
+     * @return Solutions list
      */
     public ArrayList<Schedule> getSolutions() { return solutions; }
 }

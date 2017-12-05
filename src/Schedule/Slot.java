@@ -13,9 +13,6 @@
  */
 package Schedule;
 
-// NOTE: THIS NEEDS TO BE UPDATED TO USE ARRAYS - eml
-
-
 /**
  * Slot: abstract class that represents a timeslot within a schedule week. One slot can represent 
  * several different days and times, which is handled using arrays and an index.
@@ -45,7 +42,7 @@ public abstract class Slot {
     /**
      * Check if slots are equal (have all the same values)
      *
-     * @param s
+     * @param s Slot to compare to
      * @return True if slots are equal
      */
     public boolean equals(Slot s) {

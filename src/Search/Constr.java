@@ -53,6 +53,7 @@ public class Constr {
 	/**
 	 * Check all hard constraints
 	 * 
+	 * @param s Schedule
 	 * @return True if all hard constraints are satisfied
 	 */
 	public static boolean check(Schedule s) {
@@ -65,8 +66,10 @@ public class Constr {
 	
 	/**
 	 * Check all hard constraints if an assignment was added
-	 * to an existing schedule
 	 * 
+	 * @param s1 Original schedule
+	 * @param m Meeting to assign
+	 * @param s Slot to assign
 	 * @return True if all hard constraints are satisfied
 	 */
 	public static boolean check(Schedule s1, Meeting m, Slot s) {
@@ -77,6 +80,8 @@ public class Constr {
 	
 	/**
 	 * Prints which constraints were violated for debugging
+	 * 
+	 * @param s Schedule
 	 */
 	public static void printViolations(Schedule s) {
 		if (!checkCourseMax(s))
@@ -108,6 +113,7 @@ public class Constr {
 	/**
 	 * Check course maximum constraint
 	 * 
+	 * @param schedule Schedule
 	 * @return True if course max constraint is met
 	 */
 	public static boolean checkCourseMax(Schedule schedule) {
@@ -150,6 +156,7 @@ public class Constr {
 	/**
 	 * Check lab maximum constraint
 	 * 
+	 * @param schedule Schedule
 	 * @return True if lab max constraint is met
 	 */
 	public static boolean checkLabMax(Schedule schedule) {
@@ -192,6 +199,7 @@ public class Constr {
 	/**
 	 * Check if labs not assigned to same slots as lectures of the same section
 	 * 
+	 * @param schedule Schedule
 	 * @return True if labs assignment constraint is met
 	 */
 	public static boolean checkLabsDifferent(Schedule schedule) {
@@ -222,8 +230,8 @@ public class Constr {
 				NonLecture nl = (NonLecture) a.getM();
 				Section nlsec = nl.getParentSection();
 				if (lsec.equals(nlsec)) // TODO fix this?
-						//|| lsec.getParentCourse().getOpenLabs().contains(a.getM())
-						//|| lsec.getParentCourse().getOpenTuts().contains(a.getM()));
+						//|| lsec.getParentCourse().getOpenLabs().contains(nl)
+						//|| lsec.getParentCourse().getOpenTuts().contains(nl));
 					return false;
 			}
 		}
@@ -234,8 +242,9 @@ public class Constr {
 	
 	/**
 	 * Check non-compatible constraint:
-	 * non-compatible(a,b) => assign a != assign b
+	 * non-compatible(a,b) implies assign a != assign b
 	 * 
+	 * @param schedule Schedule
 	 * @return True if non-compatible constraint is met
 	 */
 	public static boolean checkNoncompatible(Schedule schedule) {
@@ -266,8 +275,9 @@ public class Constr {
 	
 	/**
 	 * Check partassign constraint:
-	 * partassign a => assign a
+	 * partassign a implies assign a
 	 * 
+	 * @param schedule Schedule
 	 * @return True if partassign constraint is met
 	 */
 	public static boolean checkPartassign(Schedule schedule) {
@@ -290,8 +300,9 @@ public class Constr {
 	
 	/**
 	 * Check unwanted constraint:
-	 * unwanted a,s => assign a != s
+	 * unwanted a,s implies assign a != s
 	 * 
+	 * @param schedule Schedule
 	 * @return True if unwanted constraint is met
 	 */
 	public static boolean checkUnwanted(Schedule schedule) {
@@ -319,6 +330,7 @@ public class Constr {
 	 * Check if sections with numbers starting with 9 get evening slots
 	 * (department constraint)
 	 * 
+	 * @param schedule Schedule
 	 * @return True if evening classes constraint is met
 	 */
 	public static boolean checkEveningClasses(Schedule schedule) {
@@ -366,6 +378,7 @@ public class Constr {
 	 * Check if 500 level classes don't have the same slot
 	 * (department constraint)
 	 * 
+	 * @param schedule Schedule
 	 * @return True if 500-level constraint is met
 	 */
 	public static boolean checkOver500Classes(Schedule schedule) {
@@ -413,6 +426,7 @@ public class Constr {
 	 * Check if no courses Tuesday 11:00-12:30
 	 * (department constraint)
 	 * 
+	 * @param schedule Schedule
 	 * @return True if Tues 11:00 constraint is met
 	 */
 	public static boolean checkSpecificTimes(Schedule schedule) {
@@ -437,6 +451,7 @@ public class Constr {
 	 * Check special requirements for CPSC 813/913
 	 * (department constraint)
 	 * 
+	 * @param schedule Schedule
 	 * @return True if CPSC813/913 constraint is met
 	 */
 	public static boolean checkSpecialClasses(Schedule schedule) {

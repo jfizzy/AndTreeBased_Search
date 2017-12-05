@@ -49,9 +49,9 @@ public class Schedule {
     /**
      * Constructor with slots and courses lists
      *
-     * @param lslots
-     * @param nlslots
-     * @param courses
+     * @param lslots Lecture slots list
+     * @param nlslots Nonlecture slots list
+     * @param courses Courses list
      */
     public Schedule(ArrayList<LectureSlot> lslots,
             ArrayList<NonLectureSlot> nlslots,
@@ -125,8 +125,8 @@ public class Schedule {
      * Constructor for Constr/Eval
      * (makes a new schedule from the old with an added assignment)
      *
-     * @param m
-     * @param s
+     * @param m Meeting to assign
+     * @param s Slot to assign
      * @param orig Original schedule
      */
     public Schedule(Schedule orig, Meeting m, Slot s) {
@@ -240,15 +240,19 @@ public class Schedule {
      */
     public void assignPreferences() {
     	
+    	// for each assignment
     	for (Assignment a : assignments) {
     		
+    		// skip if less than 3 preferences
     		ArrayList<Preference> prefs = a.getM().getPreferences();
     		if (prefs.size() < 3)
     			continue;
     		
+    		// sort preferences by highest value
     		prefs.sort(Preference.PrefComparator);
     		Meeting m = a.getM();
     		
+    		// get the best valid preferred slot by eval
     		Slot best = null;
     		for (Preference p : m.getPreferences()) {
     			
@@ -257,8 +261,9 @@ public class Schedule {
         			best = p.getSlot();
     			}
     		}
-    		if (best != null)
-    			updateAssignment(m, best);
+    		
+    		// update the assignment
+    		if (best != null) updateAssignment(m, best);
     	}
     }
     
@@ -277,6 +282,7 @@ public class Schedule {
     			return a;
     	}
     	
+    	// if we got here there are no null assignments
     	return null;
     }
 
@@ -332,15 +338,6 @@ public class Schedule {
     public boolean isValidWith(Meeting m, Slot s) {
         return Constr.check(this, m, s);
     }
-    
-    /**
-     * @param s
-     * @return
-     */
-    public boolean isValidWith(Slot s) {
-    	Meeting m = findFirstNull().getM();
-    	return Constr.check(this, m, s);
-    }
 
     /**
      * Get the evaluation without weights
@@ -364,8 +361,8 @@ public class Schedule {
     /**
      * Get the evaluation with added assignment without weights
      * 
-     * @param m
-     * @param s
+     * @param m Meeting to assign
+     * @param s Slot to assign
      * @return The evaluation of the schedule with the assignment
      */
     public double evalWith(Meeting m, Slot s) {
@@ -443,7 +440,8 @@ public class Schedule {
 
     /**
      * Set assignments list
-     * @param assignments 
+     * 
+     * @param assignments Assignments list
      */
     public void setAssignments(ArrayList<Assignment> assignments) {
         this.assignments = assignments;
@@ -452,7 +450,8 @@ public class Schedule {
     /**
      * Add or update an assignment
      * 
-     * @param a The assignment
+     * @param m Meeting to assign
+     * @param s Slot to assign
      */
     public void addAssignment(Meeting m, Slot s) {
     	
@@ -702,11 +701,10 @@ public class Schedule {
     /**
 	 * Sets the weight values for the different evaluations
 	 * 
-	 * @param cmin
-	 * @param lmin
-	 * @param pref
-	 * @param pair
-	 * @param secdiff
+	 * @param min MinFilled weight
+	 * @param pref Pref weight
+	 * @param pair Pair weight
+	 * @param secdiff SecDiff weight
 	 */
 	public void setWeights(double min, double pref, double pair, double secdiff) {
 		wMin = min;

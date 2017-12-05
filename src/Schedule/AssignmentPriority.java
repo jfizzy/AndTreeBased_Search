@@ -30,7 +30,8 @@ public class AssignmentPriority{
     
     /**
      * Constructor 
-     * @param m
+     * 
+     * @param m Meeting
      */
     public AssignmentPriority (Meeting m){
         
@@ -83,9 +84,9 @@ public class AssignmentPriority{
      * restrictive of the two. When there is a tie on all restrictive
      * attributes, decides on a best using tie breaking functionality
      * 
-     * @param ap1
-     * @param ap2
-     * @return
+     * @param ap1 First assignment
+     * @param ap2 Second assignment
+     * @return Compare value
      */
     public static int compare(AssignmentPriority ap1, AssignmentPriority ap2) {
     	

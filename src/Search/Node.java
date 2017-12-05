@@ -28,7 +28,6 @@ public class Node implements Comparable<Node> {
     private ArrayList<Node> children;	// list of child nodes
     private SearchManager sm;	// the search manager that initiated the seach
     private Schedule schedule;	// schedule for this node
-    //private boolean solEntry;	// solution entry (true = yes, false = ?)
     private Node parent;		// reference to the parent node (null if root node)
     private Assignment start;	// the assignment to try for this node's branches
     private String id;			// identifier string for the node
@@ -39,6 +38,7 @@ public class Node implements Comparable<Node> {
      * Constructor for the root node
      *
      * @param s Schedule
+     * @param sm Search manager
      */
     public Node(Schedule s, SearchManager sm) {
         schedule = new Schedule(s);	// make a copy of the given schedule
@@ -60,7 +60,7 @@ public class Node implements Comparable<Node> {
      * @param id Node identifier string
      * @param depth The depth within the tree
      */
-    public Node(Schedule s, Node n, Slot slot, String id, int depth) {
+    public Node(Schedule s, Node n, String id, int depth) {
         schedule = s;			// set the schedule
         sm = n.getSM();			// set the manager reference
         parent = n;				// set the parent node reference
@@ -74,6 +74,8 @@ public class Node implements Comparable<Node> {
     /**
      * Generate all valid child nodes for this node.
      * If bound value is set, don't add nodes that are worse or equal
+     * 
+     * @param bound The bound value to use
      */
     public void generateNodes(double bound) {
 
@@ -96,10 +98,10 @@ public class Node implements Comparable<Node> {
                         // make the new child node if valid
                         Schedule s = new Schedule(schedule, l, ls);
                         String id = l.toString() + " " + ls.toString();
-                        Node n = new Node(s, this, ls, id, depth + 1);
+                        Node n = new Node(s, this, id, depth + 1);
 
                         // skip making node if we have a bound value and the eval is greater
-                        if (bound > -1 && n.getEval() >= bound && n.getEval() >= SearchManager.startEval)
+                        if (bound > -1 && n.getEval() >= bound && n.getEval() > SearchManager.startEval)
                             continue;
 
                         // add the new node
@@ -124,10 +126,10 @@ public class Node implements Comparable<Node> {
                         // make the new child node if valid
                         Schedule s = new Schedule(schedule, nl, nls);
                         String id = nl.toString() + " " + nls.toString();
-                        Node n = new Node(s, this, nls, id, depth + 1);
+                        Node n = new Node(s, this, id, depth + 1);
 
                         // skip making node if we have a bound value and the eval is greater or equal
-                        if (bound > -1 && n.getEval() >= bound && n.getEval() >= SearchManager.startEval)
+                        if (bound > -1 && n.getEval() >= bound && n.getEval() > SearchManager.startEval)
                             continue;
 
                         // add the new node
@@ -146,62 +148,84 @@ public class Node implements Comparable<Node> {
      */
     
     /**
-     * @return
+     * Get the node's eval (precalculated)
+     * 
+     * @return Eval value
      */
     public double getEval() { return eval; }
     
     /**
-     * @return
+     * Get the node's schedule
+     * 
+     * @return The schedule
      */
     public Schedule getSchedule() { return schedule; }
 
     /**
-     * @param s
+     * Set the node's schedule
+     * 
+     * @param s The schedule
      */
     public void setSchedule(Schedule s) { schedule = s; }
 
     /**
-     * @param n
+     * Add a child node
+     * 
+     * @param n Child node
      */
     public void addChildNode(Node n) { children.add(n); }
 
     /**
-     * @return
+     * Get the list of child nodes
+     * 
+     * @return List of child nodes
      */
     public ArrayList<Node> getChildNodes() { return children; }
 
     /**
-     * @param n
+     * Set the parent node reference
+     * 
+     * @param n Parent node
      */
     public void setParent(Node n) { parent = n; }
 
     /**
-     * @return
+     * Get the parent node
+     * 
+     * @return Parent node
      */
     public Node getParent() { return parent; }
     
     /**
-     * @return
+     * Get the search manager
+     * 
+     * @return Search manager
      */
     public SearchManager getSM() { return sm; }
     
     /**
-     * @return
+     * Get the node's ID string
+     * 
+     * @return ID string
      */
     public String getID() { return id; }
     
     /**
-     * @return
+     * Get the node's depth value (level within tree)
+     * 
+     * @return Depth value
      */
     public int getDepth() { return depth; }
     
     /**
-     * @return
+     * Get the start value
+     * 
+     * @return First null assignment
      */
     public Assignment getStart() { return start; }
 
     /**
-     *
+     * Comparator for Node class
      */
     public static Comparator<Node> NodeComparator = (Node n1, Node n2) -> n1.compareTo(n2);
 
@@ -210,7 +234,7 @@ public class Node implements Comparable<Node> {
      */
     @Override
     public int compareTo(Node o) {
-
+    	// scale the values up because we have to cast to int
         return (int) -(1000*this.getEval() - 1000*o.getEval());
     }
 }

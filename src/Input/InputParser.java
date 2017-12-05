@@ -25,10 +25,17 @@ public class InputParser {
 
     private InputWrapper iw;
 
+    /**
+     * Constructor
+     */
     public InputParser() {
         iw = null;
     }
 
+    /**
+     * @param iw InputWrapper
+     * @return Schedule
+     */
     public Schedule run(InputWrapper iw) {
         this.iw = iw;
         ArrayList<LectureSlot> lecSlots = activateLectureSlots();
@@ -53,7 +60,7 @@ public class InputParser {
     /**
      * orderAssignments - takes a schedule and orders its list of assignments
      *
-     * @param s
+     * @param s Schedule
      */
     public void orderAssignments(Schedule s) {
         ArrayList<Assignment> orderedAssignments = new ArrayList<>();
@@ -93,8 +100,7 @@ public class InputParser {
      * prioritizeAssignments - takes a list of assignments and orders them based
      * on restrictive priority
      *
-     * @param assignments
-     * @return
+     * @param assignments Assignments list
      */
     private void prioritizeAssignments(ArrayList<Assignment> assignments) {
 
@@ -120,7 +126,7 @@ public class InputParser {
     }
 
     /**
-     * @param schedule
+     * @param schedule Schedule
      */
     private boolean applyPartialAssignments(Schedule schedule) {
         for (String line : iw.partialAssignmentLines) {
@@ -163,8 +169,8 @@ public class InputParser {
     }
 
     /**
-     * @param courses
-     * @return
+     * @param courses Courses list
+     * @return MeetingPair list
      */
     private ArrayList<MeetingPair> generatePairs(ArrayList<Course> courses) {
         ArrayList<MeetingPair> result = new ArrayList<>();
@@ -201,9 +207,9 @@ public class InputParser {
     }
 
     /**
-     * @param sched
-     * @param lSlots
-     * @param nlSlots
+     * @param sched Schedule
+     * @param lSlots Lecture slots list
+     * @param nlSlots Nonlecture slots list
      */
     private void generatePreferences(Schedule sched, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
         iw.preferencesLines.forEach((line) -> {
@@ -284,9 +290,9 @@ public class InputParser {
     }
 
     /**
-     * @param courses
-     * @param lSlots
-     * @param nlSlots
+     * @param courses Courses list
+     * @param lSlots Lecture slots list
+     * @param nlSlots Nonlecture slots list
      */
     private void generateUnwanted(ArrayList<Course> courses, ArrayList<LectureSlot> lSlots, ArrayList<NonLectureSlot> nlSlots) {
         iw.unwantedLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((parts) -> {
@@ -332,7 +338,8 @@ public class InputParser {
      * objects to their list of incompatible counterparts incompatibility is
      * symmetric
      *
-     * @param courses
+     * @param courses Courses list
+     * @return MeetingPair list
      */
     private ArrayList<MeetingPair> generateIncompatibilities(ArrayList<Course> courses) {
         ArrayList<MeetingPair> result = new ArrayList<>();
@@ -377,7 +384,7 @@ public class InputParser {
      * generateSections - takes the lecture specifying lines of the input file
      * and aims to create all of the sections that were listed by the input file
      *
-     * @return courses
+     * @return courses Courses list
      */
     private ArrayList<Course> generateSections() {
         ArrayList<Course> courses = new ArrayList<>();
@@ -392,6 +399,13 @@ public class InputParser {
         return courses;
     }
 
+    /**
+     * @param dept Department string
+     * @param courseNum Course number string
+     * @param section Section number string
+     * @param courses Courses list
+     * @return Section
+     */
     private Section generateSection(String dept, String courseNum, String section, ArrayList<Course> courses) {
         boolean existingDept = false;
         for (Course c : courses) {
@@ -467,7 +481,8 @@ public class InputParser {
      * sections that are specified by the input file, takes in the list of
      * courses with which to place each NonLecture
      *
-     * @param courses
+     * @param courses Courses list
+     * @return Nonlecture list
      */
     private ArrayList<NonLecture> generateNonLectures(ArrayList<Course> courses) {
         ArrayList<NonLecture> result = new ArrayList<>();
@@ -507,12 +522,12 @@ public class InputParser {
      * single 'NonLecture' and places it in its correct location as long as the
      * parent course exists
      *
-     * @param dept
-     * @param courseNum
-     * @param section
-     * @param nlType
-     * @param nlNum
-     * @param courses
+     * @param dept Department string
+     * @param courseNum Course number string
+     * @param section Section number string
+     * @param nlType Type string
+     * @param nlNum Nonlecture number string
+     * @param courses Courses list
      * @return the added NonLecture
      */
     private NonLecture generateNonLecture(String dept, String courseNum, String section, String nlType, String nlNum, ArrayList<Course> courses) {
@@ -680,7 +695,7 @@ public class InputParser {
     }
 
     /**
-     * @return
+     * @return Lecture slot list
      */
     private ArrayList<LectureSlot> generateGenericLectureSlots() {
         ArrayList<LectureSlot> slots = new ArrayList<>();
@@ -714,7 +729,7 @@ public class InputParser {
     }
 
     /**
-     * @return
+     * @return Nonlecture slot list
      */
     private ArrayList<NonLectureSlot> generateGenericNonLectureSlots() {
         ArrayList<NonLectureSlot> slots = new ArrayList<>();

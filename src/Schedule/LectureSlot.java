@@ -24,15 +24,16 @@ public class LectureSlot extends Slot {
     private int coursemin;	// minimum lectures for the slot
     
     /**
-     * constructor
-     * @param day
-     * @param h
-     * @param m
-     * @param eh
-     * @param em
-     * @param cmax
-     * @param cmin
-     * @param isEvening
+     * Constructor
+     * 
+     * @param day Day
+     * @param h Start hour
+     * @param m Start minute
+     * @param eh End hour
+     * @param em End minute
+     * @param cmax Coursemax
+     * @param cmin Coursemin
+     * @param isEvening Evening flag
      */
     public LectureSlot(String day, int h, int m, int eh, int em, int cmax, int cmin, boolean isEvening){
         this.day = day;
@@ -110,7 +111,7 @@ public class LectureSlot extends Slot {
      * compares two NonLectureSlots for equality
      * TODO may want to add functionality for comparing coursemin
      * coursemax
-     * @param o
+     * @param o Object to compare to
      * @return true if same, false otherwise
      */
     public boolean equals(Object o){

@@ -22,7 +22,7 @@ public abstract class NonLecture extends Meeting {
     private Course parentCourse;	// the parent course
     protected boolean evening;		// whether it is an evening class
 
-    /**
+    /*
      * TODO: figure out if evening Course means all labs and tutorials are
      * evening as well
      */

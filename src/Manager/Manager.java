@@ -73,6 +73,9 @@ class Manager {
         }
     }
 
+    /**
+     * Prints the usage statement and exits
+     */
     private static void usage() { 
         System.out.println("Acceptable args are: inputfile [MinFilled weight] [Pref weight] [Pair weight] [Diff weight]");
         exit();
@@ -84,25 +87,29 @@ class Manager {
      * @param fp File path
      */
     private static void search(String fp, double w1, double w2, double w3, double w4) throws FileNotFoundException {
+    	
         System.out.println(">>> Reading input file [" + fp + "] and parsing ...");
-        //try{
+        
+        // parse the input file
         InputManager im = new InputManager();
         Schedule schedule = im.run(fp);
         if(schedule == null){
             System.out.println("There were invalid lines in the input file.");
             exit();
         }
+        
+        // set the weights for eval components
         schedule.setWeights(w1, w2, w3, w4);
+        
         System.out.println(">>> Done");
         System.out.println(">>> Finding optimal assignments ...");
+        
+        // Run the schedule, and instantiate finalSchedule to its result.
         SearchManager sm = new SearchManager(schedule);
-        //Run the schedule, and instantiate finalSchedule to its result.
         Schedule finalSchedule = new Schedule(sm.run());
-        //} catch(FileNotFoundException e){
-        //    throw e;
-        //}
         System.out.println(">>> Done");
         
+        // produce graphical HTML schedule
         ScheduleVisualizer vis = new ScheduleVisualizer(finalSchedule);
         vis.run();
     }
