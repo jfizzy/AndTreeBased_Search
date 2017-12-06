@@ -106,7 +106,12 @@ class Manager {
         
         // Run the schedule, and instantiate finalSchedule to its result.
         SearchManager sm = new SearchManager(schedule);
-        Schedule finalSchedule = new Schedule(sm.run());
+        Schedule tmp = sm.run();
+        if(tmp == null)
+            exit();
+        Schedule finalSchedule = new Schedule(tmp);
+        if(finalSchedule == null)
+            exit();
         System.out.println(">>> Done");
         
         // produce graphical HTML schedule
