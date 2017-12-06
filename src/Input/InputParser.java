@@ -644,14 +644,22 @@ public class InputParser {
             String slotString = parts[0] + ", " + parts[1];
 
             LectureSlot s = ScheduleUtils.findLectureSlot(slots, slotString);
+            //special case for Tuesday 11:00 - 12:30 dept meeting
             if (s != null) {
-                int coursemax = Integer.parseInt(parts[2]);
-                int coursemin = Integer.parseInt(parts[3]);
-                if (coursemin > coursemax) {
-                    System.out.println("[!Lecture Slot - coursemin [" + coursemin + "] > [" + coursemax + "]");
+                if (!(s.getHour() == 11 && s.getMinute() == 0 && s.getEndHour() == 12 && s.getEndMinute() == 30)) {
+                    if (!s.isActive()) {
+                        int coursemax = Integer.parseInt(parts[2]);
+                        int coursemin = Integer.parseInt(parts[3]);
+                        if (coursemax == 0) {
+                            System.out.println("[!Lecture Slot - coursemax is zero]");
+                            // do not assign coursemin anyways
+                        } else {
+                            s.activate(coursemax, coursemin); // activate the slot
+                            System.out.println("[Activated Lecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + s.getCourseMax() + " " + s.getCourseMin() + "]");
+                        }
+                    }
                 } else {
-                    s.activate(coursemax, coursemin); // activate the slot
-                    System.out.println("[Activated Lecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + coursemax + " " + coursemin + "]");
+                    System.out.println("[!Lecture Slot - Cannot activate slot on Tuesday 11:00-12:30 due to hard constraint]");
                 }
             } else {
                 System.out.println("[!Lecture Slot - Could not find the lecture slot]");
@@ -679,13 +687,16 @@ public class InputParser {
 
             NonLectureSlot s = ScheduleUtils.findNonLectureSlot(slots, slotString);
             if (s != null) {
-                int labmax = Integer.parseInt(parts[2]);
-                int labmin = Integer.parseInt(parts[3]);
-                if (labmin > labmax) {
-                    System.out.println("[!NonLecture Slot - labmin [" + labmin + "] > labmax [" + labmax + "]");
-                } else {
-                    s.activate(labmax, labmin);
-                    System.out.println("[Activated NonLecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + labmax + " " + labmin + "]");
+                if (!s.isActive()) {
+                    int labmax = Integer.parseInt(parts[2]);
+                    int labmin = Integer.parseInt(parts[3]);
+                    if (labmax == 0) {
+                        System.out.println("[!NonLecture Slot - labmax is zero]");
+                        // do not assign the min anyways
+                    } else {
+                        s.activate(labmax, labmin);
+                        System.out.println("[Activated NonLecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + s.getLabMax() + " " + s.getLabMin() + "]");
+                    }
                 }
             } else {
                 System.out.println("[!NonLecture Slot - could not find the non lecture slot]");
