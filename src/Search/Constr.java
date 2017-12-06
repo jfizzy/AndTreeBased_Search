@@ -16,6 +16,10 @@ package Search;
 
 import Schedule.*;
 
+// TODO labs different constraint
+// TODO confirm evening check works
+// TODO 813/913 constraint
+
 /**
  * Class for determining whether a schedule satisfies hard constraints
  *
@@ -362,7 +366,7 @@ public class Constr {
 			else continue;
 			
 			// check section number begins with 9
-			if (evening) { // snum.substring(0, 1).equals("9") // TODO confirm this works properly
+			if (evening) { // TODO confirm this works properly
 				
 				// return false if not scheduled in the evening
 				if (a.getS().getHour() < 18)
