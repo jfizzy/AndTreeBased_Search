@@ -233,9 +233,11 @@ public class Constr {
 				Section lsec = l.getParentSection();
 				NonLecture nl = (NonLecture) a.getM();
 				Section nlsec = nl.getParentSection();
-				if (lsec.equals(nlsec)) // TODO fix this?
-						//|| lsec.getParentCourse().getOpenLabs().contains(nl)
-						//|| lsec.getParentCourse().getOpenTuts().contains(nl));
+				boolean open = false;
+				if (nlsec == null)
+					open = true;
+				if ((!open && lsec.equals(nlsec)) 
+						|| (open && nl.getParentCourse().equals(lsec.getParentCourse())))
 					return false;
 			}
 		}
