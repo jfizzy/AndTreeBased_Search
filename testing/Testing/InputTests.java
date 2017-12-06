@@ -3,6 +3,7 @@ package Testing;
 import Input.FileExaminer;
 import Input.InputParser;
 import Input.InputWrapper;
+import Schedule.LectureSlot;
 import Schedule.Schedule;
 import java.io.FileNotFoundException;
 import static org.junit.Assert.*;
@@ -106,5 +107,62 @@ public class InputTests {
         Schedule schedule = ip.run(iw);
         
         assertTrue(!schedule.getAssignments().isEmpty());
+    }
+    
+    @Test
+    public void testLectureSlotActivation() {
+        InputWrapper iw = new InputWrapper();
+        FileExaminer fe = new FileExaminer("test_files/lecture_slot_activation_tests.txt",iw);
+        
+        try{
+            fe.init();
+        }catch(FileNotFoundException fnfe){
+            fail("File not found");
+        }
+        
+        assertTrue(fe.filter());
+        
+        assertTrue(iw.hasContent());
+        
+        InputParser ip = new InputParser();
+        Schedule schedule = ip.run(iw);
+        
+        assertTrue(!schedule.getAssignments().isEmpty());
+        
+        LectureSlot ls = schedule.findLectureSlot("MO", 8, 0);
+        if(ls == null)
+            fail("Could not find a lecture slot");
+        assertTrue(ls.isActive());
+        assertTrue(ls.getCourseMax() == 3);
+        assertTrue(ls.getCourseMin() == 2);
+        
+        ls = schedule.findLectureSlot("MO", 8, 30);
+        assertTrue(ls == null);
+        
+        ls = schedule.findLectureSlot("MO", 9, 0);
+        assertTrue(ls.isActive());
+        assertTrue(ls.getCourseMax() == 3);
+        assertTrue(ls.getCourseMin() == 2);
+        
+        ls = schedule.findLectureSlot("TU", 9, 30);
+        assertTrue(ls.isActive());
+        assertTrue(ls.getCourseMax() == 2);
+        assertTrue(ls.getCourseMin() == 1);
+        
+        ls = schedule.findLectureSlot("TU", 21, 0);
+        assertTrue(ls == null);
+        
+        ls = schedule.findLectureSlot("MO", 23, 0);
+        assertTrue(ls == null);
+        
+        ls = schedule.findLectureSlot("MO", 14, 0);
+        assertTrue(ls.isActive());
+        assertTrue(ls.getCourseMax() == 6);
+        assertTrue(ls.getCourseMin() == 0);
+        
+        ls = schedule.findLectureSlot("TU", 12, 30);
+        assertFalse(ls.isActive());
+        assertTrue(ls.getCourseMax() == 0);
+        assertTrue(ls.getCourseMin() == 2);
     }
 }

@@ -171,6 +171,7 @@ public class FileExaminer {
                         //System.out.println("lecture slot line");
                         iw.lectureSlotLines.add(line);
                     } else {
+                        //skip
                         //System.out.println("found an invalid slot definition");
                     }
                 } else if (mlec.find() && inSec) { // lecture
