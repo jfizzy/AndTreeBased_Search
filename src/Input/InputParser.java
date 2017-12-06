@@ -644,22 +644,18 @@ public class InputParser {
             String slotString = parts[0] + ", " + parts[1];
 
             LectureSlot s = ScheduleUtils.findLectureSlot(slots, slotString);
-            //special case for Tuesday 11:00 - 12:30 dept meeting
+
             if (s != null) {
-                if (!(s.getHour() == 11 && s.getMinute() == 0 && s.getEndHour() == 12 && s.getEndMinute() == 30)) {
-                    if (!s.isActive()) {
-                        int coursemax = Integer.parseInt(parts[2]);
-                        int coursemin = Integer.parseInt(parts[3]);
-                        if (coursemax == 0) {
-                            System.out.println("[!Lecture Slot - coursemax is zero]");
-                            // do not assign coursemin anyways
-                        } else {
-                            s.activate(coursemax, coursemin); // activate the slot
-                            System.out.println("[Activated Lecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + s.getCourseMax() + " " + s.getCourseMin() + "]");
-                        }
+                if (!s.isActive()) {
+                    int coursemax = Integer.parseInt(parts[2]);
+                    int coursemin = Integer.parseInt(parts[3]);
+                    if (coursemax == 0) {
+                        System.out.println("[!Lecture Slot - coursemax is zero]");
+                        // do not assign coursemin anyways
+                    } else {
+                        s.activate(coursemax, coursemin); // activate the slot
+                        System.out.println("[Activated Lecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + s.getCourseMax() + " " + s.getCourseMin() + "]");
                     }
-                } else {
-                    System.out.println("[!Lecture Slot - Cannot activate slot on Tuesday 11:00-12:30 due to hard constraint]");
                 }
             } else {
                 System.out.println("[!Lecture Slot - Could not find the lecture slot]");

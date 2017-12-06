@@ -292,4 +292,24 @@ public class InputTests {
         assertTrue(nls.getLabMin() == 3);
         
     }
+    
+    @Test
+    public void testCourseSectionGeneration() {
+        InputWrapper iw = new InputWrapper();
+        FileExaminer fe = new FileExaminer("test_files/nonlecture_slot_activation_tests.txt",iw);
+        
+        try{
+            fe.init();
+        }catch(FileNotFoundException fnfe){
+            fail("File not found");
+        }
+        
+        assertTrue(fe.filter());
+        
+        assertTrue(iw.hasContent());
+        
+        InputParser ip = new InputParser();
+        Schedule schedule = ip.run(iw);
+        
+    }
 }
