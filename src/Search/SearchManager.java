@@ -71,12 +71,12 @@ public class SearchManager {
             		optimal = s;
             }
             if(optimal == null){
-                System.out.println("Unsolvable schedule");
+                System.out.println("!!!Unsolvable Problem");
                 return null;
             }
             
             // print optimal schedule and eval breakdown
-            optimal.printAssignments(); // TODO print in alphabetical order
+            optimal.printAssignments();
             Constr.printViolations(optimal);
             Eval.printBreakdown(optimal);
             
@@ -85,7 +85,7 @@ public class SearchManager {
         
         // started with an invalid schedule
         else {
-        	System.out.println("Impossible starting schedule");
+        	System.out.println("!!!Impossible Starting Schedule");
         	return null;
         }
     }
