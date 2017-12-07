@@ -1345,4 +1345,3 @@ Pair:
 CPSC 313 LEC 01, CPSC 413 LEC 01
 
 Partial assignments:
-

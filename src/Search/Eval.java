@@ -26,7 +26,7 @@ public class Eval {
 	 * --------------
 	 * 
 	 * Quick way:	schedule.eval();
-	 * 				schedule.evalWith(assignment);
+	 * 				schedule.evalWith(meeting, slot);
 	 * 				- returns the eval without actually adding the assignment
 	 * 
 	 * 				To use weights, add them to the end of the parameters
@@ -39,7 +39,7 @@ public class Eval {
 	 * 
 	 * Total eval of a schedule if an assignment was added:
 	 * --> this does not add the assignment to the schedule
-	 * 		int value = Eval.getEval(schedule, assignment);
+	 * 		int value = Eval.getEval(schedule, meeting, slot);
 	 * 
 	 * Weights are stored on the schedule
 	 * 
@@ -54,14 +54,14 @@ public class Eval {
 	/**
 	 * Get total evaluation
 	 * 
-	 * @param s
+	 * @param s Schedule
 	 * @return Total evaluation of search instance
 	 */
-	public static int getEval(Schedule s) {
+	public static double getEval(Schedule s) {
 		return getCourseMinEval(s) 
 				+ getLabMinEval(s) 
 				+ getPrefEval(s) 
-				+ getPairEval(s) 
+				+ getPairEval(s)
 				+ getSecDiffEval(s);
 	}
 	
@@ -69,11 +69,12 @@ public class Eval {
 	 * Get total evaluation if an assignment was added to
 	 * an existing schedule
 	 * 
-	 * @param s1
-	 * @param a
+	 * @param s1 Original schedule
+	 * @param m Meeting to assign
+	 * @param s Slot to assign
 	 * @return Total evaluation of search instance
 	 */
-	public static int getEval(Schedule s1, Meeting m, Slot s) {
+	public static double getEval(Schedule s1, Meeting m, Slot s) {
 		Schedule s2 = new Schedule(s1, m, s);
 		return getEval(s2);
 	}
@@ -81,7 +82,7 @@ public class Eval {
 	/**
 	 * Print a breakdown of all the eval components and then the total
 	 * 
-	 * @param s
+	 * @param s Schedule
 	 */
 	public static void printBreakdown(Schedule s) {
 		System.out.println("Cmin = "+getCourseMinEval(s));
@@ -96,10 +97,10 @@ public class Eval {
 	 * Get coursemin eval component
 	 * (penalty if slot has less courses than min)
 	 * 
-	 * @param schedule
+	 * @param schedule Schedule
 	 * @return Penalty for violating coursemin
 	 */
-	public static int getCourseMinEval(Schedule schedule) {
+	public static double getCourseMinEval(Schedule schedule) {
     	double result = 0.0;
     	
     	// for each lecture slot in schedule
@@ -124,17 +125,17 @@ public class Eval {
     	}
     	
     	// return weighted result
-    	return (int) (schedule.getCourseMinWeight()*result);		
+    	return schedule.getMinWeight()*result;		
 	}
 	
 	/**
 	 * Get labmin eval component
 	 * (penalty if slot has less labs than min)
 	 * 
-	 * @param schedule
+	 * @param schedule Schedule
 	 * @return Penalty for violating labmin
 	 */
-	public static int getLabMinEval(Schedule schedule) {
+	public static double getLabMinEval(Schedule schedule) {
     	double result = 0.0;
     	
     	// for each nonlecture slot in schedule
@@ -158,17 +159,17 @@ public class Eval {
     	}
     	
     	// return weighted result
-    	return (int) (schedule.getLabMinWeight()*result);
+    	return schedule.getMinWeight()*result;
 	}
 	
 	/**
 	 * Get preference eval component
 	 * (penalty if course not assigned to preferred slot)
 	 * 
-	 * @param schedule
+	 * @param schedule Schedule
 	 * @return Penalty for violating preferences
 	 */
-	public static int getPrefEval(Schedule schedule) {
+	public static double getPrefEval(Schedule schedule) {
 		double result = 0.0;
 		
 		// for each assignment
@@ -182,26 +183,24 @@ public class Eval {
 				
 				// add preference value to penalty if slot doesn't match
 				if (!a.getS().equals(p.getSlot()))
-					result += 0;//p.getValue();
+					result += p.getValue();
 			}
 		}
     	
     	// return weighted result
-    	return (int) (schedule.getPrefWeight()*result);
+    	return schedule.getPrefWeight()*result;
 	}
 	 
 	/**
 	 * Get pair eval component
 	 * (penalty if courses not assigned to same slot)
 	 * 
-	 * @param schedule
+	 * @param schedule Schedule
 	 * @return Penalty for violating pairs
 	 */
-	public static int getPairEval(Schedule schedule) {
+	public static double getPairEval(Schedule schedule) {
 		double result = 0.0;
 		
-		// TODO: the values are double what the spec says
-		/*
 		// for each assignment
 		for (Assignment a : schedule.getAssignments()) {
 			
@@ -211,43 +210,19 @@ public class Eval {
 			// for each pair entry of the assignment's meeting
 			for (Meeting m : a.getM().getPaired()) {
 				
-				// for each other assignment
-				for (Assignment b : schedule.getAssignments()) {
-					if (a == b) continue;
+				Assignment b = m.getAssignment();
+				if (b == null || b.getS() == null) continue;
 					
-					// skip if unassigned or meeting doesn't match
-					if (b.getS() == null || b.getM() != m) continue;
-					
-					// add penalty if slot doesn't match
-					if (!a.getS().equals(b.getS())) {
-						result += pen_notpaired;
-						//System.out.println(a.getM().toString() + "   " + b.getM().toString());
-					}
+				// add penalty if slot doesn't match
+				// (this has to be 0.5 because each member of the pair is counted twice)
+				if (!a.getS().equals(b.getS())) {
+					result += 0.5 * schedule.getPairPenalty();
 				}
 			}
 		}
-		*/
-		// TODO delete above
 		
-		// for each pair in the pairs list
-		for (MeetingPair mp : schedule.getPairs()) {
-				
-			// skip if unassigned
-			if (mp.getFirst().getAssignment() == null
-					|| mp.getSecond().getAssignment() == null)
-				continue;
-			Slot s1 = mp.getFirst().getAssignment().getS();
-			Slot s2 = mp.getSecond().getAssignment().getS();
-			if (s1 == null || s2 == null)
-				continue;
-			
-			// return false if slots overlap
-			if (!s1.equals(s2))
-				result += schedule.getPairPenalty();
-		}
-    	
     	// return weighted result
-		return (int) (schedule.getPairWeight()*result);
+		return schedule.getPairWeight()*result;
 	}
 	
 	/**
@@ -255,10 +230,10 @@ public class Eval {
 	 * (penalty if courses of the same section are assigned to the same slot)
 	 * (department constraint)
 	 * 
-	 * @param schedule
+	 * @param schedule Schedule
 	 * @return Penalty for violating section difference
 	 */
-	public static int getSecDiffEval(Schedule schedule) {
+	public static double getSecDiffEval(Schedule schedule) {
 		double result = 0.0;
 		
 		// for each course in the schedule
@@ -300,6 +275,6 @@ public class Eval {
 		}
 		
 		// return weighted result
-		return (int) (schedule.getSecDiffWeight()*result);
+		return schedule.getSecDiffWeight()*result;
 	}
 }
