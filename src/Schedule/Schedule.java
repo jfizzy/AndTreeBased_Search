@@ -373,7 +373,42 @@ public class Schedule {
      * Print the timetable for debugging
      */
     public void printAssignments() {
-
+    	
+    		System.out.println("\nEval-value: " + this.eval());
+    		ArrayList<String> sortPrints = new ArrayList<String>();
+    		String builder = "";
+    		
+    		for(Assignment a: assignments) {
+    			builder="";
+    			if (a.getM().getClass() == Lecture.class) {
+                    Lecture l = (Lecture) a.getM();
+                    builder = String.format("%-30s" , l.toString());
+                } // if lab
+                else if (a.getM().getClass() == Lab.class) {
+                    Lab lab = (Lab) a.getM();
+                    builder = String.format("%-30s" , lab.toString()); // using toString to print
+                } // if tutorial
+                else if (a.getM().getClass() == Tutorial.class) {
+                    Tutorial tut = (Tutorial) a.getM();
+                    builder = String.format("%-30s"  ,tut.toString()); // using toString to print
+                }
+    			builder = builder + ": ";
+    			
+    			if (a.getS() != null) {
+    				builder = builder + String.format("%3s %02d:%02d - %02d:%02d",
+                            a.getS().getDay(), a.getS().getHour(), a.getS().getMinute(),
+                            a.getS().getEndHour(), a.getS().getEndMinute());
+                } else {
+                		builder = builder + String.format(":%-6s", "No such slot");
+                }
+    			
+    			sortPrints.add(builder);
+    		}
+    		
+    		for(String out: sortPrints) {
+    			System.out.println(out);
+    		}
+    		/*
         // for each assignment
         assignments.stream().map((a) -> {
             System.out.print("Assigned: ");
@@ -406,6 +441,7 @@ public class Schedule {
         }).forEachOrdered((_item) -> {
             System.out.print("\n");
         });
+        */
     }
     
     /**
