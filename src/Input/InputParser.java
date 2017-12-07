@@ -43,11 +43,9 @@ public class InputParser {
         ArrayList<Course> courses = generateSections();
         generateNonLectures(courses);
         Schedule schedule = new Schedule(lecSlots, nonlecSlots, courses);
-        //schedule.setNoncompatible(generateIncompatibilities(courses));
         generateIncompatibilities(courses);
         generateUnwanted(courses, lecSlots, nonlecSlots);
         generatePreferences(schedule, lecSlots, nonlecSlots);
-        //schedule.setPairs(generatePairs(courses));
         generatePairs(courses);
         if (applyPartialAssignments(schedule)) {
             orderAssignments(schedule);
@@ -172,8 +170,7 @@ public class InputParser {
      * @param courses Courses list
      * @return MeetingPair list
      */
-    private ArrayList<MeetingPair> generatePairs(ArrayList<Course> courses) {
-        ArrayList<MeetingPair> result = new ArrayList<>();
+    private void generatePairs(ArrayList<Course> courses) {
 
         iw.pairLines.forEach((line) -> {
             String parts[] = line.split("\\s*,\\s*");
@@ -195,15 +192,12 @@ public class InputParser {
                 if (!duplicate) {
                     l.addPaired(r);
                     r.addPaired(l);
-                    result.add(new MeetingPair(l, r));
                     System.out.println("[Pair - " + l.toString() + " === " + r.toString() + "]");
                 }
             } else {
                 System.out.println("[!Pair - could not find at least one meeting]");
             }
         });
-
-        return result;
     }
 
     /**
@@ -341,8 +335,7 @@ public class InputParser {
      * @param courses Courses list
      * @return MeetingPair list
      */
-    private ArrayList<MeetingPair> generateIncompatibilities(ArrayList<Course> courses) {
-        ArrayList<MeetingPair> result = new ArrayList<>();
+    private void generateIncompatibilities(ArrayList<Course> courses) {
 
         iw.notCompatibleLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((halves) -> {
             String left = halves[0];
@@ -369,15 +362,12 @@ public class InputParser {
                 if (!duplicate) {
                     l.addIncompatibility(r); // give them 
                     r.addIncompatibility(l); // the same incompatibility
-                    result.add(new MeetingPair(l, r));
                     System.out.println("[Not compatible - " + l.toString() + " =/= " + r.toString() + "]");
                 }
             } else {
                 System.out.println("[!Not compatible - could not find at least one meeting]");
             }
         });
-
-        return result;
     }
 
     /**
@@ -644,14 +634,18 @@ public class InputParser {
             String slotString = parts[0] + ", " + parts[1];
 
             LectureSlot s = ScheduleUtils.findLectureSlot(slots, slotString);
+
             if (s != null) {
-                int coursemax = Integer.parseInt(parts[2]);
-                int coursemin = Integer.parseInt(parts[3]);
-                if (coursemin > coursemax) {
-                    System.out.println("[!Lecture Slot - coursemin [" + coursemin + "] > [" + coursemax + "]");
-                } else {
-                    s.activate(coursemax, coursemin); // activate the slot
-                    System.out.println("[Activated Lecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + coursemax + " " + coursemin + "]");
+                if (!s.isActive()) {
+                    int coursemax = Integer.parseInt(parts[2]);
+                    int coursemin = Integer.parseInt(parts[3]);
+                    if (coursemax == 0) {
+                        System.out.println("[!Lecture Slot - coursemax is zero]");
+                        // do not assign coursemin anyways
+                    } else {
+                        s.activate(coursemax, coursemin); // activate the slot
+                        System.out.println("[Activated Lecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + s.getCourseMax() + " " + s.getCourseMin() + "]");
+                    }
                 }
             } else {
                 System.out.println("[!Lecture Slot - Could not find the lecture slot]");
@@ -679,13 +673,16 @@ public class InputParser {
 
             NonLectureSlot s = ScheduleUtils.findNonLectureSlot(slots, slotString);
             if (s != null) {
-                int labmax = Integer.parseInt(parts[2]);
-                int labmin = Integer.parseInt(parts[3]);
-                if (labmin > labmax) {
-                    System.out.println("[!NonLecture Slot - labmin [" + labmin + "] > labmax [" + labmax + "]");
-                } else {
-                    s.activate(labmax, labmin);
-                    System.out.println("[Activated NonLecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + labmax + " " + labmin + "]");
+                if (!s.isActive()) {
+                    int labmax = Integer.parseInt(parts[2]);
+                    int labmin = Integer.parseInt(parts[3]);
+                    if (labmax == 0) {
+                        System.out.println("[!NonLecture Slot - labmax is zero]");
+                        // do not assign the min anyways
+                    } else {
+                        s.activate(labmax, labmin);
+                        System.out.println("[Activated NonLecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + s.getLabMax() + " " + s.getLabMin() + "]");
+                    }
                 }
             } else {
                 System.out.println("[!NonLecture Slot - could not find the non lecture slot]");

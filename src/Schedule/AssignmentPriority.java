@@ -94,7 +94,6 @@ public class AssignmentPriority{
         
     	// compare sum of preference penalties
         if(ap1.preferencePenaltySum != ap2.preferencePenaltySum){
-            //result += 250*Integer.compare(ap1.preferencePenaltySum, ap2.preferencePenaltySum);
         	result += 500*(ap1.preferencePenaltySum - ap2.preferencePenaltySum);
         }
         
@@ -108,19 +107,16 @@ public class AssignmentPriority{
         
         // compare num of pairs
         if(ap1.pairs != ap2.pairs){
-            //result += 100*Integer.compare(ap1.pairs, ap2.pairs);
         	result += 100*(ap1.pairs - ap2.pairs);
         }
         
         // compare number of incompatibilities
         if(ap1.incompatibilities != ap2.incompatibilities){
-            //result += 10*Integer.compare(ap1.incompatibilities, ap2.incompatibilities);
         	result += 10*(ap1.incompatibilities - ap2.incompatibilities);
         }
         
         // compare num of unwanted
         if(ap1.unwanted != ap2.unwanted){
-            //result += Integer.compare(ap1.unwanted, ap2.unwanted);
         	result += (ap1.unwanted - ap2.unwanted);
         }
         
