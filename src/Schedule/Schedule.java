@@ -15,6 +15,8 @@
 package Schedule;
 
 import java.util.ArrayList;
+import java.util.Collections;
+
 import Search.Constr;
 import Search.Eval;
 
@@ -382,22 +384,21 @@ public class Schedule {
     			builder="";
     			if (a.getM().getClass() == Lecture.class) {
                     Lecture l = (Lecture) a.getM();
-                    builder = String.format("%-30s" , l.toString());
+                    builder = String.format("%-28s" , l.toString());
                 } // if lab
                 else if (a.getM().getClass() == Lab.class) {
                     Lab lab = (Lab) a.getM();
-                    builder = String.format("%-30s" , lab.toString()); // using toString to print
+                    builder = String.format("%-28s" , lab.toString()); // using toString to print
                 } // if tutorial
                 else if (a.getM().getClass() == Tutorial.class) {
                     Tutorial tut = (Tutorial) a.getM();
-                    builder = String.format("%-30s"  ,tut.toString()); // using toString to print
+                    builder = String.format("%-28s"  ,tut.toString()); // using toString to print
                 }
     			builder = builder + ": ";
     			
     			if (a.getS() != null) {
-    				builder = builder + String.format("%3s %02d:%02d - %02d:%02d",
-                            a.getS().getDay(), a.getS().getHour(), a.getS().getMinute(),
-                            a.getS().getEndHour(), a.getS().getEndMinute());
+    				builder = builder + String.format("%1s, %02d:%02d",
+                            a.getS().getDay(), a.getS().getHour(), a.getS().getMinute());
                 } else {
                 		builder = builder + String.format(":%-6s", "No such slot");
                 }
@@ -405,43 +406,11 @@ public class Schedule {
     			sortPrints.add(builder);
     		}
     		
+    		Collections.sort(sortPrints);
+    		
     		for(String out: sortPrints) {
     			System.out.println(out);
     		}
-    		/*
-        // for each assignment
-        assignments.stream().map((a) -> {
-            System.out.print("Assigned: ");
-            return a;
-        }).map((a) -> {
-            // if lecture
-            if (a.getM().getClass() == Lecture.class) {
-                Lecture l = (Lecture) a.getM();
-                System.out.print(l.toString());
-            } // if lab
-            else if (a.getM().getClass() == Lab.class) {
-                Lab lab = (Lab) a.getM();
-                System.out.print(lab.toString()); // using toString to print
-            } // if tutorial
-            else if (a.getM().getClass() == Tutorial.class) {
-                Tutorial tut = (Tutorial) a.getM();
-                System.out.print(tut.toString()); // using toString to print
-            }
-            return a;
-        }).map((a) -> {
-            // slot
-            if (a.getS() != null) {
-                System.out.format(" --> %s %02d:%02d - %02d:%02d",
-                        a.getS().getDay(), a.getS().getHour(), a.getS().getMinute(),
-                        a.getS().getEndHour(), a.getS().getEndMinute());
-            } else {
-                System.out.print(" --> No Slot");
-            }
-            return a;
-        }).forEachOrdered((_item) -> {
-            System.out.print("\n");
-        });
-        */
     }
     
     /**
