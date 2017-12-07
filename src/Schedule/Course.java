@@ -11,6 +11,7 @@
  * Luke Kissick
  * Sidney Shane Dizon
  */
+
 package Schedule;
 
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ public class Course {
      * @param dept Department
      * @param num Course number
      * @param sNum Section number
+     * @param evening Evening flag
      */
     public Course(String dept, String num, String sNum, boolean evening) {
         this.department = dept;
@@ -105,6 +107,16 @@ public class Course {
     public ArrayList<Section> getSections() {
         return sections;
     }
+    
+    /**
+     * @param index Index of the desired Section
+     * @return Section at a particular index.
+     */
+    
+    public Section getSection(int index)
+    {
+        return sections.get(index);
+    }
 
     /**
      * Add a section
@@ -154,7 +166,7 @@ public class Course {
     /**
      * getCourseLectures - returns a list of all lectures in this course
      *
-     * @return
+     * @return Lectures list
      */
     public ArrayList<Lecture> getCourseLectures() {
         ArrayList<Lecture> lectures = new ArrayList<>();
@@ -171,7 +183,7 @@ public class Course {
      * getCourseLabs - returns a list of all labs in this course (open and
      * section specific)
      *
-     * @return
+     * @return Labs list
      */
     public ArrayList<Lab> getCourseLabs() {
         ArrayList<Lab> labs = new ArrayList<>();
@@ -193,7 +205,7 @@ public class Course {
      * getCourseTuts - returns a list of all tutorials in this course (open and
      * section specific)
      *
-     * @return
+     * @return Tutorials list
      */
     public ArrayList<Tutorial> getCourseTuts() {
         ArrayList<Tutorial> tuts = new ArrayList<>();
@@ -209,6 +221,36 @@ public class Course {
             return null;
         }
         return tuts;
+    }
+
+    /**
+     * Prints out all lectures, labs, and tutorials for a given course
+     */
+    public void print()
+    {
+        System.out.println(this.getDepartment() + this.getNumber() + ":");
+        for(Section s : this.sections)
+        {
+            System.out.println(s.toString());
+        }
+        
+        if(!this.openLabs.isEmpty())
+        {
+            System.out.println("Open Labs (All Sections):");
+            for(Lab labs : this.openLabs)
+            {
+                System.out.println(labs.toString());
+            }
+        }
+        
+        if(!this.openTuts.isEmpty())
+        {
+            System.out.println("Open Tutorials (All Sections):");
+            for(Tutorial tuts : this.openTuts)
+            {
+                System.out.println(tuts.toString());
+            }
+        }
     }
 
 }

@@ -16,7 +16,6 @@ package Schedule;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 import Search.Constr;
 import Search.Eval;
 
@@ -27,25 +26,22 @@ import Search.Eval;
 public class Schedule {
 
     private ArrayList<Assignment> assignments;	// list of assignments
-    private Assignment[] assignArray;			// array of assignments
     private ArrayList<LectureSlot> lslots;		// list of lecture slots
     private ArrayList<NonLectureSlot> nlslots;	// list of nonlecture slots
-    private ArrayList<Course> courses;		// list of courses
-    private ArrayList<Lecture> lectures;	// list of lectures (filled from courses)
-    private ArrayList<Lab> labs;			// list of labs (filled from courses)
-    private ArrayList<Tutorial> tuts;		// list of tutorials (filled from courses)
-    private ArrayList<MeetingPair> pairs;			// list of paired courses
-    private ArrayList<MeetingPair> noncompatible;	// list of incompatible courses
+    private ArrayList<Course> courses;			// list of courses
+    private ArrayList<Lecture> lectures;		// list of lectures (filled from courses)
+    private ArrayList<Lab> labs;				// list of labs (filled from courses)
+    private ArrayList<Tutorial> tuts;			// list of tutorials (filled from courses)
+    private ArrayList<NonLecture> special;		// list of special course (i.e. CPSC 813/913)
     
-	// penalties
+	// penalties for eval components
 	private double pen_coursemin;
 	private double pen_labmin;
 	private double pen_notpaired;
 	private double pen_section;
 	
-	// weights
-	private double wCMin;
-	private double wLMin;
+	// weights for eval components
+	private double wMin;
 	private double wPref;
 	private double wPair;
 	private double wSecDiff;
@@ -53,9 +49,9 @@ public class Schedule {
     /**
      * Constructor with slots and courses lists
      *
-     * @param lslots
-     * @param nlslots
-     * @param courses
+     * @param lslots Lecture slots list
+     * @param nlslots Nonlecture slots list
+     * @param courses Courses list
      */
     public Schedule(ArrayList<LectureSlot> lslots,
             ArrayList<NonLectureSlot> nlslots,
@@ -69,13 +65,13 @@ public class Schedule {
         labs = new ArrayList<>();
         tuts = new ArrayList<>();
         assignments = new ArrayList<>();
-        pairs = new ArrayList<>();
-        noncompatible = new ArrayList<>();
+        special = new ArrayList<>();
         
-        // process the meetings into lists
+        // process the meetings from courses into lists
         processLectures();
         processLabs();
         processTuts();
+        processSpecial();
         
         // create assignments list with null slots
         generateAssignments();
@@ -85,19 +81,51 @@ public class Schedule {
         pen_labmin = 1;
         pen_notpaired = 1;
         pen_section = 1;
-        wCMin = 1;
-        wLMin = 1;
+        wMin = 1;
         wPref = 1;
         wPair = 1;
         wSecDiff = 1;
+    }
+    
+    /**
+     * Constructor for copying a schedule
+     * 
+     * @param orig The schedule
+     */
+    public Schedule(Schedule orig) {
+    	
+    	// keep original lists
+        lslots = orig.getLectureSlots();
+        nlslots = orig.getNonLectureSlots();
+        courses = orig.getCourses();
+        lectures = orig.getLectures();
+        labs = orig.getLabs();
+        tuts = orig.getTuts();
+        special = orig.getSpecial();
+
+        // keep original penalties and weights
+        pen_coursemin = orig.getCourseMinPenalty();
+        pen_labmin = orig.getLabMinPenalty();
+        pen_notpaired = orig.getPairPenalty();
+        pen_section = orig.getSecDiffPenalty();
+        wMin = orig.getMinWeight();
+        wPref = orig.getPrefWeight();
+        wPair = orig.getPairWeight();
+        wSecDiff = orig.getSecDiffWeight();
+        
+        // make a copy of assignments list
+        assignments = new ArrayList<>();
+        for (int i = 0; i < orig.getAssignments().size(); i++) {
+        	assignments.add(new Assignment(orig.getAssignments().get(i)));
+        }
     }
 
     /**
      * Constructor for Constr/Eval
      * (makes a new schedule from the old with an added assignment)
      *
-     * @param m
-     * @param s
+     * @param m Meeting to assign
+     * @param s Slot to assign
      * @param orig Original schedule
      */
     public Schedule(Schedule orig, Meeting m, Slot s) {
@@ -109,16 +137,14 @@ public class Schedule {
         lectures = orig.getLectures();
         labs = orig.getLabs();
         tuts = orig.getTuts();
-        pairs = orig.getPairs();
-        noncompatible = orig.getNoncompatible();
+        special = orig.getSpecial();
 
         // keep original penalties and weights
         pen_coursemin = orig.getCourseMinPenalty();
         pen_labmin = orig.getLabMinPenalty();
         pen_notpaired = orig.getPairPenalty();
         pen_section = orig.getSecDiffPenalty();
-        wCMin = orig.getCourseMinWeight();
-        wLMin = orig.getLabMinWeight();
+        wMin = orig.getMinWeight();
         wPref = orig.getPrefWeight();
         wPair = orig.getPairWeight();
         wSecDiff = orig.getSecDiffWeight();
@@ -130,16 +156,6 @@ public class Schedule {
 	        	assignments.add(new Assignment(orig.getAssignments().get(i)));
 	        }
 	        updateAssignment(m, s);
-        }
-        
-        // make a copy of assignments array and add the new assignment
-        if (orig.getAssignmentsArr() != null) {
-	        int n = orig.getAssignmentsArr().length;
-	        assignArray = new Assignment[n];
-	        for (int i = 0; i < n; i++) {
-	        	assignArray[i] = new Assignment(orig.getAssignmentsArr()[i]);
-	        }
-	        updateAssignmentArr(m, s);
         }
     }
 
@@ -195,6 +211,39 @@ public class Schedule {
             }
         });
     }
+    
+    private void processSpecial() {
+    	
+    	// for each course
+    	for (Course c : courses) {
+            
+        	// skip if not CPSC
+            if (!c.getDepartment().equals("CPSC")) 
+            	continue;
+
+            // if CPSC 313
+            if (c.getNumber().equals("313")) {
+            	NonLecture cpsc813 = new NonLecture();
+            	NonLectureSlot nls = findNonLectureSlot("TU", 18, 0);
+            	Course newc = new Course("CPSC", "813", "01", true);
+            	cpsc813.setParentCourse(newc);
+            	cpsc813.setSpecial();
+            	special.add(cpsc813);
+            	addAssignment(cpsc813, nls);
+            }
+            
+            // if CPSC 413
+            else if (c.getNumber().equals("413")) {
+            	NonLecture cpsc913 = new NonLecture();
+            	NonLectureSlot nls = findNonLectureSlot("TU", 18, 0);
+            	Course newc = new Course("CPSC", "913", "01", true);
+            	cpsc913.setParentCourse(newc);
+            	cpsc913.setSpecial();
+            	special.add(cpsc913);
+            	addAssignment(cpsc913, nls);
+            }
+        }
+    }
 
     /**
      * Generates the set of assignments for all of our meetings
@@ -218,6 +267,38 @@ public class Schedule {
     }
     
     /**
+     * Attempts to assign preferences according to their highest values
+     */
+    public void assignPreferences() {
+    	
+    	// for each assignment
+    	for (Assignment a : assignments) {
+    		
+    		// skip if less than 3 preferences
+    		ArrayList<Preference> prefs = a.getM().getPreferences();
+    		if (prefs.size() < 3)
+    			continue;
+    		
+    		// sort preferences by highest value
+    		prefs.sort(Preference.PrefComparator);
+    		Meeting m = a.getM();
+    		
+    		// get the best valid preferred slot by eval
+    		Slot best = null;
+    		for (Preference p : m.getPreferences()) {
+    			
+    			if (this.isValidWith(m, p.getSlot()) && (best == null || 
+    					this.evalWith(m, p.getSlot()) < this.evalWith(m, best))) {
+        			best = p.getSlot();
+    			}
+    		}
+    		
+    		// update the assignment
+    		if (best != null) updateAssignment(m, best);
+    	}
+    }
+    
+    /**
      * Get the first null assignment
      * 
      * @return The assignment or null if all assigned
@@ -232,29 +313,12 @@ public class Schedule {
     			return a;
     	}
     	
-    	return null;
-    }
-    
-    /**
-     * Get the first null assignment
-     * 
-     * @return The assignment or null if all assigned
-     */
-    public Assignment findFirstNullArr() {
-    	
-    	// for each assignment
-    	for (int i = 0; i < assignArray.length; i++) {
-    		
-    		// return the assignment if slot is null
-    		if (assignArray[i].getS() == null) 
-    			return assignArray[i];
-    	}
-    	
+    	// if we got here there are no null assignments
     	return null;
     }
 
     /**
-     * Check if the schedule is completely assigned
+     * Check if the schedule is completely assigned in a valid way
      * 
      * @return True if all courses have an assignment, false if there is work left to do
      */
@@ -269,26 +333,7 @@ public class Schedule {
 		}
 		
 		// if we got here no slots are null
-		return true;
-    }
-    
-    /**
-     * Check if the schedule is completely assigned
-     * 
-     * @return True if all courses have an assignment, false if there is work left to do
-     */
-    public boolean isCompleteArr() {
-    	
-    	// for each assignment
-		for (int i = 0; i < assignArray.length; i++) {
-			
-			// return false if slot is null
-			if (assignArray[i].getS() == null)
-				return false;
-		}
-		
-		// if we got here no slots are null
-		return true;
+		return this.isValid();
     }
     
     /**
@@ -324,26 +369,13 @@ public class Schedule {
     public boolean isValidWith(Meeting m, Slot s) {
         return Constr.check(this, m, s);
     }
-    
-    public boolean isValidWithArr(Meeting m, Slot s) {
-        return Constr.checkArr(this, m, s);
-    }
-    
-    /**
-     * @param s
-     * @return
-     */
-    public boolean isValidWith(Slot s) {
-    	Meeting m = findFirstNull().getM();
-    	return Constr.check(this, m, s);
-    }
 
     /**
      * Get the evaluation without weights
      *
      * @return The evaluation of the schedule
      */
-    public int eval() {
+    public double eval() {
         return Eval.getEval(this);
     }
 
@@ -353,18 +385,18 @@ public class Schedule {
      * @param a The assignment
      * @return The evaluation of the schedule with the assignment
      */
-    public int evalWith(Assignment a) {
+    public double evalWith(Assignment a) {
         return Eval.getEval(this, a.getM(), a.getS());
     }
     
     /**
      * Get the evaluation with added assignment without weights
      * 
-     * @param m
-     * @param s
+     * @param m Meeting to assign
+     * @param s Slot to assign
      * @return The evaluation of the schedule with the assignment
      */
-    public int evalWith(Meeting m, Slot s) {
+    public double evalWith(Meeting m, Slot s) {
         return Eval.getEval(this, m, s);
     }
 
@@ -372,39 +404,46 @@ public class Schedule {
      * Print the timetable for debugging
      */
     public void printAssignments() {
-
-        // for each assignment
-        assignments.stream().map((a) -> {
-            System.out.print("Assigned: ");
-            return a;
-        }).map((a) -> {
-            // if lecture
-            if (a.getM().getClass() == Lecture.class) {
-                Lecture l = (Lecture) a.getM();
-                System.out.print(l.toString());
-            } // if lab
-            else if (a.getM().getClass() == Lab.class) {
-                Lab lab = (Lab) a.getM();
-                System.out.print(lab.toString()); // using toString to print
-            } // if tutorial
-            else if (a.getM().getClass() == Tutorial.class) {
-                Tutorial tut = (Tutorial) a.getM();
-                System.out.print(tut.toString()); // using toString to print
-            }
-            return a;
-        }).map((a) -> {
-            // slot
-            if (a.getS() != null) {
-                System.out.format(" --> %s %02d:%02d - %02d:%02d",
-                        a.getS().getDay(), a.getS().getHour(), a.getS().getMinute(),
-                        a.getS().getEndHour(), a.getS().getEndMinute());
-            } else {
-                System.out.print(" --> No Slot");
-            }
-            return a;
-        }).forEachOrdered((_item) -> {
-            System.out.print("\n");
-        });
+    	
+    		System.out.println("\nEval-value: " + this.eval());
+    		ArrayList<String> sortPrints = new ArrayList<String>();
+    		String builder = "";
+    		
+    		for(Assignment a: assignments) {
+    			builder="";
+    			if (a.getM().getClass() == Lecture.class) {
+                    Lecture l = (Lecture) a.getM();
+                    builder = String.format("%-28s" , l.toString());
+                } // if lab
+                else if (a.getM().getClass() == Lab.class) {
+                    Lab lab = (Lab) a.getM();
+                    builder = String.format("%-28s" , lab.toString()); // using toString to print
+                } // if tutorial
+                else if (a.getM().getClass() == Tutorial.class) {
+                    Tutorial tut = (Tutorial) a.getM();
+                    builder = String.format("%-28s"  ,tut.toString()); // using toString to print
+                }
+                else if (a.getM().getClass() == NonLecture.class) {
+                    NonLecture nl = (NonLecture) a.getM();
+                    builder = String.format("%-28s"  ,nl.toString()); // using toString to print
+                }
+    			builder = builder + ": ";
+    			
+    			if (a.getS() != null) {
+    				builder = builder + String.format("%1s, %02d:%02d",
+                            a.getS().getDay(), a.getS().getHour(), a.getS().getMinute());
+                } else {
+                		builder = builder + String.format(":%-6s", "No such slot");
+                }
+    			
+    			sortPrints.add(builder);
+    		}
+    		
+    		Collections.sort(sortPrints);
+    		
+    		for(String out: sortPrints) {
+    			System.out.println(out);
+    		}
     }
     
     /**
@@ -421,18 +460,8 @@ public class Schedule {
     	int nlmax = 0;
     	for (NonLectureSlot nls : nlslots)
     		nlmax += nls.getLabMax();
+    	
     	return (lectures.size() <= lmax && (labs.size() + tuts.size()) <= nlmax);
-    }
-    
-    /**
-     * Generate array of assignments from list
-     */
-    public void generateAssignmentArray() {
-    	int n = assignments.size();
-    	assignArray = new Assignment[n];
-    	for (int i = 0; i < n; i++) {
-    		assignArray[i] = assignments.get(i); 
-    	}
     }
 
     /*
@@ -447,19 +476,11 @@ public class Schedule {
     public ArrayList<Assignment> getAssignments() {
         return assignments;
     }
-    
-    /**
-     * Get assignments list
-     * 
-     * @return Assignments list
-     */
-    public Assignment[] getAssignmentsArr() {
-        return assignArray;
-    }
 
     /**
      * Set assignments list
-     * @param assignments 
+     * 
+     * @param assignments Assignments list
      */
     public void setAssignments(ArrayList<Assignment> assignments) {
         this.assignments = assignments;
@@ -468,7 +489,8 @@ public class Schedule {
     /**
      * Add or update an assignment
      * 
-     * @param a The assignment
+     * @param m Meeting to assign
+     * @param s Slot to assign
      */
     public void addAssignment(Meeting m, Slot s) {
     	
@@ -512,43 +534,12 @@ public class Schedule {
     		if (a.getM() != m)
     			continue;
     		
+    		a.getM().setAssignment(a);
+    		
     		// otherwise set slot and return
     		a.setS(s);
     		return;
     	}
-    }
-    
-    /**
-     * Update the assignment for a given meeting
-     * (do nothing if assignment not found)
-     * 
-     * @param m The meeting
-     * @param s The slot to assign it to
-     */
-    public void updateAssignmentArr(Meeting m, Slot s) {
-    	
-    	// don't assign if slot is not in list and not null
-    	if (s != null && !lslots.contains(s) && !nlslots.contains(s))
-    		return;
-    	
-    	// for each assignment
-    	for (int i = 0; i < assignArray.length; i++) {
-    		
-    		// skip if meeting doesn't match
-    		if (assignArray[i].getM() != m)
-    			continue;
-    		
-    		// otherwise set slot and return
-    		assignArray[i].setS(s);
-    		return;
-    	}
-    }
-
-    /**
-     * Clear the assignments list
-     */
-    public void clearAssignments() {
-        assignments = null;
     }
 
     /**
@@ -556,18 +547,14 @@ public class Schedule {
      * 
      * @param lecslots LectureSlot list
      */
-    public void setLectureSlots(ArrayList<LectureSlot> lecslots) {
-        this.lslots = lecslots;
-    }
+    public void setLectureSlots(ArrayList<LectureSlot> lecslots) { lslots = lecslots; }
 
     /**
      * Get the lecture slots list
      * 
      * @return LectureSlot list
      */
-    public ArrayList<LectureSlot> getLectureSlots() {
-        return this.lslots;
-    }
+    public ArrayList<LectureSlot> getLectureSlots() { return lslots; }
     
     /**
      * Returns a lecture slot in the list that matches the day/time
@@ -599,18 +586,14 @@ public class Schedule {
      * 
      * @param labslots NonLectureSlot list
      */
-    public void setLabSlots(ArrayList<NonLectureSlot> labslots) {
-        this.nlslots = labslots;
-    }
+    public void setLabSlots(ArrayList<NonLectureSlot> labslots) { nlslots = labslots; }
 
     /**
      * Get the nonlecture slots list
      * 
      * @return NonLectureSlot list
      */
-    public ArrayList<NonLectureSlot> getNonLectureSlots() {
-        return this.nlslots;
-    }
+    public ArrayList<NonLectureSlot> getNonLectureSlots() { return nlslots; }
     
     /**
      * Returns a nonlecture slot in the list that matches the day/time
@@ -652,45 +635,35 @@ public class Schedule {
      * 
      * @return Course list
      */
-    public ArrayList<Course> getCourses() {
-        return this.courses;
-    }
+    public ArrayList<Course> getCourses() { return courses; }
 
     /**
      * Set the lectures list
      * 
      * @param lecs Lecture list
      */
-    public void setLectures(ArrayList<Lecture> lecs) {
-        this.lectures = lecs;
-    }
+    public void setLectures(ArrayList<Lecture> lecs) { lectures = lecs; }
 
     /**
      * Get the lectures list
      * 
      * @return Lecture list
      */
-    public ArrayList<Lecture> getLectures() {
-        return this.lectures;
-    }
+    public ArrayList<Lecture> getLectures() { return lectures; }
 
     /**
      * Get labs list
      * 
      * @return Lab list
      */
-    public ArrayList<Lab> getLabs() {
-        return labs;
-    }
+    public ArrayList<Lab> getLabs() { return labs; }
 
     /**
      * Get tutorials list
      * 
      * @return Tutorial list
      */
-    public ArrayList<Tutorial> getTuts() {
-        return tuts;
-    }
+    public ArrayList<Tutorial> getTuts() { return tuts; }
 
     /**
      * Get nonlectures list
@@ -705,6 +678,9 @@ public class Schedule {
         this.tuts.forEach((t) -> {
             nonLectures.add(t);
         });
+        this.special.forEach((s) -> {
+            nonLectures.add(s);
+        });
         return nonLectures;
     }
 
@@ -713,9 +689,9 @@ public class Schedule {
      * 
      * @return List of MeetingPair
      */
-    public ArrayList<MeetingPair> getPairs() {
-    	return pairs;
-    }
+    //public ArrayList<MeetingPair> getPairs() {
+    //	return pairs;
+    //}
     
     /**
      * Add to the paired courses list
@@ -723,27 +699,27 @@ public class Schedule {
      * @param m1 First Meeting
      * @param m2 Second Meeting
      */
-    public void addPair(Meeting m1, Meeting m2) {
-    	pairs.add(new MeetingPair(m1, m2));
-    }
+    //public void addPair(Meeting m1, Meeting m2) {
+    //	pairs.add(new MeetingPair(m1, m2));
+    //}
     
     /**
      * Set paired courses list
      * 
      * @param pairs List of MeetingPair
      */
-    public void setPairs(ArrayList<MeetingPair> pairs) {
-    	this.pairs = pairs;
-    }
+    //public void setPairs(ArrayList<MeetingPair> pairs) {
+    //	this.pairs = pairs;
+    //}
     
     /**
      * Get the list of non-compatible courses
      * 
      * @return List of MeetingPair
      */
-    public ArrayList<MeetingPair> getNoncompatible() {
-    	return noncompatible;
-    }
+    //public ArrayList<MeetingPair> getNoncompatible() {
+    //	return noncompatible;
+    //}
     
     /**
      * Add to the non-compatible courses list
@@ -751,31 +727,29 @@ public class Schedule {
      * @param m1 First Meeting
      * @param m2 Second Meeting
      */
-    public void addNoncompatible(Meeting m1, Meeting m2) {
-    	noncompatible.add(new MeetingPair(m1, m2));
-    }
+    //public void addNoncompatible(Meeting m1, Meeting m2) {
+    //	noncompatible.add(new MeetingPair(m1, m2));
+    //}
     
     /**
      * Set the noncompatible courses list
      * 
      * @param noncompatible List of MeetingPair
      */
-    public void setNoncompatible(ArrayList<MeetingPair> noncompatible) {
-    	this.noncompatible = noncompatible;
-    }
+    //public void setNoncompatible(ArrayList<MeetingPair> noncompatible) {
+    //	this.noncompatible = noncompatible;
+    //}
     
     /**
 	 * Sets the weight values for the different evaluations
 	 * 
-	 * @param cmin
-	 * @param lmin
-	 * @param pref
-	 * @param pair
-	 * @param secdiff
+	 * @param min MinFilled weight
+	 * @param pref Pref weight
+	 * @param pair Pair weight
+	 * @param secdiff SecDiff weight
 	 */
-	public void setWeights(double cmin, double lmin, double pref, double pair, double secdiff) {
-		wCMin = cmin;
-		wLMin = lmin;
+	public void setWeights(double min, double pref, double pair, double secdiff) {
+		wMin = min;
 		wPref = pref;
 		wPair = pair;
 		wSecDiff = secdiff;
@@ -786,90 +760,56 @@ public class Schedule {
 	 * 
 	 * @param weight Weight value
 	 */
-	public void setCourseMinWeight(double weight) {
-		wCMin = weight;
-	}	
-	
-	/**
-	 * Set weight for labmin
-	 * 
-	 * @param weight Weight value
-	 */
-	public void setLabMinWeight(double weight) {
-		wLMin = weight;
-	}
+	public void setMinWeight(double weight) { wMin = weight; }	
 	
 	/**
 	 * Set weight for preferences
 	 * 
 	 * @param weight Weight value
 	 */
-	public void setPrefWeight(double weight) {
-		wPref = weight;
-	}
+	public void setPrefWeight(double weight) { wPref = weight; }
 	
 	/**
 	 * Set weight for pairs
 	 * 
 	 * @param weight Weight value
 	 */
-	public void setPairWeight(double weight) {
-		wPair = weight;
-	}
+	public void setPairWeight(double weight) { wPair = weight; }
 	
 	/**
 	 * Set weight for section difference
 	 * 
 	 * @param weight Weight value
 	 */
-	public void setSecDiffWeight(double weight) {
-		wSecDiff = weight;
-	}
+	public void setSecDiffWeight(double weight) { wSecDiff = weight; }
 	
 	/**
 	 * Get course min weight
 	 * 
 	 * @return Weight value
 	 */
-	public double getCourseMinWeight() {
-		return wCMin;
-	}
-	
-	/**
-	 * Get lab min weight
-	 * 
-	 * @return Weight value
-	 */
-	public double getLabMinWeight() {
-		return wLMin;
-	}
+	public double getMinWeight() { return wMin; }
 	
 	/**
 	 * Get preference weight
 	 * 
 	 * @return Weight value
 	 */
-	public double getPrefWeight() {
-		return wPref;
-	}
+	public double getPrefWeight() { return wPref; }
 	
 	/**
 	 * Get pair weight
 	 * 
 	 * @return Weight value
 	 */
-	public double getPairWeight() {
-		return wPair;
-	}
+	public double getPairWeight() { return wPair; }
 	
 	/**
 	 * Get section difference weight
 	 * 
 	 * @return Weight value
 	 */
-	public double getSecDiffWeight() {
-		return wSecDiff;
-	}
+	public double getSecDiffWeight() { return wSecDiff; }
 	
 	/**
 	 * Sets the penalty values for the different evaluations
@@ -891,70 +831,61 @@ public class Schedule {
 	 * 
 	 * @param p Penalty
 	 */
-	public void setCourseMinPenalty(double p) {
-		pen_coursemin = p;
-	}	
+	public void setCourseMinPenalty(double p) { pen_coursemin = p; }	
 	
 	/**
 	 * Set penalty for labmin
 	 * 
 	 * @param p Penalty
 	 */
-	public void setLabMinPenalty(double p) {
-		pen_labmin = p;
-	}
+	public void setLabMinPenalty(double p) { pen_labmin = p; }
 	
 	/**
 	 * Set penalty for pairs
 	 * 
 	 * @param p Penalty
 	 */
-	public void setPairPenalty(double p) {
-		pen_notpaired = p;
-	}
+	public void setPairPenalty(double p) { pen_notpaired = p; }
 	
 	/**
 	 * Set penalty for section difference
 	 * 
 	 * @param p Penalty
 	 */
-	public void setSecDiffPenalty(double p) {
-		pen_section = p;
-	}
+	public void setSecDiffPenalty(double p) { pen_section = p; }
 	
 	/**
 	 * Get course min penalty
 	 * 
 	 * @return Penalty
 	 */
-	public double getCourseMinPenalty() {
-		return pen_coursemin;
-	}
+	public double getCourseMinPenalty() { return pen_coursemin; }
 	
 	/**
 	 * Get lab min penalty
 	 * 
 	 * @return Penalty
 	 */
-	public double getLabMinPenalty() {
-		return pen_labmin;
-	}
+	public double getLabMinPenalty() { return pen_labmin; }
 	
 	/**
 	 * Get pair penalty
 	 * 
 	 * @return Penalty
 	 */
-	public double getPairPenalty() {
-		return pen_notpaired;
-	}
+	public double getPairPenalty() { return pen_notpaired; }
 	
 	/**
 	 * Get section difference penalty
 	 * 
 	 * @return Penalty
 	 */
-	public double getSecDiffPenalty() {
-		return pen_section;
-	}
+	public double getSecDiffPenalty() { return pen_section; }
+	
+	/**
+	 * Get special courses
+	 * 
+	 * @return Special courses list
+	 */
+	public ArrayList<NonLecture> getSpecial() { return special; }
 }

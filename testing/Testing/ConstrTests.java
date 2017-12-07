@@ -287,8 +287,8 @@ public class ConstrTests {
 		Schedule schedule = new Schedule(ls, nls, courses);
 		schedule.addAssignment(l1, lslot1);
 		schedule.addAssignment(l2, lslot2);
-		schedule.addNoncompatible(l1, l2);
-		schedule.addNoncompatible(b1, b2);
+		//schedule.addNoncompatible(l1, l2);
+		//schedule.addNoncompatible(b1, b2);
 
 		assertTrue(Constr.checkNoncompatible(schedule));
 		assertTrue(schedule.isValid());
@@ -297,8 +297,8 @@ public class ConstrTests {
 		schedule = new Schedule(ls, nls, courses);
 		schedule.addAssignment(b1, nlslot1);
 		schedule.addAssignment(b2, nlslot2);
-		schedule.addNoncompatible(l1, l2);
-		schedule.addNoncompatible(b1, b2);
+		//schedule.addNoncompatible(l1, l2);
+		//schedule.addNoncompatible(b1, b2);
 		
 		assertTrue(Constr.checkNoncompatible(schedule));
 		assertTrue(schedule.isValid());
@@ -307,8 +307,8 @@ public class ConstrTests {
 		schedule = new Schedule(ls, nls, courses);
 		schedule.addAssignment(l1, lslot1);
 		schedule.addAssignment(l2, lslot1);
-		schedule.addNoncompatible(l1, l2);
-		schedule.addNoncompatible(b1, b2);
+		//schedule.addNoncompatible(l1, l2);
+		//schedule.addNoncompatible(b1, b2);
 		
 		assertFalse(Constr.checkNoncompatible(schedule));
 		assertFalse(schedule.isValid());
@@ -317,8 +317,8 @@ public class ConstrTests {
 		schedule = new Schedule(ls, nls, courses);
 		schedule.addAssignment(b1, nlslot2);
 		schedule.addAssignment(b2, nlslot2);
-		schedule.addNoncompatible(l1, l2);
-		schedule.addNoncompatible(b1, b2);
+		//schedule.addNoncompatible(l1, l2);
+		//schedule.addNoncompatible(b1, b2);
 		
 		assertFalse(Constr.checkNoncompatible(schedule));
 		assertFalse(schedule.isValid());

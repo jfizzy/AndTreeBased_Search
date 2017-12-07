@@ -25,7 +25,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ InputTests.class,
 		ScheduleTests.class,
-		SearchTests.class,
 		ConstrTests.class, 
         EvalTests.class })
 

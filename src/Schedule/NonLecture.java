@@ -17,81 +17,107 @@ package Schedule;
  * Abstract class representing Labs/Tutorials to be scheduled
  *
  */
-public abstract class NonLecture extends Meeting {
+public class NonLecture extends Meeting {
 
     private Course parentCourse;	// the parent course
     protected boolean evening;		// whether it is an evening class
-    
-    /**TODO:    figure out if evening Course means all labs and 
-     *          tutorials are evening as well
+    private boolean special;
+
+    /*
+     * TODO: figure out if evening Course means all labs and tutorials are
+     * evening as well
      */
     /**
      * Constructor
      */
-    public NonLecture(){
+    public NonLecture() {
         super();
-        this.parentCourse = null;
-        this.evening = false;
+        parentCourse = null;
+        evening = false;
+        special = false;
     }
-    
+
     /*
      *  Getters and setters
      */
-
     /**
      * Get the parent course
-     * 
+     *
      * @return The course
      */
-    public Course getParentCourse(){
+    public Course getParentCourse() {
         return parentCourse;
     }
-    
+
     /**
      * Set the parent course
-     * 
+     *
      * @param c The course
      */
-    public void setParentCourse(Course c){
+    public void setParentCourse(Course c) {
         this.parentCourse = c;
     }
 
     /**
      * Check if an evening nonlecture
-     * 
+     *
      * @return True if evening nonlecture
      */
     public boolean isEvening() {
         return evening;
     }
-    
+
     /**
      * Get the department
-     * 
+     *
      * @return Department string
      */
-    public String getDept(){
-        return this.getParentSection().getParentCourse().getDepartment();
+    public String getDept() {
+        return this.getParentCourse().getDepartment();
     }
-    
+
     /**
      * Get the course number
-     * 
+     *
      * @return Course number string
      */
-    public String getCourseNum(){
-        if(this.getParentSection() == null)
+    public String getCourseNum() {
+        if (this.getParentSection() == null) {
             return this.getParentCourse().getNumber();
-        return this.getParentSection().getParentCourse().getNumber();
+        }
+        return this.getParentCourse().getNumber();
+    }
+
+    /**
+     * Get the section number
+     *
+     * @return Section number string
+     */
+    public String getSectionNum() {
+        if (this.getParentSection() == null) {
+            return null;
+        } else {
+            return this.getParentSection().getSectionNum();
+        }
     }
     
     /**
-     * Get the section number
      * 
-     * @return Section number string
      */
-    public String getSectionNum(){
-        return this.getParentSection().getSectionNum();
-    }
+    public void setSpecial() { special = true; }
     
+    /**
+     * @return
+     */
+    public boolean isSpecial() { return special; }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        String dept = this.getParentCourse().getDepartment();
+        String cNum = this.getParentCourse().getNumber();
+        return (dept + " " + cNum);
+    }
 }

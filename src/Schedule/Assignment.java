@@ -20,7 +20,7 @@ import java.util.Comparator;
  * Assignment: Class which, when instantiated, pairs a given meeting (lecture, lab, or tutorial), with a given slot.
  * 
  */
-public class Assignment implements Comparable{
+public class Assignment implements Comparable {
     
     private Meeting m;
     private Slot s;

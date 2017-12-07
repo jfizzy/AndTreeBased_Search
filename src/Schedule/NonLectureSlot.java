@@ -23,7 +23,8 @@ public class NonLectureSlot extends Slot {
     private int labmin;	// minimum nonlectures for the slot
     
     /**
-     * constructor
+     * Constructor
+     * 
      * @param day Day
      * @param h Begin hour
      * @param m Begin minute
@@ -31,6 +32,7 @@ public class NonLectureSlot extends Slot {
      * @param em End minute
      * @param lmax Lab max
      * @param lmin Lab min
+     * @param isEvening Evening flag
      */
     public NonLectureSlot(String day, int h, int m, int eh, int em, int lmax, int lmin, boolean isEvening){
         super();
@@ -107,8 +109,8 @@ public class NonLectureSlot extends Slot {
      * equals() Overrides the default implementation.
      * compares two NonLectureSlots for equality
      * TODO may want to add functionality for comparing labmin labmax
-     * @param o
-     * @return 
+     * @param o Object to compare
+     * @return True if equal
      */
     public boolean equals(Object o){
         NonLectureSlot nls;

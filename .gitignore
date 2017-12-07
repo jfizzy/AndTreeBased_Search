@@ -55,3 +55,22 @@ release.properties
 pom.xml.releaseBackup
 pom.xml.tag
 /bin/
+Schedule*.html
+
+# ignore 'special' files
+test_files/gehtnicht1.txt
+test_files/gehtnicht10.txt
+test_files/gehtnicht11.txt
+test_files/gehtnicht12.txt
+test_files/gehtnicht2.txt
+test_files/gehtnicht3.txt
+test_files/gehtnicht4.txt
+test_files/gehtnicht5.txt
+test_files/gehtnicht6.txt
+test_files/gehtnicht7.txt
+test_files/gehtnicht8.txt
+test_files/gehtnicht9.txt
+test_files/minnumber.txt
+test_files/pairing.txt
+test_files/parallelpen.txt
+test_files/prefexamp.txt
