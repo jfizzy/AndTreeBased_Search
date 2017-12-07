@@ -21,6 +21,7 @@ public class NonLecture extends Meeting {
 
     private Course parentCourse;	// the parent course
     protected boolean evening;		// whether it is an evening class
+    private boolean special;
 
     /*
      * TODO: figure out if evening Course means all labs and tutorials are
@@ -31,8 +32,9 @@ public class NonLecture extends Meeting {
      */
     public NonLecture() {
         super();
-        this.parentCourse = null;
-        this.evening = false;
+        parentCourse = null;
+        evening = false;
+        special = false;
     }
 
     /*
@@ -98,6 +100,16 @@ public class NonLecture extends Meeting {
             return this.getParentSection().getSectionNum();
         }
     }
+    
+    /**
+     * 
+     */
+    public void setSpecial() { special = true; }
+    
+    /**
+     * @return
+     */
+    public boolean isSpecial() { return special; }
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()

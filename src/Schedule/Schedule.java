@@ -227,6 +227,7 @@ public class Schedule {
             	NonLectureSlot nls = findNonLectureSlot("TU", 18, 0);
             	Course newc = new Course("CPSC", "813", "01", true);
             	cpsc813.setParentCourse(newc);
+            	cpsc813.setSpecial();
             	special.add(cpsc813);
             	addAssignment(cpsc813, nls);
             }
@@ -237,6 +238,7 @@ public class Schedule {
             	NonLectureSlot nls = findNonLectureSlot("TU", 18, 0);
             	Course newc = new Course("CPSC", "913", "01", true);
             	cpsc913.setParentCourse(newc);
+            	cpsc913.setSpecial();
             	special.add(cpsc913);
             	addAssignment(cpsc913, nls);
             }
@@ -458,6 +460,7 @@ public class Schedule {
     	int nlmax = 0;
     	for (NonLectureSlot nls : nlslots)
     		nlmax += nls.getLabMax();
+    	System.out.println(labs.size() + tuts.size() + "/" + nlmax);
     	return (lectures.size() <= lmax && (labs.size() + tuts.size()) <= nlmax);
     }
 

@@ -86,6 +86,7 @@ public class SearchManager {
         // started with an invalid schedule
         else {
         	System.out.println("!!!Impossible Starting Schedule");
+        	Constr.printViolations(schedule);
         	return null;
         }
     }
