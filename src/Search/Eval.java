@@ -170,6 +170,10 @@ public class Eval {
         		// skip if unassigned or not a nonlecture
         		if (a.getS() == null || a.getM().getClass() == Lecture.class) continue;
         		
+        		// skip if 813/913
+    			NonLecture nl1 = (NonLecture) a.getM();
+    			if (nl1.isSpecial()) continue;
+        		
         		// increment count if slots equal
         		if (a.getS().equals(nls))
         			count++;
