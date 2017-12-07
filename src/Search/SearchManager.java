@@ -76,9 +76,10 @@ public class SearchManager {
             }
             
             // print optimal schedule and eval breakdown
-            optimal.printAssignments();
             Constr.printViolations(optimal);
             Eval.printBreakdown(optimal);
+            optimal.printAssignments();
+         
             
             return optimal;
         }
