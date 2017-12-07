@@ -35,7 +35,7 @@ class Manager {
      */
     public static void main(String[] args) {
 
-        // one argument or 5 (the file name and then 4 weights)
+        // one argument (input file), or 5 (penalties), or 9 (weights)
     	if (args.length != 1 && args.length != 5 && args.length != 9)
         	usage();
     	
