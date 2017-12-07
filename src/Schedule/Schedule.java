@@ -16,7 +16,6 @@ package Schedule;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 import Search.Constr;
 import Search.Eval;
 
@@ -33,8 +32,7 @@ public class Schedule {
     private ArrayList<Lecture> lectures;		// list of lectures (filled from courses)
     private ArrayList<Lab> labs;				// list of labs (filled from courses)
     private ArrayList<Tutorial> tuts;			// list of tutorials (filled from courses)
-    //private ArrayList<MeetingPair> pairs;		// list of paired courses
-    //private ArrayList<MeetingPair> noncompatible;	// list of incompatible courses
+    private ArrayList<NonLecture> special;		// list of special course (i.e. CPSC 813/913)
     
 	// penalties for eval components
 	private double pen_coursemin;
@@ -67,13 +65,13 @@ public class Schedule {
         labs = new ArrayList<>();
         tuts = new ArrayList<>();
         assignments = new ArrayList<>();
-        //pairs = new ArrayList<>();
-        //noncompatible = new ArrayList<>();
+        special = new ArrayList<>();
         
         // process the meetings from courses into lists
         processLectures();
         processLabs();
         processTuts();
+        processSpecial();
         
         // create assignments list with null slots
         generateAssignments();
@@ -103,8 +101,7 @@ public class Schedule {
         lectures = orig.getLectures();
         labs = orig.getLabs();
         tuts = orig.getTuts();
-        //pairs = orig.getPairs();
-        //noncompatible = orig.getNoncompatible();
+        special = orig.getSpecial();
 
         // keep original penalties and weights
         pen_coursemin = orig.getCourseMinPenalty();
@@ -140,8 +137,7 @@ public class Schedule {
         lectures = orig.getLectures();
         labs = orig.getLabs();
         tuts = orig.getTuts();
-        //pairs = orig.getPairs();
-        //noncompatible = orig.getNoncompatible();
+        special = orig.getSpecial();
 
         // keep original penalties and weights
         pen_coursemin = orig.getCourseMinPenalty();
@@ -214,6 +210,37 @@ public class Schedule {
                 });
             }
         });
+    }
+    
+    private void processSpecial() {
+    	
+    	// for each course
+    	for (Course c : courses) {
+            
+        	// skip if not CPSC
+            if (!c.getDepartment().equals("CPSC")) 
+            	continue;
+
+            // if CPSC 313
+            if (c.getNumber().equals("313")) {
+            	NonLecture cpsc813 = new NonLecture();
+            	NonLectureSlot nls = findNonLectureSlot("TU", 18, 0);
+            	Course newc = new Course("CPSC", "813", "01", true);
+            	cpsc813.setParentCourse(newc);
+            	special.add(cpsc813);
+            	addAssignment(cpsc813, nls);
+            }
+            
+            // if CPSC 413
+            else if (c.getNumber().equals("413")) {
+            	NonLecture cpsc913 = new NonLecture();
+            	NonLectureSlot nls = findNonLectureSlot("TU", 18, 0);
+            	Course newc = new Course("CPSC", "913", "01", true);
+            	cpsc913.setParentCourse(newc);
+            	special.add(cpsc913);
+            	addAssignment(cpsc913, nls);
+            }
+        }
     }
 
     /**
@@ -393,6 +420,10 @@ public class Schedule {
                 else if (a.getM().getClass() == Tutorial.class) {
                     Tutorial tut = (Tutorial) a.getM();
                     builder = String.format("%-28s"  ,tut.toString()); // using toString to print
+                }
+                else if (a.getM().getClass() == NonLecture.class) {
+                    NonLecture nl = (NonLecture) a.getM();
+                    builder = String.format("%-28s"  ,nl.toString()); // using toString to print
                 }
     			builder = builder + ": ";
     			
@@ -644,6 +675,9 @@ public class Schedule {
         this.tuts.forEach((t) -> {
             nonLectures.add(t);
         });
+        this.special.forEach((s) -> {
+            nonLectures.add(s);
+        });
         return nonLectures;
     }
 
@@ -844,4 +878,11 @@ public class Schedule {
 	 * @return Penalty
 	 */
 	public double getSecDiffPenalty() { return pen_section; }
+	
+	/**
+	 * Get special courses
+	 * 
+	 * @return Special courses list
+	 */
+	public ArrayList<NonLecture> getSpecial() { return special; }
 }

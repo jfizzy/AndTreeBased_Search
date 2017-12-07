@@ -17,7 +17,7 @@ package Schedule;
  * Abstract class representing Labs/Tutorials to be scheduled
  *
  */
-public abstract class NonLecture extends Meeting {
+public class NonLecture extends Meeting {
 
     private Course parentCourse;	// the parent course
     protected boolean evening;		// whether it is an evening class
@@ -71,7 +71,7 @@ public abstract class NonLecture extends Meeting {
      * @return Department string
      */
     public String getDept() {
-        return this.getParentSection().getParentCourse().getDepartment();
+        return this.getParentCourse().getDepartment();
     }
 
     /**
@@ -83,7 +83,7 @@ public abstract class NonLecture extends Meeting {
         if (this.getParentSection() == null) {
             return this.getParentCourse().getNumber();
         }
-        return this.getParentSection().getParentCourse().getNumber();
+        return this.getParentCourse().getNumber();
     }
 
     /**
@@ -99,4 +99,13 @@ public abstract class NonLecture extends Meeting {
         }
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        String dept = this.getParentCourse().getDepartment();
+        String cNum = this.getParentCourse().getNumber();
+        return (dept + " " + cNum);
+    }
 }
