@@ -70,6 +70,10 @@ public class SearchManager {
             	if (optimal == null || s.eval() < optimal.eval())
             		optimal = s;
             }
+            if(optimal == null){
+                System.out.println("Unsolvable schedule");
+                return null;
+            }
             
             // print optimal schedule and eval breakdown
             optimal.printAssignments(); // TODO print in alphabetical order
