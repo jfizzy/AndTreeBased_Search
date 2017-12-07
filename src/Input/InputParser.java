@@ -43,11 +43,9 @@ public class InputParser {
         ArrayList<Course> courses = generateSections();
         generateNonLectures(courses);
         Schedule schedule = new Schedule(lecSlots, nonlecSlots, courses);
-        //schedule.setNoncompatible(generateIncompatibilities(courses));
         generateIncompatibilities(courses);
         generateUnwanted(courses, lecSlots, nonlecSlots);
         generatePreferences(schedule, lecSlots, nonlecSlots);
-        //schedule.setPairs(generatePairs(courses));
         generatePairs(courses);
         if (applyPartialAssignments(schedule)) {
             orderAssignments(schedule);
@@ -172,8 +170,7 @@ public class InputParser {
      * @param courses Courses list
      * @return MeetingPair list
      */
-    private ArrayList<MeetingPair> generatePairs(ArrayList<Course> courses) {
-        ArrayList<MeetingPair> result = new ArrayList<>();
+    private void generatePairs(ArrayList<Course> courses) {
 
         iw.pairLines.forEach((line) -> {
             String parts[] = line.split("\\s*,\\s*");
@@ -195,15 +192,12 @@ public class InputParser {
                 if (!duplicate) {
                     l.addPaired(r);
                     r.addPaired(l);
-                    result.add(new MeetingPair(l, r));
                     System.out.println("[Pair - " + l.toString() + " === " + r.toString() + "]");
                 }
             } else {
                 System.out.println("[!Pair - could not find at least one meeting]");
             }
         });
-
-        return result;
     }
 
     /**
@@ -341,8 +335,7 @@ public class InputParser {
      * @param courses Courses list
      * @return MeetingPair list
      */
-    private ArrayList<MeetingPair> generateIncompatibilities(ArrayList<Course> courses) {
-        ArrayList<MeetingPair> result = new ArrayList<>();
+    private void generateIncompatibilities(ArrayList<Course> courses) {
 
         iw.notCompatibleLines.stream().map((line) -> line.split("\\s*,\\s*")).forEachOrdered((halves) -> {
             String left = halves[0];
@@ -369,15 +362,12 @@ public class InputParser {
                 if (!duplicate) {
                     l.addIncompatibility(r); // give them 
                     r.addIncompatibility(l); // the same incompatibility
-                    result.add(new MeetingPair(l, r));
                     System.out.println("[Not compatible - " + l.toString() + " =/= " + r.toString() + "]");
                 }
             } else {
                 System.out.println("[!Not compatible - could not find at least one meeting]");
             }
         });
-
-        return result;
     }
 
     /**
