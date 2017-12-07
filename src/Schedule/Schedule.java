@@ -460,7 +460,7 @@ public class Schedule {
     	int nlmax = 0;
     	for (NonLectureSlot nls : nlslots)
     		nlmax += nls.getLabMax();
-    	System.out.println(labs.size() + tuts.size() + "/" + nlmax);
+    	
     	return (lectures.size() <= lmax && (labs.size() + tuts.size()) <= nlmax);
     }
 

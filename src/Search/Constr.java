@@ -16,10 +16,6 @@ package Search;
 
 import Schedule.*;
 
-// TODO labs different constraint
-// TODO confirm evening check works
-// TODO 813/913 constraint
-
 /**
  * Class for determining whether a schedule satisfies hard constraints
  *
