@@ -16,10 +16,6 @@ package Search;
 
 import Schedule.*;
 
-// TODO labs different constraint
-// TODO confirm evening check works
-// TODO 813/913 constraint
-
 /**
  * Class for determining whether a schedule satisfies hard constraints
  *
@@ -174,6 +170,10 @@ public class Constr {
 					|| a.getS().getClass() == LectureSlot.class) 
 				continue;
 			
+			// skip if 813/913
+			NonLecture nl1 = (NonLecture) a.getM();
+			if (nl1.isSpecial()) continue;
+			
 			// count how many others have the same slot
 			int count = 1;
 			for (Assignment b : schedule.getAssignments()) {
@@ -184,6 +184,10 @@ public class Constr {
 						|| b.getM().getClass() == Lecture.class
 						|| b.getS().getClass() == LectureSlot.class) 
 					continue;
+				
+				// skip if 813/913
+				NonLecture nl2 = (NonLecture) b.getM();
+				if (nl2.isSpecial()) continue;
 				
 				// increment count if slots match
 				if (a.getS().equals(b.getS()))
@@ -216,6 +220,10 @@ public class Constr {
 					|| a.getM().getClass() == Lecture.class
 					|| a.getS().getClass() == LectureSlot.class) 
 				continue;
+			
+			// skip if 813/913
+			NonLecture nl1 = (NonLecture) a.getM();
+			if (nl1.isSpecial()) continue;
 			
 			// for each other assignment
 			for (Assignment b : schedule.getAssignments()) {

@@ -58,11 +58,11 @@ public class Eval {
 	 * @return Total evaluation of search instance
 	 */
 	public static double getEval(Schedule s) {
-		return getCourseMinEval(s) 
-				+ getLabMinEval(s) 
-				+ getPrefEval(s) 
-				+ getPairEval(s)
-				+ getSecDiffEval(s);
+		return getCourseMinEval(s, s.getMinWeight()) 
+				+ getLabMinEval(s, s.getMinWeight()) 
+				+ getPrefEval(s, s.getPrefWeight()) 
+				+ getPairEval(s, s.getPairWeight())
+				+ getSecDiffEval(s, s.getSecDiffWeight());
 	}
 	
 	/**
@@ -85,11 +85,33 @@ public class Eval {
 	 * @param s Schedule
 	 */
 	public static void printBreakdown(Schedule s) {
-		System.out.println("Cmin = "+getCourseMinEval(s));
-		System.out.println("Lmin = "+getLabMinEval(s));
-		System.out.println("Pref = "+getPrefEval(s));
-		System.out.println("Pair = "+getPairEval(s));
-		System.out.println("Sect = "+getSecDiffEval(s));
+		String pen = "";
+		if (s.getCourseMinPenalty() != 1)
+			pen = " (pen_coursemin = "+s.getCourseMinPenalty()+")";
+		System.out.println("Cmin = "+getCourseMinEval(s, 1)+" * "
+				+s.getMinWeight()+" = "+getCourseMinEval(s, s.getMinWeight())+pen);
+		
+		pen = "";
+		if (s.getLabMinPenalty() != 1)
+			pen = " (pen_labmin = "+s.getLabMinPenalty()+")";
+		System.out.println("Lmin = "+getLabMinEval(s, 1)+" * "
+				+s.getMinWeight()+" = "+getLabMinEval(s, s.getMinWeight())+pen);
+		
+		System.out.println("Pref = "+getPrefEval(s, 1)+" * "
+				+s.getPrefWeight()+" = "+getPrefEval(s, s.getPrefWeight()));
+		
+		pen = "";
+		if (s.getPairPenalty() != 1)
+			pen = " (pen_notpaired = "+s.getPairPenalty()+")";
+		System.out.println("Pair = "+getPairEval(s, 1)+" * "
+				+s.getPairWeight()+" = "+getPairEval(s, s.getPairWeight())+pen);
+		
+		pen = "";
+		if (s.getSecDiffPenalty() != 1)
+			pen = " (pen_section = "+s.getSecDiffPenalty()+")";
+		System.out.println("Sect = "+getSecDiffEval(s, 1)+" * "
+				+s.getSecDiffWeight()+" = "+getSecDiffEval(s, s.getSecDiffWeight())+pen);
+		
 		System.out.println("EVAL = "+getEval(s));
 	}
 	
@@ -100,7 +122,7 @@ public class Eval {
 	 * @param schedule Schedule
 	 * @return Penalty for violating coursemin
 	 */
-	public static double getCourseMinEval(Schedule schedule) {
+	public static double getCourseMinEval(Schedule schedule, double weight) {
     	double result = 0.0;
     	
     	// for each lecture slot in schedule
@@ -135,7 +157,7 @@ public class Eval {
 	 * @param schedule Schedule
 	 * @return Penalty for violating labmin
 	 */
-	public static double getLabMinEval(Schedule schedule) {
+	public static double getLabMinEval(Schedule schedule, double weight) {
     	double result = 0.0;
     	
     	// for each nonlecture slot in schedule
@@ -147,6 +169,10 @@ public class Eval {
         		
         		// skip if unassigned or not a nonlecture
         		if (a.getS() == null || a.getM().getClass() == Lecture.class) continue;
+        		
+        		// skip if 813/913
+    			NonLecture nl1 = (NonLecture) a.getM();
+    			if (nl1.isSpecial()) continue;
         		
         		// increment count if slots equal
         		if (a.getS().equals(nls))
@@ -169,7 +195,7 @@ public class Eval {
 	 * @param schedule Schedule
 	 * @return Penalty for violating preferences
 	 */
-	public static double getPrefEval(Schedule schedule) {
+	public static double getPrefEval(Schedule schedule, double weight) {
 		double result = 0.0;
 		
 		// for each assignment
@@ -198,7 +224,7 @@ public class Eval {
 	 * @param schedule Schedule
 	 * @return Penalty for violating pairs
 	 */
-	public static double getPairEval(Schedule schedule) {
+	public static double getPairEval(Schedule schedule, double weight) {
 		double result = 0.0;
 		
 		// for each assignment
@@ -233,7 +259,7 @@ public class Eval {
 	 * @param schedule Schedule
 	 * @return Penalty for violating section difference
 	 */
-	public static double getSecDiffEval(Schedule schedule) {
+	public static double getSecDiffEval(Schedule schedule, double weight) {
 		double result = 0.0;
 		
 		// for each course in the schedule

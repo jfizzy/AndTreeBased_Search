@@ -101,20 +101,20 @@ public class EvalTests {
 		// 3 less than coursemin
 		Schedule schedule = new Schedule(ls, nls, courses);
 		
-		assertEquals(3, Eval.getCourseMinEval(schedule), epsilon);
+		assertEquals(3, Eval.getCourseMinEval(schedule, schedule.getMinWeight()), epsilon);
 		
 		// 2 less than coursemin
 		schedule = new Schedule(ls, nls, courses);
 		schedule.addAssignment(l1, slot);
 		
-		assertEquals(2, Eval.getCourseMinEval(schedule), epsilon);
+		assertEquals(2, Eval.getCourseMinEval(schedule, schedule.getMinWeight()), epsilon);
 		
 		// 1 less than coursemin
 		schedule = new Schedule(ls, nls, courses);
 		schedule.addAssignment(l1, slot);
 		schedule.addAssignment(l2, slot);
 		
-		assertEquals(1, Eval.getCourseMinEval(schedule), epsilon);
+		assertEquals(1, Eval.getCourseMinEval(schedule, schedule.getMinWeight()), epsilon);
 		
 		// 0 less than coursemin
 		schedule = new Schedule(ls, nls, courses);
@@ -122,7 +122,7 @@ public class EvalTests {
 		schedule.addAssignment(l2, slot);
 		schedule.addAssignment(l3, slot);
 		
-		assertEquals(0, Eval.getCourseMinEval(schedule), epsilon);
+		assertEquals(0, Eval.getCourseMinEval(schedule, schedule.getMinWeight()), epsilon);
 		
 		// 1 more than coursemin
 		schedule = new Schedule(ls, nls, courses);
@@ -131,7 +131,7 @@ public class EvalTests {
 		schedule.addAssignment(l3, slot);
 		schedule.addAssignment(l4, slot);
 		
-		assertEquals(0, Eval.getCourseMinEval(schedule), epsilon);
+		assertEquals(0, Eval.getCourseMinEval(schedule, schedule.getMinWeight()), epsilon);
 	}
 
 	/**
@@ -169,20 +169,20 @@ public class EvalTests {
 		// 3 less than labmin
 		Schedule schedule = new Schedule(ls, nls, courses);
 		
-		assertEquals(3, Eval.getLabMinEval(schedule), epsilon);
+		assertEquals(3, Eval.getLabMinEval(schedule, schedule.getMinWeight()), epsilon);
 		
 		// 2 less than labmin
 		schedule = new Schedule(ls, nls, courses);
 		schedule.addAssignment(b1, slot);
 		
-		assertEquals(2, Eval.getLabMinEval(schedule), epsilon);
+		assertEquals(2, Eval.getLabMinEval(schedule, schedule.getMinWeight()), epsilon);
 		
 		// 1 less than labmin
 		schedule = new Schedule(ls, nls, courses);
 		schedule.addAssignment(b1, slot);
 		schedule.addAssignment(b2, slot);
 		
-		assertEquals(1, Eval.getLabMinEval(schedule), epsilon);
+		assertEquals(1, Eval.getLabMinEval(schedule, schedule.getMinWeight()), epsilon);
 		
 		// 0 less than labmin
 		schedule = new Schedule(ls, nls, courses);
@@ -190,7 +190,7 @@ public class EvalTests {
 		schedule.addAssignment(b2, slot);
 		schedule.addAssignment(b3, slot);
 
-		assertEquals(0, Eval.getLabMinEval(schedule), epsilon);
+		assertEquals(0, Eval.getLabMinEval(schedule, schedule.getMinWeight()), epsilon);
 		
 		// 1 more than labmin
 		schedule = new Schedule(ls, nls, courses);
@@ -199,7 +199,7 @@ public class EvalTests {
 		schedule.addAssignment(b3, slot);
 		schedule.addAssignment(b4, slot);
 
-		assertEquals(0, Eval.getLabMinEval(schedule), epsilon);
+		assertEquals(0, Eval.getLabMinEval(schedule, schedule.getMinWeight()), epsilon);
 	}
 
 	/**
@@ -235,28 +235,28 @@ public class EvalTests {
 		schedule.addAssignment(l1, lslot2);
 		schedule.addAssignment(b1, nlslot2);
 
-		assertEquals(0, Eval.getPrefEval(schedule), epsilon);
+		assertEquals(0, Eval.getPrefEval(schedule, schedule.getPrefWeight()), epsilon);
 		
 		// penalty = 100
 		schedule = new Schedule(ls, nls, courses);
 		schedule.addAssignment(l1, lslot1);
 		schedule.addAssignment(b1, nlslot2);
 
-		assertEquals(100, Eval.getPrefEval(schedule), epsilon);
+		assertEquals(100, Eval.getPrefEval(schedule, schedule.getPrefWeight()), epsilon);
 		
 		// penalty = 11
 		schedule = new Schedule(ls, nls, courses);
 		schedule.addAssignment(l1, lslot2);
 		schedule.addAssignment(b1, nlslot1);
 
-		assertEquals(11, Eval.getPrefEval(schedule), epsilon);
+		assertEquals(11, Eval.getPrefEval(schedule, schedule.getPrefWeight()), epsilon);
 		
 		// penalty = 111
 		schedule = new Schedule(ls, nls, courses);
 		schedule.addAssignment(l1, lslot1);
 		schedule.addAssignment(b1, nlslot1);
 
-		assertEquals(111, Eval.getPrefEval(schedule), epsilon);
+		assertEquals(111, Eval.getPrefEval(schedule, schedule.getPrefWeight()), epsilon);
 	}
 
 	/**
@@ -305,7 +305,7 @@ public class EvalTests {
 		//schedule.addPair(l1, l2);
 		//schedule.addPair(b1, b2);
 
-		assertEquals(0, Eval.getPairEval(schedule), epsilon);
+		assertEquals(0, Eval.getPairEval(schedule, schedule.getPairWeight()), epsilon);
 		
 		// penalty = 1
 		schedule = new Schedule(ls, nls, courses);
@@ -316,7 +316,7 @@ public class EvalTests {
 		//schedule.addPair(l1, l2);
 		//schedule.addPair(b1, b2);
 		
-		assertEquals(1, Eval.getPairEval(schedule), epsilon);
+		assertEquals(1, Eval.getPairEval(schedule, schedule.getPairWeight()), epsilon);
 		
 		// penalty = 1
 		schedule = new Schedule(ls, nls, courses);
@@ -327,7 +327,7 @@ public class EvalTests {
 		//schedule.addPair(l1, l2);
 		//schedule.addPair(b1, b2);
 		
-		assertEquals(1, Eval.getPairEval(schedule), epsilon);
+		assertEquals(1, Eval.getPairEval(schedule, schedule.getPairWeight()), epsilon);
 		
 		// penalty = 2
 		schedule = new Schedule(ls, nls, courses);
@@ -338,7 +338,7 @@ public class EvalTests {
 		//schedule.addPair(l1, l2);
 		//schedule.addPair(b1, b2);
 		
-		assertEquals(2, Eval.getPairEval(schedule), epsilon);
+		assertEquals(2, Eval.getPairEval(schedule, schedule.getPairWeight()), epsilon);
 	}
 
 	/**
@@ -375,7 +375,7 @@ public class EvalTests {
 		schedule.addAssignment(l2, lslot2);
 		schedule.addAssignment(l3, lslot3);
 		
-		assertEquals(0, Eval.getSecDiffEval(schedule), epsilon);
+		assertEquals(0, Eval.getSecDiffEval(schedule, schedule.getSecDiffWeight()), epsilon);
 		
 		// penalty = 1
 		schedule = new Schedule(ls, nls, courses);
@@ -383,7 +383,7 @@ public class EvalTests {
 		schedule.addAssignment(l2, lslot1);
 		schedule.addAssignment(l3, lslot3);
 		
-		assertEquals(1, Eval.getSecDiffEval(schedule), epsilon);
+		assertEquals(1, Eval.getSecDiffEval(schedule, schedule.getSecDiffWeight()), epsilon);
 		
 		// penalty = 3
 		schedule = new Schedule(ls, nls, courses);
@@ -391,7 +391,7 @@ public class EvalTests {
 		schedule.addAssignment(l2, lslot2);
 		schedule.addAssignment(l3, lslot2);
 
-		assertEquals(3, Eval.getSecDiffEval(schedule), epsilon);
+		assertEquals(3, Eval.getSecDiffEval(schedule, schedule.getSecDiffWeight()), epsilon);
 	}
 
 	/**

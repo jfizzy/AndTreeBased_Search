@@ -35,7 +35,7 @@ class Manager {
      */
     public static void main(String[] args) {
 
-        // one argument or 5 (the file name and then 4 weights)
+        // one argument (input file), or 5 (penalties), or 9 (weights)
     	if (args.length != 1 && args.length != 5 && args.length != 9)
         	usage();
     	
@@ -84,7 +84,6 @@ class Manager {
             // run the search
             search(args[0], p1, p2, p3, p4, w1, w2, w3, w4);
         } catch (Exception e) {
-            e.printStackTrace();
             exit();
         }
     }
@@ -93,9 +92,8 @@ class Manager {
      * Prints the usage statement and exits
      */
     private static void usage() { 
-        System.out.println("Acceptable args are: inputfile <penalties> <weights>");
-        System.out.println("Penalties: [] [] [] []");
-        System.out.println("Penalties: [] [] [] []");
+        System.out.println("!!!Acceptable arguments are: \tinputfile < pen_coursemin pen_labmin pen_notpaired pen_section > < w_min w_pref w_pair w_secdiff >");
+        System.out.println("!!!Example: \t\t\tsome_file.txt 1 1 1 1 0.5 1 0.5 1");
         exit();
     }
 

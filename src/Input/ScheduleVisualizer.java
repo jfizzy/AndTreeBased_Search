@@ -89,7 +89,6 @@ public class ScheduleVisualizer {
             // Print Meetings
             
             printAssignments(htmlSB, this.finalSchedule);
-            System.out.println("test_outside");
             
             //printMeeting(htmlSB, MARGIN_WIDTH, MARGIN_WIDTH, "CPSC 313 LEC 01 TUT 04");
             
