@@ -11,7 +11,6 @@
  * Luke Kissick
  * Sidney Shane Dizon
  */
-
 package Search;
 
 import Schedule.*;

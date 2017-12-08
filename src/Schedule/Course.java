@@ -11,7 +11,6 @@
  * Luke Kissick
  * Sidney Shane Dizon
  */
-
 package Schedule;
 
 import java.util.ArrayList;

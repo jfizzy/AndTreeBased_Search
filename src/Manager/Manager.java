@@ -11,7 +11,6 @@
  * Luke Kissick
  * Sidney Shane Dizon
  */
-
 package Manager;
 
 import java.io.File;

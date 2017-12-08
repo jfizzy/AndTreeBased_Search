@@ -11,7 +11,6 @@
  * Luke Kissick
  * Sidney Shane Dizon
  */
-
 package Schedule;
 
 import java.util.ArrayList;
@@ -444,6 +443,7 @@ public class Schedule {
     		for(String out: sortPrints) {
     			System.out.println(out);
     		}
+                System.out.println("");
     }
     
     /**

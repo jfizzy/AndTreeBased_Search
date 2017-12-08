@@ -11,7 +11,6 @@
  * Luke Kissick
  * Sidney Shane Dizon
  */
-
 package Search;
 
 import Schedule.*;
@@ -73,8 +72,8 @@ public class SearchManager {
             }
             
             // print optimal schedule and eval breakdown
-            Constr.printViolations(optimal);
-            Eval.printBreakdown(optimal);
+            //Constr.printViolations(optimal);
+            //Eval.printBreakdown(optimal);
             optimal.printAssignments();
          
             
@@ -83,7 +82,7 @@ public class SearchManager {
         
         // started with an invalid schedule
         else {
-        	System.out.println("!!!Impossible Starting Schedule");
+        	System.out.println("!!!Unsolvable Problem");
         	Constr.printViolations(schedule);
         	return null;
         }
@@ -111,9 +110,9 @@ public class SearchManager {
         		continue;
         	
     		// print node info
-        	System.out.println("["+n.getDepth()+"] "+n.getID()+" ("+solutions.size()
-        						+" solns)  stacksize="+nodeStack.size()+"  best="+bound
-        						+"  eval="+n.getEval());
+        	//System.out.println("["+n.getDepth()+"] "+n.getID()+" ("+solutions.size()
+        						//+" solns)  stacksize="+nodeStack.size()+"  best="+bound
+        						//+"  eval="+n.getEval());
         		
         	// check if the node's schedule is fully assigned
     		if (n.getSchedule().isComplete()) {
