@@ -221,6 +221,10 @@ public class Constr {
 					|| a.getS().getClass() == LectureSlot.class) 
 				continue;
 			
+			// skip if 813/913
+			NonLecture nl1 = (NonLecture) a.getM();
+			if (nl1.isSpecial()) continue;
+			
 			// for each other assignment
 			for (Assignment b : schedule.getAssignments()) {
 				if (a == b) continue; // skip if same

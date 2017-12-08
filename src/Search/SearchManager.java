@@ -50,9 +50,6 @@ public class SearchManager {
      * @return Solved schedule
      */
     public Schedule run() {
-    	
-    	// assign meetings with 3+ preferences first
-    	schedule.assignPreferences();
 
     	// check if initial schedule is valid and solvable
         if (schedule.isValid() && schedule.isPossible()) {
