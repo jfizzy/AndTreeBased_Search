@@ -1,4 +1,4 @@
-/*
+/* 
  * CPSC 433 Fall 2017
  * 
  * And-Tree-Based Scheduling Problem Solver
@@ -132,7 +132,7 @@ public class InputParser {
 
             Meeting m = ScheduleUtils.findMeeting(schedule.getCourses(), parts[0]);
             if (m == null) {
-                System.out.println("[!Partial assignment - could not find the specified meeting]");
+                //System.out.println("[!Partial assignment - could not find the specified meeting]");
                 return false;
             }
             String slotString = parts[1] + ", " + parts[2];
@@ -144,22 +144,22 @@ public class InputParser {
                 //TODO check for cpsc 813, 913
                 ls = ScheduleUtils.findLectureSlot(schedule.getLectureSlots(), slotString);
                 if (ls == null) {
-                    System.out.println("[!Partial assignment - no such lecture slot was found]");
+                    //System.out.println("[!Partial assignment - no such lecture slot was found]");
                     return false;
                 } else {
                     //set assignment to this slot
                     m.getAssignment().setS(ls);
-                    System.out.println("[Partial assignment - " + ((Lecture) m).toString() + " <=> " + ls.toString() + "]");
+                    //System.out.println("[Partial assignment - " + ((Lecture) m).toString() + " <=> " + ls.toString() + "]");
                 }
             } else if (m instanceof NonLecture) {
                 nls = ScheduleUtils.findNonLectureSlot(schedule.getNonLectureSlots(), slotString);
                 if (nls == null) {
-                    System.out.println("[!Partial assignment - no such non lecture slot was found]");
+                    //System.out.println("[!Partial assignment - no such non lecture slot was found]");
                     return false;
                 } else {
                     // set assignment to this slot
                     m.getAssignment().setS(nls);
-                    System.out.println("[Partial assignment - " + ((NonLecture) m).toString() + " <=> " + nls.toString() + "]");
+                    //System.out.println("[Partial assignment - " + ((NonLecture) m).toString() + " <=> " + nls.toString() + "]");
                 }
             }
         }
@@ -184,7 +184,7 @@ public class InputParser {
                         for (Meeting n : r.getPaired()) {
                             if (n.equals(l)) {
                                 duplicate = true;
-                                System.out.println("[!Pair - duplicate declaration of pair]");
+                                //System.out.println("[!Pair - duplicate declaration of pair]");
                             }
                         }
                     }
@@ -192,10 +192,10 @@ public class InputParser {
                 if (!duplicate) {
                     l.addPaired(r);
                     r.addPaired(l);
-                    System.out.println("[Pair - " + l.toString() + " === " + r.toString() + "]");
+                    //System.out.println("[Pair - " + l.toString() + " === " + r.toString() + "]");
                 }
             } else {
-                System.out.println("[!Pair - could not find at least one meeting]");
+                //System.out.println("[!Pair - could not find at least one meeting]");
             }
         });
     }
@@ -215,7 +215,7 @@ public class InputParser {
             //System.out.println("Slot: " + slotS + ", Meeting: " + meetingS + ", Penalty: " + penalty);
             Meeting m = ScheduleUtils.findMeeting(sched.getCourses(), meetingS);
             if (m == null) {
-                System.out.println("[!Preference - no such lecture or lab was found]");
+                //System.out.println("[!Preference - no such lecture or lab was found]");
             } else {
 
                 Assignment assignment = null;
@@ -223,7 +223,7 @@ public class InputParser {
                     assignment = m.getAssignment();
                 }
                 if (assignment == null) {
-                    System.out.println("[!Preference - no assignment with lec/lab was found]");
+                    //System.out.println("[!Preference - no assignment with lec/lab was found]");
                 } else {
                     //System.out.println("Assignment was found");
                     boolean problem = false;
@@ -233,48 +233,48 @@ public class InputParser {
                     if (m instanceof Lecture) {
                         ls = ScheduleUtils.findLectureSlot(lSlots, slotS);
                         if (ls == null) {
-                            System.out.println("[!Preference - no such lecture slot was found]");
+                            //System.out.println("[!Preference - no such lecture slot was found]");
                             problem = true;
                         } else if (!ls.isActive()) {
-                            System.out.println("[!Preference - no such active lecture slot was found]");
+                            //System.out.println("[!Preference - no such active lecture slot was found]");
                             problem = true;
                         } else {
                             //System.out.println(ls.toString());
                             // check for duplicates
                             for (Preference p : assignment.getM().getPreferences()) {
                                 if (p.getSlot().equals(ls)) {
-                                    System.out.println("[!Preference - duplicate preference declaration]");
+                                    //System.out.println("[!Preference - duplicate preference declaration]");
                                     problem = true;
                                 }
                             }
                         }
                         if (!problem) {
                             Preference p = assignment.getM().addPreference(ls, penalty);
-                            System.out.println("[Preference - " + assignment.getM().toString() + " -> " + p.getSlot().toString() + " " + p.getValue() + "]");
+                            //System.out.println("[Preference - " + assignment.getM().toString() + " -> " + p.getSlot().toString() + " " + p.getValue() + "]");
                         }
                     } else if (m instanceof NonLecture) {
                         nls = ScheduleUtils.findNonLectureSlot(nlSlots, slotS);
                         if (nls == null) {
-                            System.out.println("[!Preference - no such lab slot was found]");
+                            //System.out.println("[!Preference - no such lab slot was found]");
                             problem = true;
                         } else if (!nls.isActive()) {
-                            System.out.println("[!Preference - no such active lab slot was found]");
+                            //System.out.println("[!Preference - no such active lab slot was found]");
                             problem = true;
                         } else {
                             // check for duplicates
                             for (Preference p : assignment.getM().getPreferences()) {
                                 if (p.getSlot().equals(nls)) {
-                                    System.out.println("[!Preference - duplicate preference declaration]");
+                                    //System.out.println("[!Preference - duplicate preference declaration]");
                                     problem = true;
                                 }
                             }
                         }
                         if (!problem) {
                             Preference p = assignment.getM().addPreference(nls, penalty);
-                            System.out.println("[Preference - " + assignment.getM().toString() + " -> " + p.getSlot().toString() + " = " + p.getValue() + "]");
+                            //System.out.println("[Preference - " + assignment.getM().toString() + " -> " + p.getSlot().toString() + " = " + p.getValue() + "]");
                         }
                     } else {
-                        System.out.println("[!Preference - wierd error, not a lecture or a non lecture]");
+                        //System.out.println("[!Preference - wierd error, not a lecture or a non lecture]");
                     }
 
                 }
@@ -303,12 +303,12 @@ public class InputParser {
                     s = nl;
                 }
             } else {
-                System.out.println("oddly enough, not a lec slot or nonlec slot");
+                //System.out.println("oddly enough, not a lec slot or nonlec slot");
             }
             if (s == null) {
-                System.out.println("Did not find the specified slot as active");
+                //System.out.println("Did not find the specified slot as active");
             } else if (m == null) {
-                System.out.println("Could not find the meeting");
+                //System.out.println("Could not find the meeting");
             } else {
                 boolean same = false;
                 for (Slot os : m.getUnwanted()) {
@@ -317,10 +317,10 @@ public class InputParser {
                     }
                 }
                 if (same) {
-                    System.out.println("[!Unwanted - duplicate unwanted declaration]");
+                    //System.out.println("[!Unwanted - duplicate unwanted declaration]");
                 } else {
                     m.addUnwanted(s); // set it
-                    System.out.println("[Unwanted - " + m.toString() + " & " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + "]");
+                    //System.out.println("[Unwanted - " + m.toString() + " & " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + "]");
                 }
             }
         });
@@ -354,7 +354,7 @@ public class InputParser {
                         for (Meeting n : r.getIncompatibility()) {
                             if (n.equals(l)) {
                                 duplicate = true;
-                                System.out.println("[!Not compatible - duplicate declaration of incompatibility]");
+                                //System.out.println("[!Not compatible - duplicate declaration of incompatibility]");
                             }
                         }
                     }
@@ -362,10 +362,10 @@ public class InputParser {
                 if (!duplicate) {
                     l.addIncompatibility(r); // give them 
                     r.addIncompatibility(l); // the same incompatibility
-                    System.out.println("[Not compatible - " + l.toString() + " =/= " + r.toString() + "]");
+                    //System.out.println("[Not compatible - " + l.toString() + " =/= " + r.toString() + "]");
                 }
             } else {
-                System.out.println("[!Not compatible - could not find at least one meeting]");
+                //System.out.println("[!Not compatible - could not find at least one meeting]");
             }
         });
     }
@@ -410,7 +410,7 @@ public class InputParser {
                         if (section.equals(s.getSectionNum())) {
                             // we have two Lectures for same section
                             // this means input file is invalid
-                            System.out.println("[!Course Section - duplicate section declaration]");
+                            //System.out.println("[!Course Section - duplicate section declaration]");
                             return null;
                         }
                     }
@@ -419,11 +419,11 @@ public class InputParser {
                     if (section.charAt(0) == '9') {
                         s = new Section(c, section, true);
                         c.addSection(s);
-                        System.out.println("[Added Course Section - " + dept + " " + courseNum + " LEC " + section + " (evening)]");
+                        //System.out.println("[Added Course Section - " + dept + " " + courseNum + " LEC " + section + " (evening)]");
                     } else {
                         s = new Section(c, section, false);
                         c.addSection(s);
-                        System.out.println("[Added Course Section - " + dept + " " + courseNum + " LEC " + section + "]");
+                        //System.out.println("[Added Course Section - " + dept + " " + courseNum + " LEC " + section + "]");
                     }
                     return s;
                 }
@@ -438,13 +438,13 @@ public class InputParser {
                 c = new Course(dept, courseNum, section, true);
                 courses.add(c);
                 s = c.getSections().get(0);
-                System.out.println("[Added Course - " + dept + " " + courseNum + " LEC " + section + " (evening)]");
+                //System.out.println("[Added Course - " + dept + " " + courseNum + " LEC " + section + " (evening)]");
             } else {
                 //Instantiate a course that is NOT an evening course.
                 c = new Course(dept, courseNum, section, false);
                 courses.add(c);
                 s = c.getSections().get(0);
-                System.out.println("[Added Course - " + dept + " " + courseNum + " LEC " + section + "]");
+                //System.out.println("[Added Course - " + dept + " " + courseNum + " LEC " + section + "]");
             }
         } else {
             // Instantiate a course that is an evening course.
@@ -453,13 +453,13 @@ public class InputParser {
                 c = new Course(dept, courseNum, section, true);
                 courses.add(c);
                 s = c.getSections().get(0);
-                System.out.println("[Added Course and Dept - " + dept + " " + courseNum + " LEC " + section + " (evening)]");
+                //System.out.println("[Added Course and Dept - " + dept + " " + courseNum + " LEC " + section + " (evening)]");
             } // Instantiate a course that is NOT an evening course.
             else {
                 c = new Course(dept, courseNum, section, false);
                 courses.add(c);
                 s = c.getSections().get(0);
-                System.out.println("[Added Course and Dept - " + dept + " " + courseNum + " LEC " + section + "]");
+                //System.out.println("[Added Course and Dept - " + dept + " " + courseNum + " LEC " + section + "]");
             }
 
         }
@@ -498,9 +498,9 @@ public class InputParser {
                 result.add(nl);
                 if ("TUT".equals(nlType)) // check for nlType of NonLecture
                 {
-                    System.out.println("[Added NonLecture - " + ((Tutorial) nl).toString() + "]");
+                    //System.out.println("[Added NonLecture - " + ((Tutorial) nl).toString() + "]");
                 } else {
-                    System.out.println("[Added NonLecture - " + ((Lab) nl).toString() + "]");
+                    //System.out.println("[Added NonLecture - " + ((Lab) nl).toString() + "]");
                 }
             }
         });
@@ -531,7 +531,7 @@ public class InputParser {
                         if ("TUT".equals(nlType)) {
                             for (Tutorial t : course.getOpenTuts()) {
                                 if (t.getTutNum().equals(nlNum) && t.getSectionNum() == null) {
-                                    System.out.println("[!NonLecture - duplicate open tutorial declaration]");
+                                    //System.out.println("[!NonLecture - duplicate open tutorial declaration]");
                                     return null;
                                 }
                             }
@@ -542,7 +542,7 @@ public class InputParser {
                         } else { // LAB
                             for (Lab l : course.getOpenLabs()) {
                                 if (l.getLabNum().equals(nlNum) && l.getSectionNum() == null) {
-                                    System.out.println("[!NonLecture - duplicate open lab declaration]");
+                                    //System.out.println("[!NonLecture - duplicate open lab declaration]");
                                     return null;
                                 }
                             }
@@ -566,7 +566,7 @@ public class InputParser {
                         }
                     }
                     if (s == null) {
-                        System.out.println("[!NonLecture - non existent section]");
+                        //System.out.println("[!NonLecture - non existent section]");
                         return null; // section does not exist
                     }
                 }
@@ -579,7 +579,7 @@ public class InputParser {
                         for (Tutorial t : s.getTuts()) {
                             if (t.getTutNum().equals(nlNum)) {
                                 //this is a duplicate declaration of a tutorial
-                                System.out.println("[!NonLecture - duplicate tutorial declaration]");
+                                //System.out.println("[!NonLecture - duplicate tutorial declaration]");
                                 return null;
                             } else {
                                 Tutorial tut = new Tutorial(nlNum, s, false);
@@ -597,7 +597,7 @@ public class InputParser {
                         for (Lab l : s.getLabs()) {
                             if (l.getLabNum().equals(nlNum)) {
                                 //this is a duplicate declaration of a lab
-                                System.out.println("[!NonLecture - duplicate lab declaration]");
+                                //System.out.println("[!NonLecture - duplicate lab declaration]");
                                 return null;
                             } else {
                                 Lab lab = new Lab(nlNum, s, false);
@@ -610,7 +610,7 @@ public class InputParser {
 
             }
         }
-        System.out.println("[!NonLecture - invalid non lecture declaration]");
+        //System.out.println("[!NonLecture - invalid non lecture declaration]");
         return null; // could not match a course with same dept or number, so ignore
     }
 
@@ -640,15 +640,15 @@ public class InputParser {
                     int coursemax = Integer.parseInt(parts[2]);
                     int coursemin = Integer.parseInt(parts[3]);
                     if (coursemax == 0) {
-                        System.out.println("[!Lecture Slot - coursemax is zero]");
+                        //System.out.println("[!Lecture Slot - coursemax is zero]");
                         // do not assign coursemin anyways
                     } else {
                         s.activate(coursemax, coursemin); // activate the slot
-                        System.out.println("[Activated Lecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + s.getCourseMax() + " " + s.getCourseMin() + "]");
+                        //System.out.println("[Activated Lecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + s.getCourseMax() + " " + s.getCourseMin() + "]");
                     }
                 }
             } else {
-                System.out.println("[!Lecture Slot - Could not find the lecture slot]");
+                //System.out.println("[!Lecture Slot - Could not find the lecture slot]");
             }
         });
         return slots;
@@ -677,15 +677,15 @@ public class InputParser {
                     int labmax = Integer.parseInt(parts[2]);
                     int labmin = Integer.parseInt(parts[3]);
                     if (labmax == 0) {
-                        System.out.println("[!NonLecture Slot - labmax is zero]");
+                        //System.out.println("[!NonLecture Slot - labmax is zero]");
                         // do not assign the min anyways
                     } else {
                         s.activate(labmax, labmin);
-                        System.out.println("[Activated NonLecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + s.getLabMax() + " " + s.getLabMin() + "]");
+                        //System.out.println("[Activated NonLecture Slot - " + s.getDay() + " " + s.printHour() + ":" + s.printMinute() + " " + s.getLabMax() + " " + s.getLabMin() + "]");
                     }
                 }
             } else {
-                System.out.println("[!NonLecture Slot - could not find the non lecture slot]");
+                //System.out.println("[!NonLecture Slot - could not find the non lecture slot]");
             }
         });
         return slots;
