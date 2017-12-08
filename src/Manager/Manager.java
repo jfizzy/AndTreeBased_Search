@@ -52,7 +52,7 @@ class Manager {
             double p2 = 1;
             double p3 = 1;
             double p4 = 1;
-            if (args.length == 5) {
+            if (args.length >= 5) {
                 try {
                     p1 = Double.parseDouble(args[1]);
                     p2 = Double.parseDouble(args[2]);
