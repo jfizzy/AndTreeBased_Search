@@ -1,7 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * CPSC 433 Fall 2017
+ * 
+ * And-Tree-Based Scheduling Problem Solver
+ * 
+ * Created by:
+ * 
+ * Evan Loughlin
+ * Geordie Tait
+ * James MacIsaac
+ * Luke Kissick
+ * Sidney Shane Dizon
  */
 package Input;
 import java.io.*;
@@ -145,7 +153,7 @@ public class ScheduleVisualizer {
 
             WriteToFile(htmlSB.toString(), "Schedule.html");
             
-            System.out.println("Schedule visualization outputted to Schedule.html");
+            //System.out.println("Schedule visualization outputted to Schedule.html");
         }
         catch (IOException e) {
         }

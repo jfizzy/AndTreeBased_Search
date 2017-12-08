@@ -22,8 +22,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Class for reading lines from input
- *
+ * Class for reading lines from input file
+ * This will filter out all of the poor input file lines
  */
 public class FileExaminer {
 
